@@ -43,13 +43,14 @@ export function App() {
     const addr = midnight.wallet.address || api.localAddress
     if (midnight.snapshot.walletStatus === 'local-demo') return `Demo · ${shortId(addr)}`
     if (midnight.snapshot.walletStatus === 'connected') return shortId(addr)
-    return midnight.wallet.label || 'Connect'
+    return 'Connect'
   }, [
     midnight.wallet.address,
-    midnight.wallet.label,
     midnight.snapshot.walletStatus,
     api.localAddress,
   ])
+
+  const walletTitle = midnight.wallet.label || walletLabel
 
   const myCount = useMemo(() => {
     const openMine = api.openListings.filter(
@@ -82,6 +83,17 @@ export function App() {
     applyBackgroundAudio(soundOn)
   }, [soundOn])
 
+  useEffect(() => {
+    const status = midnight.snapshot.walletStatus
+    const injection = midnight.snapshot.injectionStatus
+    if (status === 'connected' || status === 'local-demo' || status === 'connecting') return
+    if (injection !== 'not-found') return
+    midnight.enableLocalDemo(api.localAddress)
+    if (midnight.wallet.address) api.setLocalAddress(midnight.wallet.address)
+    // Enable local demo once the connector reports no extension — keep the lobby playable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- wallet session methods are stable
+  }, [midnight.snapshot.walletStatus, midnight.snapshot.injectionStatus, api.localAddress])
+
   const closeDrawer = () => setDrawer(null)
 
   const inRoom = !!api.game
@@ -102,6 +114,10 @@ export function App() {
         soundOn={soundOn}
         onToggleSound={toggleSound}
         onEnter={() => {
+          if (midnight.snapshot.walletStatus !== 'connected') {
+            midnight.enableLocalDemo(api.localAddress)
+            if (midnight.wallet.address) api.setLocalAddress(midnight.wallet.address)
+          }
           setWelcomeHidden(true)
           flashUi('ok')
         }}
@@ -122,6 +138,7 @@ export function App() {
             directCount={directCount}
             stash={stash}
             walletLabel={walletLabel}
+            walletTitle={walletTitle}
             soundOn={soundOn}
             onToggleSound={toggleSound}
             onBrandClick={() => {
@@ -133,6 +150,8 @@ export function App() {
               setLobbyTab(tab)
             }}
             onWallet={() => setDrawer('settings')}
+            onSettings={() => setDrawer('settings')}
+            onHistory={() => setDrawer('history')}
           />
 
           <main>
@@ -189,7 +208,8 @@ export function App() {
             <div className="eyebrow">PREFERENCES</div>
             <h2>GAME SETTINGS</h2>
             <p className="drawer-lead">
-              Sound, network, and Midnight connection. Local demo stays playable without a wallet.
+              Sound, network, and Midnight connection. Local demo is the fastest path — Welcome,
+              Lobby, then Room — with no wallet required.
             </p>
             <label className="setting-row">
               Master sound
