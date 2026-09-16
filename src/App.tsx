@@ -234,6 +234,8 @@ export function App() {
                 historyTick={api.historyTick}
                 notice={api.notice}
                 networkLabel={pill}
+                networkKey={midnight.networkKey}
+                onNetworkChange={handleNetworkChange}
                 playAllowed={playAllowed}
                 playBlockedReason={blockedReason}
                 onConnectWallet={openConnect}

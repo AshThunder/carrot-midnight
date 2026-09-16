@@ -61,18 +61,22 @@ export function Topbar({
         <div className="season-pill" title={demoMode ? 'Local offline demo — switch to Preprod only with Lace/1AM connected' : undefined}>
           <i /> SEASON ZERO <span>{networkPill}</span>
         </div>
-        <div className="conn-net-toggle topbar-net-toggle" role="group" aria-label="Midnight network">
-          {NETWORKS.map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              className={networkKey === key ? 'active' : undefined}
-              aria-pressed={networkKey === key}
-              onClick={() => onNetworkChange(key)}
-            >
-              {label}
-            </button>
-          ))}
+        <div className="topbar-net-switch">
+          <small className="net-switch-label">NETWORK</small>
+          <div className="conn-net-toggle topbar-net-toggle" role="group" aria-label="Midnight network">
+            {NETWORKS.map(({ key, label }) => (
+              <button
+                key={key}
+                type="button"
+                data-network={key}
+                className={networkKey === key ? 'active' : undefined}
+                aria-pressed={networkKey === key}
+                onClick={() => onNetworkChange(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       <nav className="desktop-nav" aria-label="Primary">

@@ -57,25 +57,29 @@ export function WelcomeScreen({
               ♪ <span>SOUND {soundOn ? 'ON' : 'OFF'}</span>
             </button>
           </div>
-          {networkKey && onNetworkChange ? (
-            <div className="conn-net-toggle welcome-net-toggle" role="group" aria-label="Midnight network">
-              {NETWORKS.map(({ key, label }) => (
-                <button
-                  key={key}
-                  type="button"
-                  className={networkKey === key ? 'active' : undefined}
-                  aria-pressed={networkKey === key}
-                  onClick={() => onNetworkChange(key)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="welcome-network">
-              <i /> {networkLabel.toUpperCase()}
-            </div>
-          )}
+          <div className="welcome-net-control">
+            <small className="net-switch-label">NETWORK</small>
+            {networkKey && onNetworkChange ? (
+              <div className="conn-net-toggle welcome-net-toggle" role="group" aria-label="Midnight network">
+                {NETWORKS.map(({ key, label }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    data-network={key}
+                    className={networkKey === key ? 'active' : undefined}
+                    aria-pressed={networkKey === key}
+                    onClick={() => onNetworkChange(key)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="welcome-network">
+                <i /> {networkLabel.toUpperCase()}
+              </div>
+            )}
+          </div>
         </div>
       </nav>
       <div className="welcome-content">

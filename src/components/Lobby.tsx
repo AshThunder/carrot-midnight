@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Icon } from '@/components/game/SvgDefs'
 import { HingedBox } from '@/components/game/Box3d'
 import type { LobbyTab } from '@/components/game/Topbar'
+import type { NetworkKey } from '@/midnight/knownContracts'
 import { CreateChallengeModal } from '@/components/game/CreateChallengeModal'
 import { RulesModal } from '@/components/game/RulesModal'
 import type { GameAccess } from '@/domain/game'
@@ -38,6 +39,8 @@ interface LobbyProps {
   historyTick: number
   notice?: string
   networkLabel: string
+  networkKey: NetworkKey
+  onNetworkChange: (k: NetworkKey) => void
   /** False on Preprod/Preview until Lace/1AM is connected. */
   playAllowed?: boolean
   playBlockedReason?: string | null
@@ -58,6 +61,8 @@ export function Lobby({
   historyTick,
   notice,
   networkLabel,
+  networkKey,
+  onNetworkChange,
   playAllowed = true,
   playBlockedReason = null,
   onConnectWallet,
@@ -141,6 +146,27 @@ export function Lobby({
             <div className="game-box right hero-hinged">
               <HingedBox open={false} idle />
             </div>
+          </div>
+        </div>
+
+        <div className="lobby-network-strip" aria-label="Midnight network switch for demo">
+          <div className="lobby-network-copy">
+            <strong>MIDNIGHT NETWORK</strong>
+            <small>SWITCH FOR DEMO</small>
+          </div>
+          <div className="conn-net-toggle lobby-net-toggle" role="group" aria-label="Midnight network">
+            {(['local', 'preview', 'preprod'] as const).map((key) => (
+              <button
+                key={key}
+                type="button"
+                data-network={key}
+                className={networkKey === key ? 'active' : undefined}
+                aria-pressed={networkKey === key}
+                onClick={() => onNetworkChange(key)}
+              >
+                {key.toUpperCase()}
+              </button>
+            ))}
           </div>
         </div>
 
