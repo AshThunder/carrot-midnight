@@ -15,6 +15,7 @@ import {
   listOpenGames,
   markLobbyCancelled,
   markLobbyTaken,
+  setActiveLobbyNetwork,
   upsertLobbyFromGame,
   type LobbyListing,
 } from '@/domain/lobbyStore'
@@ -30,6 +31,7 @@ import {
   findSessionByJoinCode,
   getTabSeat,
   loadSyncedSession,
+  loadTabPrivate,
   makeSyncedSession,
   saveSyncedSession,
   setTabSeat,
@@ -37,6 +39,8 @@ import {
   type SyncedPrivate,
   type SyncedSession,
 } from '@/domain/sessionSync'
+import type { NetworkKey } from '@/midnight/knownContracts'
+import { allowsOfflineSimulation } from '@/domain/playMode'
 
 const PLAYER_A = 'player-a-local'
 const PLAYER_B = 'player-b-local'
@@ -45,6 +49,11 @@ function fakeCommitment(location: CarrotLocation, salt: string): string {
   return `cm:${location}:${salt.slice(0, 12)}`
 }
 
+/**
+ * Apply a remote/public session into React state.
+ * Never loads carrot secrets into state for joiners (Player B) or remote sync.
+ * Seat A may restore tab-local private from sessionStorage via includeTabPrivate.
+ */
 function applySession(
   session: SyncedSession,
   setters: {
@@ -52,15 +61,22 @@ function applySession(
     setPrivateLocation: (l: CarrotLocation | null) => void
     setPrivateSalt: (s: string | null) => void
   },
+  opts?: { includeTabPrivate?: boolean },
 ) {
   setters.setGame(session.game)
-  if (session.private) {
-    setters.setPrivateLocation(session.private.location)
-    setters.setPrivateSalt(session.private.salt)
+  if (opts?.includeTabPrivate) {
+    const priv = session.private ?? loadTabPrivate(session.game.id)
+    if (priv) {
+      setters.setPrivateLocation(priv.location)
+      setters.setPrivateSalt(priv.salt)
+      return
+    }
   }
+  setters.setPrivateLocation(null)
+  setters.setPrivateSalt(null)
 }
 
-export function useLocalGame() {
+export function useLocalGame(networkKey: NetworkKey = 'local') {
   const [role, setRoleState] = useState<'A' | 'B'>('A')
   const [privateLocation, setPrivateLocation] = useState<CarrotLocation | null>(null)
   const [privateSalt, setPrivateSalt] = useState<string | null>(null)
@@ -77,6 +93,13 @@ export function useLocalGame() {
   const [inviteBootstrapped, setInviteBootstrapped] = useState(false)
   const applyingRemote = useRef(false)
   const privRef = useRef<SyncedPrivate | null>(null)
+  const networkRef = useRef(networkKey)
+
+  useEffect(() => {
+    networkRef.current = networkKey
+    setActiveLobbyNetwork(networkKey)
+    setLobbyTick((n) => n + 1)
+  }, [networkKey])
 
   useEffect(() => {
     privRef.current =
@@ -97,22 +120,25 @@ export function useLocalGame() {
 
   const openListings = useMemo(() => {
     void lobbyTick
-    return listOpenGames()
-  }, [lobbyTick])
+    return listOpenGames(networkKey)
+  }, [lobbyTick, networkKey])
 
   const publish = useCallback((record: GameRecord, priv?: SyncedPrivate | null) => {
+    if (!allowsOfflineSimulation(networkRef.current)) return
     const secrets = priv === undefined ? privRef.current : priv
     const session = makeSyncedSession(record, secrets)
     saveSyncedSession(session)
-    upsertLobbyFromGame(record)
+    upsertLobbyFromGame(record, networkRef.current)
     setLobbyTick((n) => n + 1)
   }, [])
 
   const persist = useCallback(
     (record: GameRecord) => {
       if (applyingRemote.current) {
-        upsertLobbyFromGame(record)
-        setLobbyTick((n) => n + 1)
+        if (allowsOfflineSimulation(networkRef.current)) {
+          upsertLobbyFromGame(record, networkRef.current)
+          setLobbyTick((n) => n + 1)
+        }
         return
       }
       publish(record)
@@ -120,11 +146,12 @@ export function useLocalGame() {
     [publish],
   )
 
-  // Bootstrap from ?game= / ?join= once
+  // Bootstrap from ?game= / ?join= once (local offline sim only)
   useEffect(() => {
     if (inviteBootstrapped) return
     setInviteBootstrapped(true)
     if (typeof window === 'undefined') return
+    if (!allowsOfflineSimulation(networkKey)) return
     const { gameId, joinCode } = parseInviteFromSearch(window.location.search)
     let session: SyncedSession | null = null
     if (gameId) session = loadSyncedSession(gameId)
@@ -132,12 +159,14 @@ export function useLocalGame() {
     if (!session) return
 
     applyingRemote.current = true
-    applySession(session, { setGame, setPrivateLocation, setPrivateSalt })
     const existingSeat = getTabSeat(session.game.id)
-    if (existingSeat) {
-      setRoleState(existingSeat)
+    if (existingSeat === 'A') {
+      // Creator tab re-entry — restore tab-local secrets
+      applySession(session, { setGame, setPrivateLocation, setPrivateSalt }, { includeTabPrivate: true })
+      setRoleState('A')
     } else {
-      // Fresh tab opening an invite → Player B (creator tab already has seat A)
+      // Fresh tab / Player B — never load private
+      applySession(session, { setGame, setPrivateLocation, setPrivateSalt })
       setTabSeat(session.game.id, 'B')
       setRoleState('B')
     }
@@ -148,26 +177,29 @@ export function useLocalGame() {
     )
     applyingRemote.current = false
     refreshLobby()
-  }, [inviteBootstrapped, refreshLobby])
+  }, [inviteBootstrapped, refreshLobby, networkKey])
 
-  // Cross-tab subscription while a game is active
+  // Cross-tab subscription while a game is active — public game only, never private
   useEffect(() => {
     if (!game?.id) return
+    if (!allowsOfflineSimulation(networkKey)) return
     return subscribeSyncedSession(game.id, (session) => {
       applyingRemote.current = true
       setGame(session.game)
-      if (session.private) {
-        setPrivateLocation(session.private.location)
-        setPrivateSalt(session.private.salt)
-      }
-      upsertLobbyFromGame(session.game)
+      // Do not touch privateLocation / privateSalt — secrets stay tab-local for seat A
+      upsertLobbyFromGame(session.game, networkRef.current)
       setLobbyTick((n) => n + 1)
       applyingRemote.current = false
     })
-  }, [game?.id])
+  }, [game?.id, networkKey])
 
   const createGame = useCallback(
     (access: GameAccess, wager: bigint, challenged?: string) => {
+      if (!allowsOfflineSimulation(networkRef.current)) {
+        setBanner('warn')
+        setNotice('Offline lobby is only available on LOCAL. Switch network or connect a wallet.')
+        return
+      }
       const location = sampleCarrotLocation()
       const salt = crypto.randomUUID().replace(/-/g, '')
       setPrivateLocation(location)
@@ -203,56 +235,52 @@ export function useLocalGame() {
 
   const joinListing = useCallback(
     (listing: LobbyListing) => {
-      const existing = loadSyncedSession(listing.id)
-      if (existing) {
-        applyingRemote.current = true
-        applySession(existing, { setGame, setPrivateLocation, setPrivateSalt })
-        setPeeked(false)
-        setLastChoiceFlash(null)
-        setTabSeat(listing.id, 'B')
-        setRoleState('B')
-        writeInviteToLocation(listing.id)
-        setBanner('info')
-        setNotice(`Joined ${listing.id} (synced session). Accept to start the decision window.`)
-        applyingRemote.current = false
-        refreshLobby()
+      if (!allowsOfflineSimulation(networkRef.current)) {
+        setBanner('warn')
+        setNotice('Offline lobby is only available on LOCAL.')
         return
       }
-
+      const existing = loadSyncedSession(listing.id)
+      applyingRemote.current = true
+      // Joiner is always Player B — never load carrot secrets
       setPrivateLocation(null)
       setPrivateSalt(null)
       setPeeked(false)
       setLastChoiceFlash(null)
-      const record: GameRecord = {
-        id: listing.id,
-        access: listing.access,
-        creatorId: listing.creatorId,
-        challengedPlayerId: listing.challengedPlayerId,
-        wager: BigInt(listing.wager),
-        phase: 'WAITING_FOR_OPPONENT',
-        createdAt: listing.createdAt,
-        carrotCommitment: 'cm:joined-listing',
-        chatCount: 0,
+      if (existing) {
+        setGame(existing.game)
+      } else {
+        const record: GameRecord = {
+          id: listing.id,
+          access: listing.access,
+          creatorId: listing.creatorId,
+          challengedPlayerId: listing.challengedPlayerId,
+          wager: BigInt(listing.wager),
+          phase: 'WAITING_FOR_OPPONENT',
+          createdAt: listing.createdAt,
+          carrotCommitment: 'cm:joined-listing',
+          chatCount: 0,
+        }
+        setGame(record)
       }
-      const location = sampleCarrotLocation()
-      const salt = crypto.randomUUID().replace(/-/g, '')
-      setPrivateLocation(location)
-      setPrivateSalt(salt)
-      record.carrotCommitment = fakeCommitment(location, salt)
-      setGame(record)
       setTabSeat(listing.id, 'B')
       setRoleState('B')
-      publish(record, { location, salt })
       writeInviteToLocation(listing.id)
       setBanner('info')
-      setNotice(`Joined ${listing.id}. Accept to start the decision window.`)
+      setNotice(`Joined ${listing.id} (synced session). Accept to start the decision window.`)
+      applyingRemote.current = false
       refreshLobby()
     },
-    [publish, refreshLobby],
+    [refreshLobby],
   )
 
   const joinByCode = useCallback(
     (rawCode: string) => {
+      if (!allowsOfflineSimulation(networkRef.current)) {
+        setBanner('warn')
+        setNotice('Offline lobby is only available on LOCAL.')
+        return false
+      }
       const session = findSessionByJoinCode(rawCode)
       if (!session) {
         setBanner('warn')
@@ -260,6 +288,7 @@ export function useLocalGame() {
         return false
       }
       applyingRemote.current = true
+      // Player B — never load private
       applySession(session, { setGame, setPrivateLocation, setPrivateSalt })
       setPeeked(false)
       setLastChoiceFlash(null)
@@ -286,7 +315,7 @@ export function useLocalGame() {
         decisionDeadline: decisionDeadlineFromAcceptance(acceptedAt),
         phase: 'WAITING_FOR_DECISION',
       }
-      markLobbyTaken(g.id)
+      markLobbyTaken(g.id, networkRef.current)
       persist(next)
       return next
     })
@@ -301,7 +330,7 @@ export function useLocalGame() {
     setGame((g) => {
       if (!g || !canCreatorCancel(g)) return g
       const next = { ...g, phase: 'CANCELLED' as const }
-      markLobbyCancelled(g.id)
+      markLobbyCancelled(g.id, networkRef.current)
       persist(next)
       recordMatch(next)
       return next

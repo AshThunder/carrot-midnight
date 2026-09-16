@@ -24,8 +24,8 @@ import '@midnight-ntwrk/dapp-connector-api'
 type DrawerId = 'settings' | 'history' | null
 
 export function App() {
-  const api = useLocalGame()
   const midnight = useMidnightConnection()
+  const api = useLocalGame(midnight.networkKey)
   const [soundOn, setSoundOn] = useState(() => isSoundEnabled())
   const [welcomeHidden, setWelcomeHidden] = useState(false)
   const [lobbyTab, setLobbyTab] = useState<LobbyTab>('floor')

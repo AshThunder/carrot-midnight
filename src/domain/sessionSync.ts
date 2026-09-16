@@ -2,12 +2,16 @@
  * Cross-tab room session sync via localStorage + BroadcastChannel.
  * Same-origin only — enables local demo multi-tab play without a network.
  * Falls back to an in-memory map when Web Storage is unavailable (e.g. Vitest node).
+ *
+ * Privacy: carrot location/salt never go into localStorage or BroadcastChannel.
+ * Seat A keeps secrets in sessionStorage (tab-local) only.
  */
 import type { CarrotLocation, FinalChoice, GameAccess, GamePhase, GameRecord } from './game'
 import { joinCodeFromGameId, normalizeJoinCode } from './invite'
 
 const SESSION_PREFIX = 'carrot-midnight:session:v1:'
 const INDEX_KEY = 'carrot-midnight:session-index:v1'
+const PRIVATE_PREFIX = 'carrot-midnight:private:v1:'
 const CHANNEL_NAME = 'carrot-midnight:room-sync:v1'
 const SEAT_PREFIX = 'carrot-midnight:seat:v1:'
 
@@ -19,16 +23,17 @@ export type SyncedPrivate = {
 export type SyncedSession = {
   game: GameRecord
   joinCode: string
+  /** Tab-local only — never present on the public wire / other tabs. */
   private?: SyncedPrivate
   updatedAt: number
 }
 
 type WireGame = Omit<GameRecord, 'wager'> & { wager: string }
 
+/** Public sync payload — commitment only, no carrot location/salt. */
 type WireSession = {
   game: WireGame
   joinCode: string
-  private?: SyncedPrivate
   updatedAt: number
 }
 
@@ -39,6 +44,7 @@ type SyncMessage =
 const memorySessions = new Map<string, WireSession>()
 let memoryIndex: string[] = []
 const memorySeats = new Map<string, 'A' | 'B'>()
+const memoryPrivates = new Map<string, SyncedPrivate>()
 
 function storageAvailable(): boolean {
   try {
@@ -68,9 +74,14 @@ function sessionKey(gameId: string): string {
   return `${SESSION_PREFIX}${gameId}`
 }
 
-function toWire(session: SyncedSession): WireSession {
+function privateKey(gameId: string): string {
+  return `${PRIVATE_PREFIX}${gameId}`
+}
+
+function toPublicWire(session: SyncedSession): WireSession {
   return {
-    ...session,
+    joinCode: session.joinCode,
+    updatedAt: session.updatedAt,
     game: { ...session.game, wager: session.game.wager.toString() },
   }
 }
@@ -78,7 +89,6 @@ function toWire(session: SyncedSession): WireSession {
 function fromWire(wire: WireSession): SyncedSession {
   return {
     joinCode: wire.joinCode,
-    private: wire.private,
     updatedAt: wire.updatedAt,
     game: {
       ...wire.game,
@@ -89,6 +99,31 @@ function fromWire(wire: WireSession): SyncedSession {
       revealedLocation: wire.game.revealedLocation as CarrotLocation | undefined,
     },
   }
+}
+
+/** Persist seat-A secrets in sessionStorage only (never localStorage / BroadcastChannel). */
+export function saveTabPrivate(gameId: string, priv: SyncedPrivate): void {
+  memoryPrivates.set(gameId, priv)
+  if (!sessionStorageAvailable()) return
+  sessionStorage.setItem(privateKey(gameId), JSON.stringify(priv))
+}
+
+export function loadTabPrivate(gameId: string): SyncedPrivate | null {
+  if (sessionStorageAvailable()) {
+    try {
+      const raw = sessionStorage.getItem(privateKey(gameId))
+      if (raw) return JSON.parse(raw) as SyncedPrivate
+    } catch {
+      /* fall through */
+    }
+  }
+  return memoryPrivates.get(gameId) ?? null
+}
+
+function clearTabPrivate(gameId: string): void {
+  memoryPrivates.delete(gameId)
+  if (!sessionStorageAvailable()) return
+  sessionStorage.removeItem(privateKey(gameId))
 }
 
 function readIndex(): string[] {
@@ -120,8 +155,15 @@ function broadcast(msg: SyncMessage) {
   }
 }
 
+/**
+ * Persist public game record for cross-tab sync.
+ * Carrot location/salt stay in sessionStorage for this tab only (seat A).
+ */
 export function saveSyncedSession(session: SyncedSession): void {
-  const wire = toWire(session)
+  if (session.private) {
+    saveTabPrivate(session.game.id, session.private)
+  }
+  const wire = toPublicWire(session)
   memorySessions.set(session.game.id, wire)
   if (storageAvailable()) {
     localStorage.setItem(sessionKey(session.game.id), JSON.stringify(wire))
@@ -132,17 +174,57 @@ export function saveSyncedSession(session: SyncedSession): void {
   broadcast({ type: 'session', session: wire })
 }
 
-export function loadSyncedSession(gameId: string): SyncedSession | null {
+/**
+ * Load the public synced session. Optionally attach this tab's private secrets
+ * (sessionStorage) — other tabs never have them.
+ */
+export function loadSyncedSession(
+  gameId: string,
+  opts?: { includeTabPrivate?: boolean },
+): SyncedSession | null {
+  let session: SyncedSession | null = null
   if (storageAvailable()) {
     try {
       const raw = localStorage.getItem(sessionKey(gameId))
-      if (raw) return fromWire(JSON.parse(raw) as WireSession)
+      if (raw) {
+        const parsed = JSON.parse(raw) as WireSession & { private?: SyncedPrivate }
+        // Strip any legacy private field that older builds may have written.
+        const { private: _legacy, ...publicWire } = parsed
+        void _legacy
+        session = fromWire(publicWire as WireSession)
+      }
     } catch {
       /* fall through to memory */
     }
   }
-  const mem = memorySessions.get(gameId)
-  return mem ? fromWire(mem) : null
+  if (!session) {
+    const mem = memorySessions.get(gameId)
+    session = mem ? fromWire(mem) : null
+  }
+  if (!session) return null
+  if (opts?.includeTabPrivate) {
+    const priv = loadTabPrivate(gameId)
+    if (priv) return { ...session, private: priv }
+  }
+  return session
+}
+
+/** Peek at the public wire payload as stored (for tests / debugging). Never includes private. */
+export function peekPublicSyncedWire(gameId: string): WireSession | null {
+  if (storageAvailable()) {
+    try {
+      const raw = localStorage.getItem(sessionKey(gameId))
+      if (raw) {
+        const parsed = JSON.parse(raw) as WireSession & { private?: SyncedPrivate }
+        const { private: _legacy, ...publicWire } = parsed
+        void _legacy
+        return publicWire as WireSession
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+  return memorySessions.get(gameId) ?? null
 }
 
 export function findSessionByJoinCode(code: string): SyncedSession | null {
@@ -173,6 +255,7 @@ export function findSessionByJoinCode(code: string): SyncedSession | null {
 export function clearSyncedSession(gameId: string): void {
   memorySessions.delete(gameId)
   memorySeats.delete(gameId)
+  clearTabPrivate(gameId)
   if (storageAvailable()) {
     localStorage.removeItem(sessionKey(gameId))
   }
@@ -184,6 +267,7 @@ export function clearAllSyncedSessionsForTests(): void {
   memorySessions.clear()
   memoryIndex = []
   memorySeats.clear()
+  memoryPrivates.clear()
 }
 
 export function getTabSeat(gameId: string): 'A' | 'B' | null {
@@ -202,6 +286,7 @@ export function setTabSeat(gameId: string, seat: 'A' | 'B'): void {
 
 /**
  * Subscribe to session updates for a game id (BroadcastChannel + storage event).
+ * Callbacks receive public sessions only — never carrot location/salt.
  * Returns an unsubscribe function.
  */
 export function subscribeSyncedSession(
@@ -218,7 +303,10 @@ export function subscribeSyncedSession(
   const handleStorage = (ev: StorageEvent) => {
     if (ev.key !== sessionKey(gameId) || !ev.newValue) return
     try {
-      onSession(fromWire(JSON.parse(ev.newValue) as WireSession))
+      const parsed = JSON.parse(ev.newValue) as WireSession & { private?: SyncedPrivate }
+      const { private: _legacy, ...publicWire } = parsed
+      void _legacy
+      onSession(fromWire(publicWire as WireSession))
     } catch {
       /* ignore */
     }

@@ -6,7 +6,7 @@ import { CreateChallengeModal } from '@/components/game/CreateChallengeModal'
 import { RulesModal } from '@/components/game/RulesModal'
 import type { GameAccess } from '@/domain/game'
 import { shortId } from '@/domain/game'
-import type { LobbyListing } from '@/domain/lobbyStore'
+import { filterOpenFloor, type LobbyListing } from '@/domain/lobbyStore'
 import { buildLeaderboard, listMatchHistory, type MatchHistoryEntry } from '@/domain/matchHistory'
 
 const AVATAR_COLORS = ['orange', 'pink', 'green', 'blue'] as const
@@ -94,18 +94,15 @@ export function Lobby({
     [openListings, localAddress],
   )
 
-  const filteredFloor = useMemo(() => {
-    return openListings.filter((g) => {
-      if (g.access === 'DIRECT' && g.challengedPlayerId && g.challengedPlayerId !== localAddress) {
-        return false
-      }
-      const w = Number(g.wager)
-      if (stakeFilter === 'low') return w <= 50
-      if (stakeFilter === 'mid') return w > 50 && w <= 250
-      if (stakeFilter === 'high') return w > 250
-      return true
-    })
-  }, [openListings, stakeFilter, localAddress])
+  const filteredFloor = useMemo(
+    () => filterOpenFloor(openListings, stakeFilter),
+    [openListings, stakeFilter],
+  )
+
+  const openFloorCount = useMemo(
+    () => filterOpenFloor(openListings, 'all').length,
+    [openListings],
+  )
 
   const settledPrizes = useMemo(
     () => history.filter((h) => h.phase === 'SETTLED').length,
@@ -203,7 +200,7 @@ export function Lobby({
             </span>
             <i />
             <span>
-              <b>{openListings.length}</b>
+              <b>{openFloorCount}</b>
               <small>OPEN GAMES</small>
             </span>
             <i />
