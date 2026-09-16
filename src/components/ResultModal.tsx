@@ -1,4 +1,5 @@
 import { Icon } from '@/components/game/SvgDefs'
+import { ModalPortal } from '@/components/ModalPortal'
 import { shortId, type FinalChoice, type GamePhase } from '@/domain/game'
 
 export type ResultModalProps = {
@@ -36,13 +37,14 @@ export function ResultModal({
 
   if (won && !isForfeit) {
     return (
-      <>
+      <ModalPortal>
         <div className={`modal-backdrop${open ? ' show' : ''}`} onClick={onClose} aria-hidden />
         <section
           className={`win-popup${open ? ' show' : ''}`}
           role="dialog"
           aria-modal="true"
           aria-hidden={!open}
+          data-modal="result-win"
         >
           <button className="close-modal result-close" type="button" aria-label="Close result" onClick={onClose}>
             ×
@@ -75,18 +77,19 @@ export function ResultModal({
             </button>
           </div>
         </section>
-      </>
+      </ModalPortal>
     )
   }
 
   return (
-    <>
+    <ModalPortal>
       <div className={`modal-backdrop${open ? ' show' : ''}`} onClick={onClose} aria-hidden />
       <section
         className={`result-popup defeat-popup${open ? ' show' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-hidden={!open}
+        data-modal="result"
       >
         <button className="close-modal result-close" type="button" aria-label="Close result" onClick={onClose}>
           ×
@@ -130,6 +133,6 @@ export function ResultModal({
           </button>
         </div>
       </section>
-    </>
+    </ModalPortal>
   )
 }

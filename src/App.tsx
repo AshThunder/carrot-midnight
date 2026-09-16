@@ -7,6 +7,7 @@ import { SvgDefs } from '@/components/game/SvgDefs'
 import { WelcomeScreen } from '@/components/game/WelcomeScreen'
 import { Topbar, type LobbyTab } from '@/components/game/Topbar'
 import { RulesModal } from '@/components/game/RulesModal'
+import { ModalPortal } from '@/components/ModalPortal'
 import { useLocalGame } from '@/hooks/useLocalGame'
 import { useMidnightConnection } from '@/hooks/useMidnightConnection'
 import { isSoundEnabled, setSoundEnabled, flashUi, applyBackgroundAudio, getDemoStash } from '@/lib/uiFeedback'
@@ -269,14 +270,14 @@ export function App() {
             </button>
           </div>
 
-          <div
-            className={`modal-backdrop${drawer || rulesOpen ? ' show' : ''}`}
-            onClick={() => {
-              closeDrawer()
-              setRulesOpen(false)
-            }}
-            aria-hidden
-          />
+          <ModalPortal>
+            <div
+              className={`modal-backdrop${drawer ? ' show' : ''}`}
+              data-overlay="drawer"
+              onClick={closeDrawer}
+              aria-hidden
+            />
+          </ModalPortal>
 
           <section className={`drawer-panel${drawer === 'settings' ? ' open' : ''}`} id="settingsPanel">
             <button className="drawer-close" type="button" onClick={closeDrawer}>

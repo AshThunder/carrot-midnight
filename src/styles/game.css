@@ -1277,10 +1277,11 @@ body.reduced-motion .box-3d.hinged-box .front .reveal-carrot{animation:none!impo
    SETTINGS / HISTORY DRAWER SHELL + WALLET INSTALL CTAs
    ========================================================= */
 .modal-backdrop{
-  z-index:48!important;
+  /* stacking set in overlay-layer block at file end */
+  z-index:180!important;
 }
 .drawer-panel{
-  z-index:55!important;
+  z-index:190!important;
   top:0;
   right:0;
   width:min(480px,100vw)!important;
@@ -1634,4 +1635,48 @@ body.reduced-motion .box-3d.hinged-box .front .reveal-carrot{animation:none!impo
     padding:8px 8px!important;
     font-size:11px!important;
   }
+}
+
+
+/* =========================================================
+   OVERLAY STACKING
+   Backdrop dims/blurs only the page. Dialogs, drawers, chooser,
+   and result popups sit above it (and above welcome z-index 100).
+   ========================================================= */
+.welcome-screen.hidden{
+  z-index:0!important;
+  pointer-events:none!important;
+}
+.modal-backdrop{
+  z-index:180!important;
+  isolation:isolate;
+}
+.modal-backdrop:not(.show){
+  pointer-events:none;
+}
+.drawer-panel{
+  z-index:190!important;
+  pointer-events:none;
+}
+.drawer-panel.open{
+  pointer-events:auto;
+}
+.modal,
+.detailed-rules-modal,
+.win-popup,
+.result-popup,
+.error-popup,
+.matchmaking-popup,
+.chooser-overlay,
+.show-preview,
+.player-profile-modal{
+  z-index:200!important;
+  isolation:isolate;
+  filter:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.toast,
+.tx-status{
+  z-index:210!important;
 }

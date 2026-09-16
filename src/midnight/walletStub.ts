@@ -7,7 +7,9 @@
 
 import type { ConnectedAPI } from '@midnight-ntwrk/dapp-connector-api'
 import {
+  buildConnectorHint,
   connectWalletApi,
+  formatConnectorError,
   listInjectedWallets,
   selectWallet,
   waitForWalletInjection,
@@ -110,19 +112,26 @@ export function createWalletStub(): MidnightWalletSession {
     get isLocalDemo() {
       return isLocalDemo
     },
-    async refreshInjection(timeoutMs = 6000) {
+    async refreshInjection(timeoutMs = 8000) {
       injectionStatus = 'checking'
       detectedWallets = await waitForWalletInjection(timeoutMs)
       injectionStatus = detectedWallets.length > 0 ? 'detected' : 'not-found'
       if (status === 'disconnected' || status === 'unavailable') {
         if (detectedWallets.length === 0) {
           status = 'unavailable'
+          const hint = buildConnectorHint([])
           label =
-            'No Midnight wallet extension detected. Use local demo, or install Lace / 1AM and refresh.'
+            hint.summary ??
+            'No Midnight wallet extension detected. Use local demo, or install 1AM / Lace and Rescan.'
         } else {
           status = 'disconnected'
           const names = detectedWallets.map((w) => w.displayName).join(', ')
-          label = `Detected: ${names}. Connect to authorize.`
+          const legacy = detectedWallets.filter((w) => w.legacyEnableOnly)
+          if (legacy.length && !detectedWallets.some((w) => w.supportsConnect)) {
+            label = buildConnectorHint(detectedWallets).summary ?? `Detected legacy injector: ${names}`
+          } else {
+            label = `Detected: ${names}. Connect to authorize (Preprod).`
+          }
         }
       }
       return detectedWallets
@@ -134,13 +143,15 @@ export function createWalletStub(): MidnightWalletSession {
       label = 'Looking for DApp Connector wallets…'
       syncDetectionSync()
       if (detectedWallets.length === 0) {
-        detectedWallets = await waitForWalletInjection(2500)
+        detectedWallets = await waitForWalletInjection(6000)
       }
       if (detectedWallets.length === 0) {
         status = 'unavailable'
         injectionStatus = 'not-found'
+        const hint = buildConnectorHint([])
         label =
-          'No Midnight wallet extension detected. Use local demo; enable Lace/1AM + Docker for live txs.'
+          hint.summary ??
+          'No Midnight wallet extension detected. Use local demo; install 1AM (recommended) or Lace with Midnight, then Rescan.'
         throw new Error(label)
       }
       injectionStatus = 'detected'
@@ -163,9 +174,12 @@ export function createWalletStub(): MidnightWalletSession {
       } catch (e) {
         status = detectedWallets.length > 0 ? 'disconnected' : 'unavailable'
         connectedApi = null
-        const msg = e instanceof Error ? e.message : String(e)
+        const msg = formatConnectorError(e, {
+          networkId: String(networkId),
+          walletName: brand === '1am' ? '1AM' : brand === 'lace' ? 'Lace' : undefined,
+        })
         label = msg
-        throw e instanceof Error ? e : new Error(msg)
+        throw new Error(msg)
       }
     },
     disconnect() {

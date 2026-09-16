@@ -9,7 +9,17 @@ import {
   DEV_PRIVATE_STORAGE_PASSWORD,
 } from './providers'
 import { createWalletStub } from './walletStub'
-import { brandFromWallet, listInjectedWallets, selectWallet } from './dappConnector'
+import {
+  brandFromWallet,
+  buildConnectorHint,
+  connectWalletApi,
+  formatConnectorError,
+  isLegacyV3Api,
+  describeInjectionGap,
+  hasCardanoLaceInjection,
+  listInjectedWallets,
+  selectWallet,
+} from './dappConnector'
 import { buildConnectionSnapshot } from './connection'
 import {
   gateDeployCall,
@@ -112,8 +122,120 @@ describe('dapp connector helpers', () => {
     })
     const list = listInjectedWallets()
     expect(list.length).toBe(2)
+    expect(list.every((w) => w.supportsConnect)).toBe(true)
     expect(selectWallet('uuidX').displayName).toBe('Lace')
     expect(selectWallet().brand).toBe('1am')
+  })
+
+  it('skips non-API junk on window.midnight', () => {
+    Object.defineProperty(globalThis, 'window', {
+      value: { midnight: { noise: 1, empty: {}, ok: {
+        name: '1AM',
+        rdns: 'network.1am',
+        icon: '',
+        apiVersion: '4.0.1',
+        connect: async () => ({}) as never,
+      } } },
+      configurable: true,
+      writable: true,
+    })
+    expect(listInjectedWallets().map((w) => w.key)).toEqual(['ok'])
+  })
+
+  it('flags legacy enable-only Lace and recommends 1AM', () => {
+    const legacy = {
+      name: 'Lace',
+      rdns: 'io.lace.midnight',
+      icon: '',
+      apiVersion: '3.0.0',
+      enable: async () => ({}),
+      isEnabled: async () => false,
+    }
+    Object.defineProperty(globalThis, 'window', {
+      value: { midnight: { mnLace: legacy } },
+      configurable: true,
+      writable: true,
+    })
+    const list = listInjectedWallets()
+    expect(list).toHaveLength(1)
+    expect(isLegacyV3Api(list[0]!.api)).toBe(true)
+    expect(list[0]!.supportsConnect).toBe(false)
+    const hint = buildConnectorHint(list)
+    expect(hint.legacyMidnightLace).toBe(true)
+    expect(hint.recommendedWallet).toBe('1am')
+    expect(hint.summary).toMatch(/deprecated DApp Connector v3|enable\(\)/i)
+  })
+
+  it('detects Cardano Lace without Midnight injection', () => {
+    Object.defineProperty(globalThis, 'window', {
+      value: { midnight: undefined, cardano: { lace: { name: 'Lace' } } },
+      configurable: true,
+      writable: true,
+    })
+    expect(listInjectedWallets()).toEqual([])
+    const hint = buildConnectorHint([])
+    expect(hint.cardanoLaceWithoutMidnight).toBe(true)
+    expect(hint.recommendedWallet).toBe('1am')
+    expect(hint.summary).toMatch(/Cardano connector|Midnight DApp Connector/i)
+    expect(hasCardanoLaceInjection()).toBe(true)
+    expect(describeInjectionGap([])).toMatch(/Lace is installed/)
+  })
+
+  it('connectWalletApi rejects legacy enable-only injectors', async () => {
+    const legacy = {
+      name: 'Lace',
+      rdns: 'io.lace.midnight',
+      icon: '',
+      apiVersion: '3.0.0',
+      enable: async () => ({}),
+    }
+    Object.defineProperty(globalThis, 'window', {
+      value: { midnight: { mnLace: legacy } },
+      configurable: true,
+      writable: true,
+    })
+    const wallet = selectWallet('mnLace')
+    await expect(connectWalletApi(wallet, 'preprod')).rejects.toThrow(/legacy|connect\(networkId\)/i)
+  })
+
+  it('connectWalletApi reports network mismatch from getConnectionStatus', async () => {
+    const api: InitialAPI = {
+      name: '1AM',
+      rdns: 'network.1am',
+      icon: '',
+      apiVersion: '4.0.1',
+      connect: async () =>
+        ({
+          getUnshieldedAddress: async () => ({ unshieldedAddress: 'mn_addr_test' }),
+          getShieldedAddresses: async () => ({
+            shieldedAddress: 'mn_shield',
+            shieldedCoinPublicKey: 'coin',
+            shieldedEncryptionPublicKey: 'enc',
+          }),
+          getConfiguration: async () => ({
+            indexerUri: '',
+            indexerWsUri: '',
+            substrateNodeUri: '',
+            networkId: 'preview',
+          }),
+          getConnectionStatus: async () => ({ status: 'connected', networkId: 'preview' }),
+        }) as never,
+    }
+    Object.defineProperty(globalThis, 'window', {
+      value: { midnight: { '1am': api } },
+      configurable: true,
+      writable: true,
+    })
+    await expect(connectWalletApi(selectWallet(), 'preprod')).rejects.toThrow(/preview.*preprod|network/i)
+  })
+
+  it('formatConnectorError surfaces DAppConnectorAPIError codes', () => {
+    const msg = formatConnectorError(
+      { type: 'DAppConnectorAPIError', code: 'Rejected', reason: 'nope', message: 'nope' },
+      { walletName: 'Lace', networkId: 'preprod' },
+    )
+    expect(msg).toMatch(/rejected/i)
+    expect(msg).toMatch(/Lace|1AM|approve/i)
   })
 })
 

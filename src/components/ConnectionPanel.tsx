@@ -1,5 +1,5 @@
 import type { ConnectionSnapshot } from '@/midnight/connection'
-import type { DetectedWallet } from '@/midnight/dappConnector'
+import { buildConnectorHint, type DetectedWallet } from '@/midnight/dappConnector'
 import type { DeployServiceState } from '@/midnight/deployService'
 import type { NetworkKey } from '@/midnight/knownContracts'
 import { PREPROD_CONTRACT_ADDRESS, PREPROD_DEPLOY_TX_ID } from '@/midnight/knownContracts'
@@ -60,6 +60,10 @@ export function ConnectionPanel({
     (networkKey === 'preprod' ? PREPROD_CONTRACT_ADDRESS : undefined)
   const displayedTx =
     deployState.lastTxId || (networkKey === 'preprod' ? PREPROD_DEPLOY_TX_ID : undefined)
+  const connectorHint = buildConnectorHint(detectedWallets)
+  const showInstall = detectedWallets.length === 0 && !walletConnected
+  const showLegacyWarning =
+    connectorHint.legacyMidnightLace && !detectedWallets.some((w) => w.supportsConnect)
 
   return (
     <div className="connection-skin">
@@ -76,8 +80,9 @@ export function ConnectionPanel({
         <span>REQUIREMENTS (LIVE)</span>
         <ul className="conn-reasons" style={{ marginTop: 8 }}>
           <li>
-            Install <b>Lace</b> or <b>1AM</b> (Midnight DApp Connector) and set network to{' '}
-            <b>{snapshot.network.networkId}</b>.
+            Install <b>1AM</b> (recommended) or <b>Lace</b> with Midnight DApp Connector
+            (<span className="mono">window.midnight</span> + <span className="mono">connect(networkId)</span>
+            ), then set wallet network to <b>{snapshot.network.networkId}</b>.
           </li>
           <li>
             Local proof server on <span className="mono">http://127.0.0.1:6300</span> for live prove
@@ -98,8 +103,13 @@ export function ConnectionPanel({
         </ul>
       </div>
 
-      {detectedWallets.length === 0 && !walletConnected && (
-        <WalletInstallCtas variant="card" />
+      {(showInstall || showLegacyWarning) && (
+        <WalletInstallCtas variant="card" compatibilityNote={connectorHint.summary} />
+      )}
+      {connectorHint.summary && !showInstall && !showLegacyWarning && (
+        <p className="conn-error" role="status">
+          {connectorHint.summary}
+        </p>
       )}
 
       <div className="conn-grid">
@@ -171,7 +181,7 @@ export function ConnectionPanel({
                 DISCONNECT
               </button>
             )}
-            {detectedWallets.length > 1 &&
+            {detectedWallets.length > 0 &&
               !walletConnected &&
               detectedWallets.map((w) => (
                 <button
@@ -179,12 +189,15 @@ export function ConnectionPanel({
                   className="text-button"
                   type="button"
                   onClick={() => onConnect(w.key)}
-                  title={w.key}
+                  title={`${w.key} · api ${w.apiVersion ?? '?'} · ${w.supportsConnect ? 'connect()' : 'legacy'}`}
+                  disabled={w.legacyEnableOnly}
                 >
                   {w.displayName.toUpperCase()}
+                  {w.legacyEnableOnly ? ' (LEGACY)' : ''}
                 </button>
               ))}
           </div>
+          {errorNote && <p className="conn-error">{errorNote}</p>}
         </div>
       </div>
 

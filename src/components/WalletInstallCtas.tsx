@@ -6,9 +6,15 @@ interface WalletInstallCtasProps {
   /** Larger card layout with heading + hint (Connection panel). */
   variant?: 'card' | 'inline' | 'gate'
   className?: string
+  /** Optional compatibility note (Cardano Lace / legacy injector). */
+  compatibilityNote?: string | null
 }
 
-export function WalletInstallCtas({ variant = 'inline', className }: WalletInstallCtasProps) {
+export function WalletInstallCtas({
+  variant = 'inline',
+  className,
+  compatibilityNote = null,
+}: WalletInstallCtasProps) {
   const lace = laceInstallUrl()
   const oneAm = oneAmInstallUrl()
 
@@ -16,26 +22,27 @@ export function WalletInstallCtas({ variant = 'inline', className }: WalletInsta
     return (
       <div className={`wallet-box wallet-install-card${className ? ` ${className}` : ''}`}>
         <span>GET A MIDNIGHT WALLET</span>
-        <b>Install Lace or 1AM</b>
+        <b>1AM recommended · Lace optional</b>
         <p className="wallet-install-hint">
-          After install, refresh / Rescan wallets, then set wallet network to Preprod.
+          {compatibilityNote ??
+            'This app needs Midnight DApp Connector on window.midnight with connect(networkId). After install, enable the extension, Rescan wallets, and set the wallet network to Preprod.'}
         </p>
         <div className="conn-actions wallet-install-actions">
-          <a className="primary" href={lace} {...BLANK}>
-            Install Lace
+          <a className="primary" href={oneAm} {...BLANK}>
+            Install 1AM (recommended)
           </a>
-          <a className="secondary" href={oneAm} {...BLANK}>
-            Install 1AM
+          <a className="secondary" href={lace} {...BLANK}>
+            Install Lace
           </a>
         </div>
         <small className="wallet-install-sites">
           Sites:{' '}
-          <a href={WALLET_INSTALL.laceSite} {...BLANK}>
-            lace.io
-          </a>
-          {' · '}
           <a href={WALLET_INSTALL.oneAmSite} {...BLANK}>
             1am.xyz
+          </a>
+          {' · '}
+          <a href={WALLET_INSTALL.laceSite} {...BLANK}>
+            lace.io
           </a>
         </small>
       </div>
@@ -46,11 +53,11 @@ export function WalletInstallCtas({ variant = 'inline', className }: WalletInsta
     <div
       className={`wallet-install-actions${variant === 'gate' ? ' gate' : ''}${className ? ` ${className}` : ''}`}
     >
-      <a className="primary" href={lace} {...BLANK}>
-        Install Lace
-      </a>
-      <a className="secondary" href={oneAm} {...BLANK}>
+      <a className="primary" href={oneAm} {...BLANK}>
         Install 1AM
+      </a>
+      <a className="secondary" href={lace} {...BLANK}>
+        Install Lace
       </a>
     </div>
   )

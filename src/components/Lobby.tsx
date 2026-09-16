@@ -498,14 +498,6 @@ export function Lobby({
         </div>
       </section>
 
-      <div
-        className={`modal-backdrop${createOpen || rulesOpen ? ' show' : ''}`}
-        onClick={() => {
-          setCreateOpen(false)
-          setRulesOpen(false)
-        }}
-        aria-hidden
-      />
       <CreateChallengeModal
         open={createOpen}
         onClose={() => setCreateOpen(false)}

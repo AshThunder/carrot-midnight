@@ -86,9 +86,22 @@ export function useMidnightConnection() {
   }, [network, wallet])
 
   useEffect(() => {
-    void wallet.refreshInjection(5000).then(() => {
-      refreshWalletView()
-    })
+    let cancelled = false
+    const rescan = (timeoutMs = 5000) => {
+      void wallet.refreshInjection(timeoutMs).then(() => {
+        if (!cancelled) refreshWalletView()
+      })
+    }
+    rescan(8000)
+    const onFocus = () => rescan(1500)
+    window.addEventListener('focus', onFocus)
+    const events = ['midnight#initialized', 'midnight:initialized', 'caip372:announceProvider']
+    for (const ev of events) window.addEventListener(ev, onFocus)
+    return () => {
+      cancelled = true
+      window.removeEventListener('focus', onFocus)
+      for (const ev of events) window.removeEventListener(ev, onFocus)
+    }
   }, [wallet, refreshWalletView])
 
   useEffect(() => {
