@@ -1,0 +1,247 @@
+pragma language_version >= 0.23;
+
+import CompactStandardLibrary;
+
+/**
+ * Carrot Midnight — two-player private bluffing game.
+ *
+ * Fairness model:
+ * - Player A privately samples location in {1,2} and a fresh salt (witnesses).
+ * - Public ledger stores only a binding commitment (persistentHash + domain sep).
+ * - Peek is local private-state only; never disclosed until settle.
+ * - Decision → revealing phase → settle opens the commitment.
+ * - Optional chat ciphertext hashes land on-ledger for bluff channel integrity.
+ */
+
+export enum GamePhase {
+  waitingForOpponent,
+  waitingForDecision,
+  revealing,
+  settled,
+  cancelled,
+  forfeited
+}
+
+export enum AccessMode {
+  open,
+  direct
+}
+
+export ledger phase: GamePhase;
+export ledger access: AccessMode;
+export ledger creator: Bytes<32>;
+export ledger opponent: Bytes<32>;
+export ledger challengedPlayer: Bytes<32>;
+export ledger wager: Uint<64>;
+export ledger carrotCommitment: Bytes<32>;
+export ledger swapped: Boolean;
+export ledger decisionMade: Boolean;
+export ledger winner: Bytes<32>;
+export ledger revealedLocation: Uint<8>;
+export ledger decisionDeadline: Uint<64>;
+export ledger potSettled: Boolean;
+export ledger lastChatCipherHash: Bytes<32>;
+ledger sequence: Counter;
+ledger chatCount: Counter;
+
+witness localSecretKey(): Bytes<32>;
+witness carrotLocation(): Uint<8>;
+witness carrotSalt(): Bytes<32>;
+
+export pure circuit publicKey(sk: Bytes<32>, seq: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "carrot-midnight:pk:v1"),
+    seq,
+    sk
+  ]);
+}
+
+export pure circuit locationCommitment(loc: Uint<8>, salt: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "carrot-midnight:loc:v1"),
+    salt,
+    loc as Field as Bytes<32>
+  ]);
+}
+
+/**
+ * Winner after Keep/Swap:
+ * location 1 => carrot starts in creator's box
+ * location 2 => carrot starts in opponent's box
+ * KEEP: starter with carrot wins
+ * SWAP: the other player wins
+ */
+export pure circuit winnerIsCreator(loc: Uint<8>, didSwap: Boolean): Boolean {
+  if (didSwap) {
+    return loc == (2 as Uint<8>);
+  } else {
+    return loc == (1 as Uint<8>);
+  }
+}
+
+constructor() {
+  phase = GamePhase.waitingForOpponent;
+  access = AccessMode.open;
+  wager = 0 as Uint<64>;
+  swapped = false;
+  decisionMade = false;
+  potSettled = false;
+  revealedLocation = 0 as Uint<8>;
+  decisionDeadline = 0 as Uint<64>;
+  lastChatCipherHash = pad(32, "");
+  sequence.increment(1);
+}
+
+export circuit createOpenGame(wagerAmount: Uint<64>): [] {
+  assert(phase == GamePhase.waitingForOpponent, "Game already started");
+  assert(wagerAmount > (0 as Uint<64>), "Wager must be positive");
+
+  const sk = localSecretKey();
+  const loc = carrotLocation();
+  const salt = carrotSalt();
+
+  assert(disclose(loc == (1 as Uint<8>) || loc == (2 as Uint<8>)), "Location must be 1 or 2");
+
+  creator = disclose(publicKey(sk, sequence.read() as Field as Bytes<32>));
+  access = AccessMode.open;
+  wager = disclose(wagerAmount);
+  carrotCommitment = disclose(locationCommitment(loc, salt));
+  opponent = pad(32, "");
+  challengedPlayer = pad(32, "");
+  swapped = false;
+  decisionMade = false;
+  potSettled = false;
+  winner = pad(32, "");
+  revealedLocation = 0 as Uint<8>;
+  decisionDeadline = 0 as Uint<64>;
+  lastChatCipherHash = pad(32, "");
+  phase = GamePhase.waitingForOpponent;
+}
+
+export circuit createDirectChallenge(challenged: Bytes<32>, wagerAmount: Uint<64>): [] {
+  assert(phase == GamePhase.waitingForOpponent, "Game already started");
+  assert(wagerAmount > (0 as Uint<64>), "Wager must be positive");
+
+  const sk = localSecretKey();
+  const loc = carrotLocation();
+  const salt = carrotSalt();
+
+  assert(disclose(loc == (1 as Uint<8>) || loc == (2 as Uint<8>)), "Location must be 1 or 2");
+
+  creator = disclose(publicKey(sk, sequence.read() as Field as Bytes<32>));
+  access = AccessMode.direct;
+  challengedPlayer = disclose(challenged);
+  wager = disclose(wagerAmount);
+  carrotCommitment = disclose(locationCommitment(loc, salt));
+  opponent = pad(32, "");
+  swapped = false;
+  decisionMade = false;
+  potSettled = false;
+  winner = pad(32, "");
+  revealedLocation = 0 as Uint<8>;
+  decisionDeadline = 0 as Uint<64>;
+  lastChatCipherHash = pad(32, "");
+  phase = GamePhase.waitingForOpponent;
+}
+
+export circuit acceptOpenGame(deadline: Uint<64>): [] {
+  assert(phase == GamePhase.waitingForOpponent, "Not waiting for opponent");
+  assert(access == AccessMode.open, "Not an open game");
+
+  const caller = disclose(publicKey(localSecretKey(), sequence.read() as Field as Bytes<32>));
+  assert(disclose(caller != creator), "Creator cannot accept own game");
+
+  opponent = caller;
+  decisionDeadline = disclose(deadline);
+  phase = GamePhase.waitingForDecision;
+}
+
+export circuit acceptDirectChallenge(deadline: Uint<64>): [] {
+  assert(phase == GamePhase.waitingForOpponent, "Not waiting for opponent");
+  assert(access == AccessMode.direct, "Not a direct challenge");
+
+  const caller = disclose(publicKey(localSecretKey(), sequence.read() as Field as Bytes<32>));
+  assert(disclose(caller == challengedPlayer), "Not the challenged player");
+  assert(disclose(caller != creator), "Creator cannot accept own game");
+
+  opponent = caller;
+  decisionDeadline = disclose(deadline);
+  phase = GamePhase.waitingForDecision;
+}
+
+export circuit cancelOpenGame(): [] {
+  assert(phase == GamePhase.waitingForOpponent, "Cannot cancel after acceptance");
+  const caller = disclose(publicKey(localSecretKey(), sequence.read() as Field as Bytes<32>));
+  assert(disclose(caller == creator), "Only creator can cancel");
+  phase = GamePhase.cancelled;
+  sequence.increment(1);
+}
+
+export circuit submitDecision(doSwap: Boolean): [] {
+  assert(phase == GamePhase.waitingForDecision, "Not in decision window");
+  assert(!decisionMade, "Decision already submitted");
+
+  const caller = disclose(publicKey(localSecretKey(), sequence.read() as Field as Bytes<32>));
+  assert(disclose(caller == opponent), "Only opponent decides");
+
+  swapped = disclose(doSwap);
+  decisionMade = true;
+  phase = GamePhase.revealing;
+}
+
+/**
+ * Post a hash of an AES-GCM ciphertext blob for the bluff channel.
+ * Plaintext stays client-side; ledger only records integrity hash + count.
+ */
+export circuit postChatCiphertext(ctHash: Bytes<32>): [] {
+  assert(
+    phase == GamePhase.waitingForDecision || phase == GamePhase.revealing,
+    "Chat closed outside active play"
+  );
+
+  const caller = disclose(publicKey(localSecretKey(), sequence.read() as Field as Bytes<32>));
+  assert(
+    disclose(caller == creator || caller == opponent),
+    "Only players may post chat"
+  );
+
+  lastChatCipherHash = disclose(ctHash);
+  chatCount.increment(1);
+}
+
+export circuit settle(): [] {
+  assert(phase == GamePhase.revealing, "Not in revealing phase");
+  assert(decisionMade, "Decision required before settle");
+  assert(!potSettled, "Already settled");
+
+  const loc = carrotLocation();
+  const salt = carrotSalt();
+
+  assert(disclose(loc == (1 as Uint<8>) || loc == (2 as Uint<8>)), "Invalid location");
+
+  const recomputed = locationCommitment(loc, salt);
+  assert(disclose(recomputed == carrotCommitment), "Commitment mismatch");
+
+  revealedLocation = disclose(loc);
+
+  if (disclose(winnerIsCreator(loc, swapped))) {
+    winner = creator;
+  } else {
+    winner = opponent;
+  }
+
+  potSettled = true;
+  phase = GamePhase.settled;
+  sequence.increment(1);
+}
+
+export circuit forfeitExpired(): [] {
+  assert(phase == GamePhase.waitingForDecision, "Not in decision window");
+  assert(!decisionMade, "Decision already made");
+  assert(blockTimeGte(decisionDeadline), "Deadline not reached");
+
+  winner = creator;
+  potSettled = true;
+  phase = GamePhase.forfeited;
+  sequence.increment(1);
+}

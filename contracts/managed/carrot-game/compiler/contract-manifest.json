@@ -1,0 +1,218 @@
+{
+  "manifest-version": "1",
+  "compiler-version": "0.34.0",
+  "language-version": "0.26.0",
+  "runtime-version": "0.19.0",
+  "compiler": {
+    "type": "directory",
+    "contract-info.json": {
+      "type": "file",
+      "size": 8432,
+      "hash": "18cc5e9190fe865b4c50176881a27ecf5467d0ecf2f8019803650b13e2b45875"
+    }
+  },
+  "contract": {
+    "type": "directory",
+    "index.d.ts": {
+      "type": "file",
+      "size": 6721,
+      "hash": "e88fc7121bd15429d8716358996cd590b17f1a4a686cd0b8f5b3513bcfb1b68f"
+    },
+    "index.js": {
+      "type": "file",
+      "size": 252210,
+      "hash": "b793037b58a79bdafe22e31535589dfb51bfa99cecf5e3dc7a44ade02fb224f3"
+    },
+    "index.js.map": {
+      "type": "file",
+      "size": 6814,
+      "hash": "44304a2c707d0a01c36e4f0e881741bd0010938b4038a88d76b03858cb4ed862"
+    }
+  },
+  "zkir": {
+    "type": "directory",
+    "acceptDirectChallenge.bzkir": {
+      "type": "file",
+      "size": 514,
+      "hash": "bdeb56d20e092e1ac5fc4d7775462fd723aed474c8324343c8dff91d9a5112f0"
+    },
+    "acceptDirectChallenge.zkir": {
+      "type": "file",
+      "size": 8795,
+      "hash": "9b8095c06346283cd72fe9567184ab3cc42145daca3c28e3c6cc245f08f41f3b"
+    },
+    "acceptOpenGame.bzkir": {
+      "type": "file",
+      "size": 458,
+      "hash": "33526aeda8311f2bab6b62355432ab87cf8a2bfe17a03564aec7d2faaf12112f"
+    },
+    "acceptOpenGame.zkir": {
+      "type": "file",
+      "size": 7751,
+      "hash": "41ad7eea335ddc2e69a9948ffa2221d3a20b2141b4eeec7ff92499d48100d31f"
+    },
+    "cancelOpenGame.bzkir": {
+      "type": "file",
+      "size": 339,
+      "hash": "86ffd23c7033cd03682c790959a3f96ce52786af7c13d6059025dc64cb46b4ee"
+    },
+    "cancelOpenGame.zkir": {
+      "type": "file",
+      "size": 5515,
+      "hash": "61c12ba2845718640d7cbd254ba55dce797af52d122dfafbce60a7e776c075dd"
+    },
+    "createDirectChallenge.bzkir": {
+      "type": "file",
+      "size": 1038,
+      "hash": "f92a65b027b5b5dcd78d8e7514173f61b0b9f258a8da7e6cc900be5e6bb22e84"
+    },
+    "createDirectChallenge.zkir": {
+      "type": "file",
+      "size": 18158,
+      "hash": "3c240a1a178482f43c4dc853f1b0d05e899bbe607415610a1339205e98a8a3e3"
+    },
+    "createOpenGame.bzkir": {
+      "type": "file",
+      "size": 1031,
+      "hash": "12d75ebc42775546b8c7e0c9a99ba2c2113bd692922d298d680eb260e1dcc099"
+    },
+    "createOpenGame.zkir": {
+      "type": "file",
+      "size": 18047,
+      "hash": "3d55dde8af176e558d4f096c791dfef2298de28272ec706da7bffd74c08011e5"
+    },
+    "forfeitExpired.bzkir": {
+      "type": "file",
+      "size": 495,
+      "hash": "424a506fa560766d11720960c34ef9fb426f768d0cb47b0a2a1ef8e3e33c572d"
+    },
+    "forfeitExpired.zkir": {
+      "type": "file",
+      "size": 8841,
+      "hash": "106759d5e7a610b279d8ff5177527ec26b6dd2dff2eb55800dfd663518bb47cb"
+    },
+    "postChatCiphertext.bzkir": {
+      "type": "file",
+      "size": 512,
+      "hash": "4392050486bba278e25dc3495d9642e3cc2d8df1c44421d40e3d66facfd0f7b8"
+    },
+    "postChatCiphertext.zkir": {
+      "type": "file",
+      "size": 8382,
+      "hash": "93500eab233058c2d1f18d56a4b8b5344eb9de70f47c56de399fb0567b8189b4"
+    },
+    "settle.bzkir": {
+      "type": "file",
+      "size": 903,
+      "hash": "c14898559a3d5675d53ccd0b49d7cc178d6be114ddb7ed919a4be7938355207a"
+    },
+    "settle.zkir": {
+      "type": "file",
+      "size": 15176,
+      "hash": "71662f68d05eefafca9ea50e6ae1d380e9bf553bb7c4614b300e90c041d77af0"
+    },
+    "submitDecision.bzkir": {
+      "type": "file",
+      "size": 453,
+      "hash": "73b97dbc36b4c7f5e9ff602e588b4daae611c37e597e6d343e35e46f338cb2ce"
+    },
+    "submitDecision.zkir": {
+      "type": "file",
+      "size": 7695,
+      "hash": "bdd3ffe565aca1aa361d68a67614d223c7eab9977fc7ef6e3812644c7682af43"
+    }
+  },
+  "keys": {
+    "type": "directory",
+    "acceptDirectChallenge.prover": {
+      "type": "file",
+      "size": 2827223,
+      "hash": "6a59867967546c9057144d53b26eb5184e89bafe95120fc0ccf1eda24223b211"
+    },
+    "acceptDirectChallenge.verifier": {
+      "type": "file",
+      "size": 2119,
+      "hash": "5cd144724592fd0b8ec091eea7ecf340c3c9227b32322bb108d93f07cfab8ec9"
+    },
+    "acceptOpenGame.prover": {
+      "type": "file",
+      "size": 2827149,
+      "hash": "80c6c8ef11dce7e0485ee46b32d68a0213b958b68d0b216d0a88dc1884fed33d"
+    },
+    "acceptOpenGame.verifier": {
+      "type": "file",
+      "size": 2119,
+      "hash": "a8c0bb782b0ffc19308866cdbd50f05b8be1e60a920bc12031085c2c36c9e2d8"
+    },
+    "cancelOpenGame.prover": {
+      "type": "file",
+      "size": 2826984,
+      "hash": "1dfc72efa509881babe5c23c93b1f426109fece188462b12701608755e3197dd"
+    },
+    "cancelOpenGame.verifier": {
+      "type": "file",
+      "size": 2119,
+      "hash": "7203c7b0abbf4ef2508464316a9ae923a59d97b23ba83e6d9aee440a88196cae"
+    },
+    "createDirectChallenge.prover": {
+      "type": "file",
+      "size": 5221543,
+      "hash": "0dbe11049e2311ae4b92f3de28f293aec1de4f1dceb463e975a28607c2128ef0"
+    },
+    "createDirectChallenge.verifier": {
+      "type": "file",
+      "size": 2119,
+      "hash": "ec00488361a16b5daf5d62a99c349403275a250cc2bcfdae273f6eae03ecc9d3"
+    },
+    "createOpenGame.prover": {
+      "type": "file",
+      "size": 5221275,
+      "hash": "ba0bbdd95d81409953a025dc8cd0e8bca811780c7d1855d211b1ff413c9527a4"
+    },
+    "createOpenGame.verifier": {
+      "type": "file",
+      "size": 2119,
+      "hash": "51019a0eeff52bc65d0fa5b1c020381504e527e851249cfe7ca5ce79e0ef7352"
+    },
+    "forfeitExpired.prover": {
+      "type": "file",
+      "size": 73128,
+      "hash": "11d02c44bd5547f2d534eb46c27f3e2e02cba10a0501f53f85123a31926c03bf"
+    },
+    "forfeitExpired.verifier": {
+      "type": "file",
+      "size": 1351,
+      "hash": "56ebbedcd370207c3343cfe7232e35d06cf7002d8956a91f975b5732d043bf3e"
+    },
+    "postChatCiphertext.prover": {
+      "type": "file",
+      "size": 2828033,
+      "hash": "4146ee7c86b6f842aeed79d2ec396b876ff38354acca38dbf2bebdefa547d3c4"
+    },
+    "postChatCiphertext.verifier": {
+      "type": "file",
+      "size": 2119,
+      "hash": "b3af26915eca3402c5631135d35b6a273173770fb24d1c8455fffa492f7b48da"
+    },
+    "settle.prover": {
+      "type": "file",
+      "size": 2828278,
+      "hash": "61d21e64865b9d094bb747f2f3e157c45bfcc063044a711d5d06e2287ca0c769"
+    },
+    "settle.verifier": {
+      "type": "file",
+      "size": 2119,
+      "hash": "34105752dc76929ac0ea1d8f323679fa5045efe03893f1355a09f3b5aebc5347"
+    },
+    "submitDecision.prover": {
+      "type": "file",
+      "size": 2827117,
+      "hash": "8375d700f28cbc46cb1d148047d9cb800ed6c4acf90fb1899825d16afbd87165"
+    },
+    "submitDecision.verifier": {
+      "type": "file",
+      "size": 2119,
+      "hash": "a8b3e82308be85f14d5aa051e2ed553797451a6113732ea806c2e53b83b57bef"
+    }
+  }
+}

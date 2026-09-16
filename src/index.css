@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  --color-carrot: #f97316;
+  --color-carrot-dark: #c2410c;
+  --color-box-wood: #92400e;
+  --color-box-lid: #b45309;
+  --color-midnight: #0b1026;
+  --color-midnight-card: #141a33;
+  --color-midnight-border: #2a3358;
+  --font-sans: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+  background: radial-gradient(ellipse at top, #1a2244 0%, var(--color-midnight) 55%);
+  color: #f8fafc;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* Subtle UI feedback flashes (no audio assets required) */
+@keyframes ui-flash-pulse {
+  0% { box-shadow: inset 0 0 0 0 transparent; }
+  35% { box-shadow: inset 0 0 80px 0 var(--flash-color, rgba(249, 115, 22, 0.18)); }
+  100% { box-shadow: inset 0 0 0 0 transparent; }
+}
+
+body.ui-flash-ok { --flash-color: rgba(52, 211, 153, 0.2); animation: ui-flash-pulse 0.45s ease-out; }
+body.ui-flash-warn { --flash-color: rgba(251, 191, 36, 0.22); animation: ui-flash-pulse 0.45s ease-out; }
+body.ui-flash-decide { --flash-color: rgba(167, 139, 250, 0.22); animation: ui-flash-pulse 0.45s ease-out; }
+body.ui-flash-settle { --flash-color: rgba(249, 115, 22, 0.28); animation: ui-flash-pulse 0.55s ease-out; }
+body.ui-flash-tap { --flash-color: rgba(148, 163, 184, 0.12); animation: ui-flash-pulse 0.3s ease-out; }
+
+@keyframes ui-pulse-bar {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.ui-pulse-bar {
+  animation: ui-pulse-bar 1.1s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.ui-flash-ok,
+  body.ui-flash-warn,
+  body.ui-flash-decide,
+  body.ui-flash-settle,
+  body.ui-flash-tap,
+  .ui-pulse-bar {
+    animation: none !important;
+  }
+}
