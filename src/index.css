@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/game.css";
+@import "./styles/polish.css";
 
 @theme {
   --color-carrot: #ff7a1a;

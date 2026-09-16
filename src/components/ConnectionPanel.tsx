@@ -44,9 +44,24 @@ export function ConnectionPanel({
   const health = snapshot.plan?.health
   const walletConnected =
     snapshot.walletStatus === 'connected' || snapshot.walletStatus === 'local-demo'
+  const localDemoOn = snapshot.walletStatus === 'local-demo'
 
   return (
     <div className="connection-skin">
+      <div className={`local-demo-callout${localDemoOn ? ' is-active' : ''}`}>
+        <b>LOCAL DEMO</b>
+        <p>
+          Play the full table in this browser: Welcome → Lobby → Room. Dual-ledger privacy copy
+          stays in the rules; a Midnight wallet is optional.
+        </p>
+        {localDemoOn ? (
+          <span className="status-live">● YOU ARE IN LOCAL DEMO</span>
+        ) : (
+          <button className="primary" type="button" onClick={onLocalDemo}>
+            PLAY LOCAL DEMO
+          </button>
+        )}
+      </div>
       <div className="conn-toolbar">
         <button className="text-button" type="button" onClick={onProbe} disabled={probing}>
           {probing ? 'PROBING…' : 'RE-PROBE STACK'}

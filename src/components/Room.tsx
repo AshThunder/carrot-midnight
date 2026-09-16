@@ -128,6 +128,9 @@ function Box3D({
         asButton={!!onClick}
         onClick={onClick}
         id={yours ? 'peekBox' : 'rivalBox'}
+        tilt={yours ? 'left' : 'right'}
+        idle={!open}
+        label={label}
       />
     </div>
   )
@@ -190,6 +193,41 @@ export function Room({ api }: { api: LocalGameApi }) {
           <button className="theatre-button" type="button" onClick={() => setTheatre((v) => !v)}>
             ▣ THEATRE
           </button>
+          <div className="hud-seat" role="group" aria-label="Local demo seat">
+            <button
+              type="button"
+              className={api.role === 'A' ? 'active' : undefined}
+              onClick={() => {
+                api.setRole('A')
+                flashUi('tap')
+              }}
+            >
+              A
+            </button>
+            <button
+              type="button"
+              className={api.role === 'B' ? 'active' : undefined}
+              onClick={() => {
+                api.setRole('B')
+                flashUi('tap')
+              }}
+            >
+              B
+            </button>
+          </div>
+          {api.joinCode && (
+            <button
+              className="hud-join"
+              type="button"
+              title="Copy join code"
+              onClick={() => {
+                void navigator.clipboard?.writeText(api.joinCode!)
+                flashUi('ok')
+              }}
+            >
+              JOIN {api.joinCode}
+            </button>
+          )}
         </div>
         <div className="round-label">
           <small>TWO-PLAYER TABLE · {game.access}</small>

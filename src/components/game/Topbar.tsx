@@ -9,11 +9,14 @@ type TopbarProps = {
   directCount: number
   stash: number | null
   walletLabel: string
+  walletTitle?: string
   soundOn: boolean
   onToggleSound: () => void
   onBrandClick: () => void
   onTab: (tab: LobbyTab) => void
   onWallet: () => void
+  onSettings: () => void
+  onHistory: () => void
 }
 
 export function Topbar({
@@ -23,11 +26,14 @@ export function Topbar({
   directCount,
   stash,
   walletLabel,
+  walletTitle,
   soundOn,
   onToggleSound,
   onBrandClick,
   onTab,
   onWallet,
+  onSettings,
+  onHistory,
 }: TopbarProps) {
   return (
     <header className="topbar">
@@ -95,8 +101,31 @@ export function Topbar({
             </span>
           </div>
         )}
-        <button className="wallet" type="button" onClick={onWallet}>
+        <button
+          className="wallet"
+          type="button"
+          onClick={onWallet}
+          title={walletTitle ?? walletLabel}
+        >
           {walletLabel} <span />
+        </button>
+        <button
+          className="header-icon settings-chip"
+          type="button"
+          aria-label="Open match history"
+          title="History"
+          onClick={onHistory}
+        >
+          ◷
+        </button>
+        <button
+          className="header-icon settings-chip"
+          type="button"
+          aria-label="Open game settings"
+          title="Settings"
+          onClick={onSettings}
+        >
+          ⚙
         </button>
       </div>
     </header>

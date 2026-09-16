@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Icon } from '@/components/game/SvgDefs'
+import { Box3d } from '@/components/game/Box3d'
 import type { LobbyTab } from '@/components/game/Topbar'
 import { CreateChallengeModal } from '@/components/game/CreateChallengeModal'
 import { RulesModal } from '@/components/game/RulesModal'
@@ -124,14 +125,14 @@ export function Lobby({
           </div>
           <div className="hero-boxes" aria-hidden="true">
             <div className="stage-rays" />
-            <div className="game-box left">
-              <span>?</span>
+            <div className="game-box left stage-box">
+              <Box3d open={false} idle tilt="left" />
             </div>
             <div className="hero-carrot">
               <Icon id="carrot" />
             </div>
-            <div className="game-box right">
-              <span>?</span>
+            <div className="game-box right stage-box">
+              <Box3d open={false} ajar hasCarrot idle={false} tilt="right" />
             </div>
           </div>
         </div>

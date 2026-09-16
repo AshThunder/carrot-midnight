@@ -1,4 +1,5 @@
 import { Icon } from '@/components/game/SvgDefs'
+import { Box3d } from '@/components/game/Box3d'
 
 type WelcomeScreenProps = {
   hidden: boolean
@@ -67,6 +68,10 @@ export function WelcomeScreen({
               SEE HOW IT WORKS
             </button>
           </div>
+          <p className="welcome-demo-note">
+            <strong>Local demo</strong> is ready — no wallet needed. Welcome → Lobby → Room, with
+            dual-ledger privacy still in the rules.
+          </p>
           <div className="welcome-proof">
             <span>
               <Icon id="lock" />
@@ -89,14 +94,11 @@ export function WelcomeScreen({
             </div>
             <Icon id="char-root" />
           </div>
-          <div className="welcome-box box-one">
-            <span>?</span>
+          <div className="welcome-box-slot box-one">
+            <Box3d open={false} idle tilt="left" label="Closed mystery box" />
           </div>
-          <div className="welcome-carrot">
-            <Icon id="carrot" />
-          </div>
-          <div className="welcome-box box-two">
-            <span>?</span>
+          <div className="welcome-box-slot box-two">
+            <Box3d open={false} ajar hasCarrot idle={false} tilt="right" label="Box with a peek of carrot" />
           </div>
           <div className="welcome-player leek-player">
             <div className="welcome-bubble">

@@ -40,12 +40,12 @@ export function ChatPanel({
     keyPromise
       .then(() => {
         if (!cancelled) {
-          setStatus('AES-GCM ready · shared room key')
+        setStatus('Ready · messages encrypt on this device')
           setMessages([
             {
               id: 'sys',
               from: 'system',
-              plaintext: 'Bluff channel unlocked. Messages encrypt client-side.',
+              plaintext: 'Bluff channel unlocked. Messages encrypt on this device with a shared room key.',
               ciphertext: '',
               cipherHash: '',
               at: Date.now(),
@@ -123,9 +123,9 @@ export function ChatPanel({
               </div>
               <div>
                 <b>
-                  PLAYER {m.from}
-                  <small>encrypted</small>
-                </b>
+            PLAYER {m.from}
+            <small>encrypted</small>
+          </b>
                 <p>{m.plaintext}</p>
               </div>
             </div>
