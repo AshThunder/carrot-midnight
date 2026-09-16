@@ -1,245 +1,473 @@
 import { useMemo, useState } from 'react'
-import { Button } from '@/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/card'
-import { Input } from '@/ui/input'
-import { Label } from '@/ui/label'
-import { Badge } from '@/ui/badge'
+import { Icon } from '@/components/game/SvgDefs'
+import type { LobbyTab } from '@/components/game/Topbar'
+import { CreateChallengeModal } from '@/components/game/CreateChallengeModal'
+import { RulesModal } from '@/components/game/RulesModal'
 import type { GameAccess } from '@/domain/game'
 import { shortId } from '@/domain/game'
 import type { LobbyListing } from '@/domain/lobbyStore'
-import { FairnessPanel } from '@/components/FairnessPanel'
+import { buildLeaderboard, listMatchHistory, type MatchHistoryEntry } from '@/domain/matchHistory'
 
-const WAGER_PRESETS = [10, 50, 100, 500] as const
+const AVATAR_COLORS = ['orange', 'pink', 'green', 'blue'] as const
+
+function ageLabel(createdAt: number): string {
+  const mins = Math.max(0, Math.floor((Date.now() - createdAt) / 60000))
+  if (mins < 1) return 'JUST NOW'
+  if (mins < 60) return `${mins}M AGO`
+  const hrs = Math.floor(mins / 60)
+  return `${hrs}H AGO`
+}
+
+function initials(id: string): string {
+  const clean = id.replace(/[^a-zA-Z0-9]/g, '')
+  return (clean.slice(0, 2) || '??').toUpperCase()
+}
 
 interface LobbyProps {
+  active: boolean
+  activeTab: LobbyTab
+  onTab: (tab: LobbyTab) => void
   onCreate: (access: GameAccess, wager: bigint, challenged?: string) => void
   onJoinListing: (listing: LobbyListing) => void
   onJoinByCode: (code: string) => boolean
   openListings: LobbyListing[]
   onRefreshListings: () => void
-  walletStubLabel: string
   localAddress: string
-  onLocalAddressChange: (v: string) => void
-  statusBanner?: { tone: 'info' | 'ok' | 'warn'; text: string }
+  historyTick: number
+  notice?: string
+  networkLabel: string
 }
 
 export function Lobby({
+  active,
+  activeTab,
+  onTab,
   onCreate,
   onJoinListing,
   onJoinByCode,
   openListings,
   onRefreshListings,
-  walletStubLabel,
   localAddress,
-  onLocalAddressChange,
-  statusBanner,
+  historyTick,
+  notice,
+  networkLabel,
 }: LobbyProps) {
-  const [tab, setTab] = useState<GameAccess>('OPEN')
-  const [wager, setWager] = useState('100')
-  const [challenged, setChallenged] = useState('')
+  const [createOpen, setCreateOpen] = useState(false)
+  const [rulesOpen, setRulesOpen] = useState(false)
   const [joinCode, setJoinCode] = useState('')
+  const [stakeFilter, setStakeFilter] = useState<'all' | 'low' | 'mid' | 'high'>('all')
 
-  const wagerBig = useMemo(() => {
-    const n = Number(wager)
-    if (!Number.isFinite(n) || n < 1) return 1n
-    return BigInt(Math.floor(n))
-  }, [wager])
+  const history = useMemo(() => {
+    void historyTick
+    return listMatchHistory()
+  }, [historyTick])
 
-  const potPreview = useMemo(() => wagerBig * 2n, [wagerBig])
+  const leaders = useMemo(() => buildLeaderboard(history), [history])
 
-  const bannerClass =
-    statusBanner?.tone === 'ok'
-      ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-200'
-      : statusBanner?.tone === 'warn'
-        ? 'border-amber-500/40 bg-amber-500/10 text-amber-100'
-        : 'border-sky-500/40 bg-sky-500/10 text-sky-100'
+  const myGames = useMemo(() => {
+    const openMine = openListings.filter(
+      (g) => g.creatorId === localAddress || g.challengedPlayerId === localAddress,
+    )
+    const past = history.filter(
+      (h) => h.creatorId === localAddress || h.opponentId === localAddress,
+    )
+    return { openMine, past }
+  }, [openListings, history, localAddress])
+
+  const directGames = useMemo(
+    () =>
+      openListings.filter(
+        (g) =>
+          g.access === 'DIRECT' &&
+          (g.challengedPlayerId === localAddress || g.creatorId === localAddress),
+      ),
+    [openListings, localAddress],
+  )
+
+  const filteredFloor = useMemo(() => {
+    return openListings.filter((g) => {
+      if (g.access === 'DIRECT' && g.challengedPlayerId && g.challengedPlayerId !== localAddress) {
+        return false
+      }
+      const w = Number(g.wager)
+      if (stakeFilter === 'low') return w <= 50
+      if (stakeFilter === 'mid') return w > 50 && w <= 250
+      if (stakeFilter === 'high') return w > 250
+      return true
+    })
+  }, [openListings, stakeFilter, localAddress])
+
+  const settledPrizes = useMemo(
+    () => history.filter((h) => h.phase === 'SETTLED').length,
+    [history],
+  )
+
+  const showFloor = activeTab === 'floor' || activeTab === 'leaders'
+  const showMy = activeTab === 'my'
+  const showDirect = activeTab === 'direct'
+  const showLeadersAside = activeTab === 'floor' || activeTab === 'leaders'
 
   return (
-    <section className="mx-auto grid max-w-5xl gap-6 px-4 py-8 lg:grid-cols-[1.15fr_0.85fr]">
-      {statusBanner && (
-        <div className={`lg:col-span-2 rounded-xl border px-4 py-3 text-sm ${bannerClass}`}>
-          {statusBanner.text}
-        </div>
-      )}
-
-      <div className="lg:col-span-2">
-        <FairnessPanel />
-      </div>
-
-      <Card>
-        <CardHeader>
-          <Badge className="w-fit">Live floor · local store</Badge>
-          <CardTitle className="text-3xl">
-            Read the bluff.
-            <br />
-            <span className="text-carrot">Make the call.</span>
-          </CardTitle>
-          <CardDescription>
-            One carrot. Two boxes. Public phases, private location — Midnight dual-ledger ZK.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex gap-2">
-            <Button variant={tab === 'OPEN' ? 'default' : 'secondary'} onClick={() => setTab('OPEN')}>
-              Open game
-            </Button>
-            <Button
-              variant={tab === 'DIRECT' ? 'default' : 'secondary'}
-              onClick={() => setTab('DIRECT')}
-            >
-              Direct challenge
-            </Button>
+    <>
+      <section id="lobby" className={`screen${active ? ' active' : ''}`}>
+        <div className="lobby-hero">
+          <div>
+            <div className="eyebrow">
+              <span>●</span> LIVE GAME FLOOR
+            </div>
+            <h1>
+              READ THE BLUFF.
+              <br />
+              <em>MAKE THE CALL.</em>
+            </h1>
+            <p>One carrot. Two boxes. Zero trust. Dual-ledger privacy.</p>
           </div>
+          <div className="hero-boxes" aria-hidden="true">
+            <div className="stage-rays" />
+            <div className="game-box left">
+              <span>?</span>
+            </div>
+            <div className="hero-carrot">
+              <Icon id="carrot" />
+            </div>
+            <div className="game-box right">
+              <span>?</span>
+            </div>
+          </div>
+        </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="wager">Wager (carrots each)</Label>
-            <div className="flex flex-wrap gap-2">
-              {WAGER_PRESETS.map((p) => (
-                <Button
-                  key={p}
-                  type="button"
-                  size="sm"
-                  variant={wager === String(p) ? 'default' : 'outline'}
-                  onClick={() => setWager(String(p))}
-                >
-                  {p}
-                </Button>
+        <div className="action-strip">
+          <button className="primary big" type="button" onClick={() => setCreateOpen(true)}>
+            <span className="button-icon">⚔</span>
+            <span>
+              CREATE A CHALLENGE
+              <small>Set your wager & wait for a rival</small>
+            </span>
+          </button>
+          <button className="secondary big" type="button" onClick={() => setRulesOpen(true)}>
+            <span className="button-icon">?</span>
+            <span>
+              HOW TO PLAY
+              <small>Learn the bluff before you play</small>
+            </span>
+          </button>
+          <div className="floor-stats" aria-label="Live game totals">
+            <span>
+              <b>{networkLabel}</b>
+              <small>NETWORK</small>
+            </span>
+            <i />
+            <span>
+              <b>{openListings.length}</b>
+              <small>OPEN GAMES</small>
+            </span>
+            <i />
+            <span>
+              <b>{settledPrizes}</b>
+              <small>SETTLED PRIZES</small>
+            </span>
+          </div>
+        </div>
+
+        <nav className="lobby-tabs">
+          <button
+            type="button"
+            className={activeTab === 'floor' ? 'active' : undefined}
+            onClick={() => onTab('floor')}
+          >
+            GAME FLOOR
+          </button>
+          <button
+            type="button"
+            className={activeTab === 'my' ? 'active' : undefined}
+            onClick={() => onTab('my')}
+          >
+            MY GAMES <b>{myGames.openMine.length + myGames.past.length}</b>
+          </button>
+          <button
+            type="button"
+            className={activeTab === 'direct' ? 'active' : undefined}
+            onClick={() => onTab('direct')}
+          >
+            DIRECT CHALLENGES <b>{directGames.length}</b>
+          </button>
+          <button
+            type="button"
+            className={activeTab === 'leaders' ? 'active' : undefined}
+            onClick={() => onTab('leaders')}
+          >
+            LEADERBOARD
+          </button>
+        </nav>
+
+        {notice && (
+          <div className="activity-ticker">
+            <span className="ticker-live">STATUS</span>
+            <div>{notice}</div>
+            <button type="button" onClick={onRefreshListings} aria-label="Refresh">
+              →
+            </button>
+          </div>
+        )}
+
+        <section
+          className={`direct-inbox panel lobby-section${showDirect ? '' : ' is-hidden'}`}
+          data-lobby-section="direct"
+        >
+          <div className="panel-head">
+            <div>
+              <h2>
+                DIRECT CHALLENGES <span className="inbox-count">{directGames.length}</span>
+              </h2>
+              <p>Players have called you out personally — or you challenged them.</p>
+            </div>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <input
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value)}
+                placeholder="JOIN CODE"
+                style={{
+                  background: '#150c23',
+                  border: '1px solid #452850',
+                  borderRadius: 8,
+                  color: '#fff',
+                  padding: '8px 10px',
+                  fontSize: 12,
+                  width: 110,
+                  fontFamily: 'monospace',
+                  textTransform: 'uppercase',
+                }}
+                aria-label="Join code"
+              />
+              <button
+                className="text-button"
+                type="button"
+                disabled={!joinCode.trim()}
+                onClick={() => {
+                  if (onJoinByCode(joinCode.trim())) setJoinCode('')
+                }}
+              >
+                JOIN BY CODE
+              </button>
+            </div>
+          </div>
+          <div className="direct-challenge-list">
+            {directGames.length === 0 && (
+              <div className="empty-state" style={{ padding: 24 }}>
+                <strong>NO DIRECT CHALLENGES</strong>
+                <p>Create a direct game or paste a join code above.</p>
+              </div>
+            )}
+            {directGames.map((g, i) => (
+              <GameRow key={g.id} listing={g} index={i} onAccept={() => onJoinListing(g)} />
+            ))}
+          </div>
+        </section>
+
+        <section
+          className={`my-games panel lobby-section${showMy ? '' : ' is-hidden'}`}
+          data-lobby-section="my"
+        >
+          <div className="panel-head">
+            <div>
+              <h2>YOUR GAMES</h2>
+              <p>Your waiting, active, and settled tables.</p>
+            </div>
+          </div>
+          <div className="my-game-cards" style={{ padding: '8px 0' }}>
+            {myGames.openMine.length === 0 && myGames.past.length === 0 && (
+              <div className="empty-state" style={{ padding: 24 }}>
+                <strong>NO GAMES YET</strong>
+                <p>Create a challenge to see it here.</p>
+              </div>
+            )}
+            {myGames.openMine.map((g, i) => (
+              <GameRow key={g.id} listing={g} index={i} onAccept={() => onJoinListing(g)} />
+            ))}
+            {myGames.past.map((h) => (
+              <HistoryCard key={h.id} entry={h} />
+            ))}
+          </div>
+        </section>
+
+        <div
+          className={`lobby-layout lobby-section${showFloor ? '' : ' is-hidden'}`}
+          data-lobby-section="floor"
+        >
+          <section className="games-panel panel">
+            <div className="panel-head">
+              <div>
+                <h2>OPEN CHALLENGES</h2>
+                <p>Anybody can step up. First to accept gets the seat.</p>
+              </div>
+              <div className="filters" aria-label="Filter open games by stake">
+                {(
+                  [
+                    ['all', 'ALL'],
+                    ['low', '≤50'],
+                    ['mid', '51–250'],
+                    ['high', '250+'],
+                  ] as const
+                ).map(([key, label]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    className={stakeFilter === key ? 'active' : undefined}
+                    onClick={() => setStakeFilter(key)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="game-list">
+              {filteredFloor.length === 0 && (
+                <div className="empty-state" style={{ padding: 24 }}>
+                  <strong>NO OPEN TABLES</strong>
+                  <p>Create a challenge to list it on the floor.</p>
+                </div>
+              )}
+              {filteredFloor.map((g, i) => (
+                <GameRow key={g.id} listing={g} index={i} onAccept={() => onJoinListing(g)} />
               ))}
             </div>
-            <Input
-              id="wager"
-              type="number"
-              min={1}
-              value={wager}
-              onChange={(e) => setWager(e.target.value)}
-            />
-            <p className="text-xs text-slate-400">
-              You stake <span className="text-carrot font-semibold">{wagerBig.toString()}</span> · pot
-              preview <span className="text-carrot font-semibold">{potPreview.toString()}</span> 🥕
-            </p>
-          </div>
+          </section>
 
-          {tab === 'DIRECT' && (
-            <div className="space-y-2">
-              <Label htmlFor="challenged">Challenged pubkey / address</Label>
-              <Input
-                id="challenged"
-                placeholder="mn_shield-addr_… or demo id"
-                value={challenged}
-                onChange={(e) => setChallenged(e.target.value)}
-              />
-              <p className="text-xs text-slate-500">
-                Paste a Midnight address string. Local demo accepts any non-empty id.
-              </p>
-            </div>
-          )}
-
-          <Button
-            size="lg"
-            className="w-full"
-            disabled={tab === 'DIRECT' && !challenged.trim()}
-            onClick={() =>
-              onCreate(tab, wagerBig, tab === 'DIRECT' ? challenged.trim() : undefined)
-            }
+          <aside
+            className={`side-column${showLeadersAside ? '' : ' is-hidden'}`}
+            data-lobby-section-secondary="leaders"
           >
-            Create {wagerBig.toString()}-carrot {tab === 'OPEN' ? 'open' : 'direct'} game
-          </Button>
-        </CardContent>
-      </Card>
-
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Join with code</CardTitle>
-            <CardDescription>
-              Paste a 6-character code from another tab&apos;s invite bar.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-wrap gap-2">
-            <Input
-              id="join-code"
-              placeholder="e.g. 234567"
-              value={joinCode}
-              onChange={(e) => setJoinCode(e.target.value)}
-              className="max-w-[10rem] font-mono uppercase"
-              aria-label="Join code"
-            />
-            <Button
-              variant="secondary"
-              disabled={!joinCode.trim()}
-              onClick={() => {
-                if (onJoinByCode(joinCode.trim())) setJoinCode('')
-              }}
-            >
-              Join room
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0">
-            <div>
-              <CardTitle>Open games</CardTitle>
-              <CardDescription>Local floor listing (persists in this browser).</CardDescription>
-            </div>
-            <Button size="sm" variant="ghost" onClick={onRefreshListings}>
-              Refresh
-            </Button>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {openListings.length === 0 && (
-              <p className="rounded-xl border border-dashed border-midnight-border p-4 text-sm text-slate-500">
-                No open tables yet. Create one to list it here.
-              </p>
-            )}
-            {openListings.map((g) => (
-              <div
-                key={g.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-midnight-border bg-midnight/40 px-3 py-2"
-              >
-                <div className="min-w-0 text-sm">
-                  <p className="font-semibold text-slate-200">
-                    {g.wager} 🥕 · {g.access}
-                  </p>
-                  <p className="truncate text-xs text-slate-500">
-                    by {shortId(g.creatorId)} · {g.id}
-                  </p>
+            <section className="panel leaderboard">
+              <div className="panel-head">
+                <div>
+                  <h2>LEADERBOARD</h2>
+                  <p>Settled games from local match history.</p>
                 </div>
-                <Button size="sm" variant="secondary" onClick={() => onJoinListing(g)}>
-                  Join
-                </Button>
               </div>
-            ))}
-          </CardContent>
-        </Card>
+              <div className="leader-list">
+                {leaders.length === 0 && (
+                  <div className="empty-state" style={{ padding: 18 }}>
+                    <strong>NO STANDINGS YET</strong>
+                    <p>Finish a match to climb the board.</p>
+                  </div>
+                )}
+                {leaders.slice(0, 8).map((row, i) => (
+                  <div key={row.playerId} className={`leader-row${i === 0 ? ' gold' : ''}`}>
+                    <b>{i + 1}</b>
+                    <span className={`avatar ${AVATAR_COLORS[i % AVATAR_COLORS.length]}`}>
+                      {initials(row.playerId)}
+                    </span>
+                    <div>
+                      <strong>{shortId(row.playerId)}</strong>
+                      <small>
+                        {row.wins}W · {row.losses}L
+                      </small>
+                    </div>
+                    <em>{row.carrotsWon} 🥕</em>
+                  </div>
+                ))}
+              </div>
+            </section>
+            <section className="how-card simple-how">
+              <span className="how-number">?</span>
+              <div className="simple-how-copy">
+                <h3>HOW TO PLAY</h3>
+                <p>
+                  Player A may peek privately. Player B chooses to keep or swap. Then selective
+                  disclosure reveals the carrot and the winner takes the pot.
+                </p>
+                <button type="button" onClick={() => setRulesOpen(true)}>
+                  READ THE RULES →
+                </button>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Identity · wallet</CardTitle>
-            <CardDescription>Demo address used as creator / opponent id.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="local-addr">Local pubkey / address</Label>
-              <Input
-                id="local-addr"
-                value={localAddress}
-                onChange={(e) => onLocalAddressChange(e.target.value)}
-              />
-            </div>
-            <div className="rounded-xl border border-dashed border-midnight-border p-4 text-sm text-slate-400">
-              {walletStubLabel}
-            </div>
-            <ul className="list-disc space-y-1 pl-5 text-sm text-slate-400">
-              <li>Create commits location privately</li>
-              <li>Share ?game= invite for multi-tab</li>
-              <li>Accept → decision window</li>
-              <li>Keep / Swap → revealing → settle</li>
-              <li>Timeout forfeits to Player A</li>
-            </ul>
-          </CardContent>
-        </Card>
+      <div
+        className={`modal-backdrop${createOpen || rulesOpen ? ' show' : ''}`}
+        onClick={() => {
+          setCreateOpen(false)
+          setRulesOpen(false)
+        }}
+        aria-hidden
+      />
+      <CreateChallengeModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        onCreate={onCreate}
+      />
+      <RulesModal open={rulesOpen} onClose={() => setRulesOpen(false)} />
+    </>
+  )
+}
+
+function GameRow({
+  listing,
+  index,
+  onAccept,
+}: {
+  listing: LobbyListing
+  index: number
+  onAccept: () => void
+}) {
+  const color = AVATAR_COLORS[index % AVATAR_COLORS.length]
+  return (
+    <article className="game-row">
+      <div className="challenger">
+        <span className={`avatar ${color}`}>{initials(listing.creatorId)}</span>
+        <div>
+          <strong>{shortId(listing.creatorId)}</strong>
+          <small>
+            {listing.access} · {listing.id.slice(0, 14)}
+          </small>
+        </div>
       </div>
-    </section>
+      <div className="wager">
+        <Icon id="carrot" />
+        <div>
+          <b>{listing.wager}</b>
+          <small> WAGER</small>
+        </div>
+      </div>
+      <div className="created">
+        <b>{ageLabel(listing.createdAt)}</b>
+        <span>OPEN CHALLENGE</span>
+      </div>
+      <button className="accept" type="button" onClick={onAccept}>
+        ACCEPT
+      </button>
+    </article>
+  )
+}
+
+function HistoryCard({ entry }: { entry: MatchHistoryEntry }) {
+  return (
+    <article className="game-row">
+      <div className="challenger">
+        <span className="avatar orange">{initials(entry.creatorId)}</span>
+        <div>
+          <strong>{shortId(entry.creatorId)}</strong>
+          <small>
+            vs {entry.opponentId ? shortId(entry.opponentId) : '—'} · {entry.phase}
+          </small>
+        </div>
+      </div>
+      <div className="wager">
+        <Icon id="carrot" />
+        <div>
+          <b>{entry.pot}</b>
+          <small> POT</small>
+        </div>
+      </div>
+      <div className="created">
+        <b>{entry.winnerId ? shortId(entry.winnerId) : '—'}</b>
+        <span>WINNER</span>
+      </div>
+      <button className="accept" type="button" disabled style={{ opacity: 0.5 }}>
+        DONE
+      </button>
+    </article>
   )
 }
