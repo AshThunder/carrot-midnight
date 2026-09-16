@@ -11,24 +11,17 @@ import { useLocalGame } from '@/hooks/useLocalGame'
 import { useMidnightConnection } from '@/hooks/useMidnightConnection'
 import { isSoundEnabled, setSoundEnabled, flashUi, applyBackgroundAudio, getDemoStash } from '@/lib/uiFeedback'
 import { shortId } from '@/domain/game'
+import {
+  canPerformGameplay,
+  gameplayBlockedReason,
+  isLiveNetwork,
+  isOfflineSimulationMode,
+  networkModeLabel,
+  welcomeNetworkLabel,
+} from '@/domain/playMode'
 import '@midnight-ntwrk/dapp-connector-api'
 
 type DrawerId = 'settings' | 'history' | null
-
-function networkPillLabel(networkKey: 'local' | 'preview' | 'preprod', walletStatus: string): string {
-  // Demo wallet is offline play — label clearly; networkKey still drives live target.
-  if (walletStatus === 'local-demo') return 'Local demo'
-  if (networkKey === 'preprod') return 'Preprod'
-  if (networkKey === 'preview') return 'Preview'
-  return 'Local'
-}
-
-function welcomeNetworkLabel(networkKey: 'local' | 'preview' | 'preprod', walletStatus: string): string {
-  if (walletStatus === 'local-demo') return 'Local demo (offline)'
-  if (networkKey === 'preprod') return 'Preprod · Midnight'
-  if (networkKey === 'preview') return 'Preview · Midnight'
-  return 'Local · Midnight'
-}
 
 export function App() {
   const api = useLocalGame()
@@ -39,18 +32,26 @@ export function App() {
   const [drawer, setDrawer] = useState<DrawerId>(null)
   const [rulesOpen, setRulesOpen] = useState(false)
 
-  const pill = networkPillLabel(midnight.networkKey, midnight.snapshot.walletStatus)
-  const welcomeNet = welcomeNetworkLabel(midnight.networkKey, midnight.snapshot.walletStatus)
+  const walletStatus = midnight.snapshot.walletStatus
+  const playAllowed = canPerformGameplay(midnight.networkKey, walletStatus)
+  const blockedReason = gameplayBlockedReason(midnight.networkKey, walletStatus)
+  const offlineSim = isOfflineSimulationMode(midnight.networkKey, walletStatus)
+
+  const pill = networkModeLabel(midnight.networkKey, walletStatus)
+  const welcomeNet = welcomeNetworkLabel(midnight.networkKey, walletStatus)
 
   const walletLabel = useMemo(() => {
     const addr = midnight.wallet.address || api.localAddress
-    if (midnight.snapshot.walletStatus === 'local-demo') return `Demo · ${shortId(addr)}`
-    if (midnight.snapshot.walletStatus === 'connected') return shortId(addr)
+    if (walletStatus === 'local-demo' && midnight.networkKey === 'local') {
+      return `Demo · ${shortId(addr)}`
+    }
+    if (walletStatus === 'connected') return shortId(addr)
     return midnight.wallet.label || 'Connect'
   }, [
     midnight.wallet.address,
     midnight.wallet.label,
-    midnight.snapshot.walletStatus,
+    walletStatus,
+    midnight.networkKey,
     api.localAddress,
   ])
 
@@ -93,12 +94,66 @@ export function App() {
     if (api.game) setWelcomeHidden(true)
   }, [api.game])
 
-  /** Keep Settings + Topbar network in sync; leaving demo when picking a live net. */
+  // Keep player id in sync with connected Lace/1AM (or demo) address.
+  useEffect(() => {
+    const addr = midnight.wallet.address
+    if (addr && (walletStatus === 'connected' || walletStatus === 'local-demo')) {
+      api.setLocalAddress(addr)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- setLocalAddress is stable enough; avoid api object churn
+  }, [midnight.wallet.address, walletStatus])
+
+  // If live network without wallet while sitting in a simulated room, kick to lobby.
+  useEffect(() => {
+    if (api.game && isLiveNetwork(midnight.networkKey) && walletStatus !== 'connected') {
+      api.leaveToLobby()
+      setDrawer('settings')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api.game, midnight.networkKey, walletStatus])
+
+  /** Keep Settings + Topbar network in sync; leave demo when picking a live net. */
   const handleNetworkChange = (k: typeof midnight.networkKey) => {
     midnight.setNetworkKey(k)
-    if (midnight.snapshot.walletStatus === 'local-demo' && k !== 'local') {
+    if (walletStatus === 'local-demo' && k !== 'local') {
       midnight.disconnect()
     }
+  }
+
+  const openConnect = () => {
+    setDrawer('settings')
+    flashUi('tap')
+  }
+
+  const startLocalDemo = () => {
+    midnight.enableLocalDemo(api.localAddress)
+    const addr = midnight.wallet.address
+    if (addr) api.setLocalAddress(addr)
+    flashUi('ok')
+  }
+
+  const gatedCreate = (...args: Parameters<typeof api.createGame>) => {
+    if (!playAllowed) {
+      openConnect()
+      return
+    }
+    api.createGame(...args)
+  }
+
+  const gatedJoinListing = (...args: Parameters<typeof api.joinListing>) => {
+    if (!playAllowed) {
+      openConnect()
+      return
+    }
+    api.joinListing(...args)
+  }
+
+  const gatedJoinByCode = (...args: Parameters<typeof api.joinByCode>) => {
+    if (!playAllowed) {
+      openConnect()
+      return false
+    }
+    return api.joinByCode(...args)
   }
 
   return (
@@ -121,7 +176,11 @@ export function App() {
           setWelcomeHidden(true)
           setRulesOpen(true)
         }}
-        requirementsHint="Live play: Lace or 1AM · proof server :6300 · Preprod faucet"
+        requirementsHint={
+          isLiveNetwork(midnight.networkKey)
+            ? 'Live play requires Lace or 1AM · proof server :6300 · faucet. Offline demo only on LOCAL.'
+            : 'Local offline demo playable without a wallet. Switch to Preprod for live Wave 1.'
+        }
       />
 
       {!welcomeHidden && <div style={{ height: '100vh' }} aria-hidden />}
@@ -132,7 +191,7 @@ export function App() {
             networkPill={pill}
             networkKey={midnight.networkKey}
             onNetworkChange={handleNetworkChange}
-            demoMode={midnight.snapshot.walletStatus === 'local-demo'}
+            demoMode={offlineSim}
             activeTab={lobbyTab}
             myCount={myCount}
             directCount={directCount}
@@ -148,7 +207,7 @@ export function App() {
               if (inRoom) api.leaveToLobby()
               setLobbyTab(tab)
             }}
-            onWallet={() => setDrawer('settings')}
+            onWallet={openConnect}
           />
 
           <main>
@@ -157,18 +216,28 @@ export function App() {
                 active
                 activeTab={lobbyTab}
                 onTab={setLobbyTab}
-                onCreate={api.createGame}
-                onJoinListing={api.joinListing}
-                onJoinByCode={api.joinByCode}
+                onCreate={gatedCreate}
+                onJoinListing={gatedJoinListing}
+                onJoinByCode={gatedJoinByCode}
                 openListings={api.openListings}
                 onRefreshListings={api.refreshLobby}
                 localAddress={api.localAddress}
                 historyTick={api.historyTick}
                 notice={api.notice}
                 networkLabel={pill}
+                playAllowed={playAllowed}
+                playBlockedReason={blockedReason}
+                onConnectWallet={openConnect}
+                offlineSimulation={offlineSim}
               />
             ) : (
-              <Room api={api} />
+              <Room
+                api={api}
+                playAllowed={playAllowed}
+                playBlockedReason={blockedReason}
+                onConnectWallet={openConnect}
+                offlineSimulation={offlineSim}
+              />
             )}
           </main>
 
@@ -205,8 +274,8 @@ export function App() {
             <div className="eyebrow">PREFERENCES</div>
             <h2>GAME SETTINGS</h2>
             <p className="drawer-lead">
-              Sound, network, and Midnight connection. Prefer <b>Preprod</b> for live Wave 1.
-              Install Lace or 1AM; local proof server :6300 for prove. Local demo stays playable without a wallet.
+              Sound, network, and Midnight connection. <b>Preprod / Preview</b> require a connected
+              Lace or 1AM wallet for gameplay. Offline local demo only works on <b>LOCAL</b>.
             </p>
             <label className="setting-row">
               Master sound
@@ -221,13 +290,10 @@ export function App() {
               <button
                 className="text-button"
                 type="button"
-                onClick={() => {
-                  midnight.enableLocalDemo(api.localAddress)
-                  if (midnight.wallet.address) api.setLocalAddress(midnight.wallet.address)
-                  flashUi('ok')
-                }}
+                onClick={startLocalDemo}
+                title="Switches network to LOCAL and enables offline play"
               >
-                ENABLE
+                ENABLE → LOCAL
               </button>
             </label>
             <div style={{ marginTop: 18 }}>
@@ -240,10 +306,7 @@ export function App() {
                 onNetworkChange={handleNetworkChange}
                 onConnect={(key) => void midnight.connect(key)}
                 onDisconnect={() => midnight.disconnect()}
-                onLocalDemo={() => {
-                  midnight.enableLocalDemo(api.localAddress)
-                  if (midnight.wallet.address) api.setLocalAddress(midnight.wallet.address)
-                }}
+                onLocalDemo={startLocalDemo}
                 onProbe={() => void midnight.probe()}
                 onRefreshInjection={() => {
                   void midnight.wallet.refreshInjection().then(() => midnight.refreshWalletView())

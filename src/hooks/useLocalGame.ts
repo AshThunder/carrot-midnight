@@ -71,7 +71,7 @@ export function useLocalGame() {
   const [lobbyTick, setLobbyTick] = useState(0)
   const [historyTick, setHistoryTick] = useState(0)
   const [notice, setNotice] = useState(
-    'Local demo mode — phases mirror Compact (incl. revealing). Share ?game= invite for multi-tab.',
+    'Pick a network. Preprod/Preview need Lace/1AM. LOCAL allows offline lobby simulation.',
   )
   const [banner, setBanner] = useState<'info' | 'ok' | 'warn'>('info')
   const [inviteBootstrapped, setInviteBootstrapped] = useState(false)
@@ -363,7 +363,7 @@ export function useLocalGame() {
     })
     setHistoryTick((n) => n + 1)
     setBanner('ok')
-    setNotice('Settled: commitment opened and pot awarded (local demo).')
+    setNotice('Settled: commitment opened and pot awarded (browser simulation).')
   }, [persist, privateLocation])
 
   const forfeit = useCallback(() => {

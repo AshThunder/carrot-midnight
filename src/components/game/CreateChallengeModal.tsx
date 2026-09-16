@@ -8,9 +8,17 @@ type Props = {
   open: boolean
   onClose: () => void
   onCreate: (access: GameAccess, wager: bigint, challenged?: string) => void
+  playAllowed?: boolean
+  offlineSimulation?: boolean
 }
 
-export function CreateChallengeModal({ open, onClose, onCreate }: Props) {
+export function CreateChallengeModal({
+  open,
+  onClose,
+  onCreate,
+  playAllowed = true,
+  offlineSimulation = false,
+}: Props) {
   const [wager, setWager] = useState('100')
   const [access, setAccess] = useState<GameAccess>('OPEN')
   const [challenged, setChallenged] = useState('')
@@ -104,16 +112,21 @@ export function CreateChallengeModal({ open, onClose, onCreate }: Props) {
       <button
         className="primary full"
         type="button"
-        disabled={access === 'DIRECT' && !challenged.trim()}
+        disabled={!playAllowed || (access === 'DIRECT' && !challenged.trim())}
         onClick={() => {
+          if (!playAllowed) return
           onCreate(access, wagerBig, access === 'DIRECT' ? challenged.trim() : undefined)
           onClose()
         }}
       >
-        CREATE CHALLENGE
+        {playAllowed ? 'CREATE CHALLENGE' : 'CONNECT WALLET FIRST'}
       </button>
       <small className="fineprint">
-        Minimum 1 carrot · Local demo sync · Winner receives the full pot
+        {offlineSimulation
+          ? 'Minimum 1 carrot · Offline local lobby sync · Not an on-chain transaction'
+          : playAllowed
+            ? 'Minimum 1 carrot · Winner receives the full pot · Wallet connected'
+            : 'Connect Lace or 1AM on Preprod/Preview before creating'}
       </small>
     </section>
   )

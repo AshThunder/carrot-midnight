@@ -37,6 +37,11 @@ interface LobbyProps {
   historyTick: number
   notice?: string
   networkLabel: string
+  /** False on Preprod/Preview until Lace/1AM is connected. */
+  playAllowed?: boolean
+  playBlockedReason?: string | null
+  onConnectWallet?: () => void
+  offlineSimulation?: boolean
 }
 
 export function Lobby({
@@ -52,6 +57,10 @@ export function Lobby({
   historyTick,
   notice,
   networkLabel,
+  playAllowed = true,
+  playBlockedReason = null,
+  onConnectWallet,
+  offlineSimulation = false,
 }: LobbyProps) {
   const [createOpen, setCreateOpen] = useState(false)
   const [rulesOpen, setRulesOpen] = useState(false)
@@ -137,12 +146,47 @@ export function Lobby({
           </div>
         </div>
 
+        {!playAllowed && (
+          <div className="wallet-gate-banner" role="status">
+            <div>
+              <strong>WALLET REQUIRED</strong>
+              <p>{playBlockedReason || 'Connect Lace or 1AM to play on this network.'}</p>
+              <p className="wallet-gate-hints">
+                Install Lace/1AM · set wallet to {networkLabel} · proof server{' '}
+                <span className="mono">:6300</span> · Preprod faucet if needed. Or switch network to{' '}
+                <b>LOCAL</b> for offline demo.
+              </p>
+            </div>
+            <button className="primary" type="button" onClick={() => onConnectWallet?.()}>
+              CONNECT LACE / 1AM
+            </button>
+          </div>
+        )}
+
         <div className="action-strip">
-          <button className="primary big" type="button" onClick={() => setCreateOpen(true)}>
+          <button
+            className="primary big"
+            type="button"
+            disabled={!playAllowed}
+            title={!playAllowed ? (playBlockedReason ?? 'Connect wallet first') : undefined}
+            onClick={() => {
+              if (!playAllowed) {
+                onConnectWallet?.()
+                return
+              }
+              setCreateOpen(true)
+            }}
+          >
             <span className="button-icon">⚔</span>
             <span>
               CREATE A CHALLENGE
-              <small>Set your wager & wait for a rival</small>
+              <small>
+                {playAllowed
+                  ? offlineSimulation
+                    ? 'Offline demo · local lobby'
+                    : 'Set your wager & wait for a rival'
+                  : 'Connect wallet to create'}
+              </small>
             </span>
           </button>
           <button className="secondary big" type="button" onClick={() => setRulesOpen(true)}>
@@ -243,8 +287,13 @@ export function Lobby({
               <button
                 className="text-button"
                 type="button"
-                disabled={!joinCode.trim()}
+                disabled={!playAllowed || !joinCode.trim()}
+                title={!playAllowed ? (playBlockedReason ?? 'Connect wallet first') : undefined}
                 onClick={() => {
+                  if (!playAllowed) {
+                    onConnectWallet?.()
+                    return
+                  }
                   if (onJoinByCode(joinCode.trim())) setJoinCode('')
                 }}
               >
@@ -260,7 +309,19 @@ export function Lobby({
               </div>
             )}
             {directGames.map((g, i) => (
-              <GameRow key={g.id} listing={g} index={i} onAccept={() => onJoinListing(g)} />
+              <GameRow
+                key={g.id}
+                listing={g}
+                index={i}
+                playAllowed={playAllowed}
+                onAccept={() => {
+                  if (!playAllowed) {
+                    onConnectWallet?.()
+                    return
+                  }
+                  onJoinListing(g)
+                }}
+              />
             ))}
           </div>
         </section>
@@ -283,7 +344,19 @@ export function Lobby({
               </div>
             )}
             {myGames.openMine.map((g, i) => (
-              <GameRow key={g.id} listing={g} index={i} onAccept={() => onJoinListing(g)} />
+              <GameRow
+                key={g.id}
+                listing={g}
+                index={i}
+                playAllowed={playAllowed}
+                onAccept={() => {
+                  if (!playAllowed) {
+                    onConnectWallet?.()
+                    return
+                  }
+                  onJoinListing(g)
+                }}
+              />
             ))}
             {myGames.past.map((h) => (
               <HistoryCard key={h.id} entry={h} />
@@ -329,7 +402,19 @@ export function Lobby({
                 </div>
               )}
               {filteredFloor.map((g, i) => (
-                <GameRow key={g.id} listing={g} index={i} onAccept={() => onJoinListing(g)} />
+                <GameRow
+                  key={g.id}
+                  listing={g}
+                  index={i}
+                  playAllowed={playAllowed}
+                  onAccept={() => {
+                    if (!playAllowed) {
+                      onConnectWallet?.()
+                      return
+                    }
+                    onJoinListing(g)
+                  }}
+                />
               ))}
             </div>
           </section>
@@ -398,6 +483,8 @@ export function Lobby({
         open={createOpen}
         onClose={() => setCreateOpen(false)}
         onCreate={onCreate}
+        playAllowed={playAllowed}
+        offlineSimulation={offlineSimulation}
       />
       <RulesModal open={rulesOpen} onClose={() => setRulesOpen(false)} />
     </>
@@ -408,10 +495,12 @@ function GameRow({
   listing,
   index,
   onAccept,
+  playAllowed = true,
 }: {
   listing: LobbyListing
   index: number
   onAccept: () => void
+  playAllowed?: boolean
 }) {
   const color = AVATAR_COLORS[index % AVATAR_COLORS.length]
   return (
@@ -436,8 +525,14 @@ function GameRow({
         <b>{ageLabel(listing.createdAt)}</b>
         <span>OPEN CHALLENGE</span>
       </div>
-      <button className="accept" type="button" onClick={onAccept}>
-        ACCEPT
+      <button
+        className="accept"
+        type="button"
+        disabled={!playAllowed}
+        title={!playAllowed ? 'Connect Lace/1AM first' : undefined}
+        onClick={onAccept}
+      >
+        {playAllowed ? 'ACCEPT' : 'CONNECT'}
       </button>
     </article>
   )

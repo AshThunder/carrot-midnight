@@ -55,7 +55,7 @@ export function Topbar({
         </span>
       </button>
       <div className="topbar-net-cluster">
-        <div className="season-pill" title={demoMode ? 'Local demo (offline) — network below is for live play' : undefined}>
+        <div className="season-pill" title={demoMode ? 'Local offline demo — switch to Preprod only with Lace/1AM connected' : undefined}>
           <i /> SEASON ZERO <span>{networkPill}</span>
         </div>
         <div className="conn-net-toggle topbar-net-toggle" role="group" aria-label="Midnight network">

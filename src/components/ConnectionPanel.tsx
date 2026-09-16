@@ -90,7 +90,10 @@ export function ConnectionPanel({
               </a>
             </li>
           )}
-          <li>Local demo (offline) stays playable without a wallet or proof server — network toggle still selects live target.</li>
+          <li>
+            Offline <b>Local demo</b> only on <b>LOCAL</b> (enabling it switches the network). Preprod/Preview
+            gameplay requires a connected Lace/1AM wallet — no silent offline fallback.
+          </li>
         </ul>
       </div>
 
@@ -148,8 +151,13 @@ export function ConnectionPanel({
                 <button className="primary" type="button" onClick={() => onConnect()}>
                   CONNECT WALLET
                 </button>
-                <button className="secondary" type="button" onClick={onLocalDemo} title="Offline play — does not change live network">
-                  LOCAL DEMO (OFFLINE)
+                <button
+                  className="secondary"
+                  type="button"
+                  onClick={onLocalDemo}
+                  title="Switches network to LOCAL and enables offline play"
+                >
+                  LOCAL DEMO → LOCAL
                 </button>
               </>
             )}
@@ -201,7 +209,10 @@ export function ConnectionPanel({
             </small>
           </li>
         </ul>
-        <small>Mode: {snapshot.plan?.mode ?? '…'} · Local demo playable: yes</small>
+        <small>
+          Mode: {snapshot.plan?.mode ?? '…'} · Offline demo:{' '}
+          {networkKey === 'local' ? 'allowed on LOCAL' : 'blocked on this network — connect wallet'}
+        </small>
       </div>
 
       <div className="wallet-box dashed">

@@ -73,9 +73,9 @@ npm run check            # test + lint + build + compile
 npm run dev              # Vite UI on :5173
 ```
 
-Local demo is **fully playable** without a wallet extension or Docker. Use **Demo wallet** / Connection panel → Local demo.
+**Offline Local demo** is playable without a wallet or Docker — but **only on the LOCAL network**. Enabling Local Demo switches the UI to LOCAL. On **Preprod / Preview**, create / join / peek / keep-swap / settle / bluff chat require `walletStatus === 'connected'` (Lace or 1AM). The UI does **not** silently fall back to localStorage simulation while showing Preprod.
 
-**Multi-tab invite:** after create, copy the room link (`?game=` / join code) into another tab — sync uses `localStorage` + BroadcastChannel (same origin).
+**Multi-tab invite (LOCAL offline):** after create, copy the room link (`?game=` / join code) into another tab — sync uses `localStorage` + BroadcastChannel (same origin).
 
 ### Wallet (DApp Connector)
 
@@ -83,7 +83,7 @@ Local demo is **fully playable** without a wallet extension or Docker. Use **Dem
 - Detects injectors via `window.midnight`; Connect in Settings → Connection
 - Set wallet network to match UI (**Preprod** for Wave 1)
 - Local proof server `http://127.0.0.1:6300` required for live prove
-- Falls back cleanly when no extension is present (use **Local demo**)
+- When no extension is present on Preprod/Preview: gameplay actions stay disabled with a Connect CTA (use **Local demo → LOCAL** for offline play)
 
 ### Local Midnight stack (optional — Docker required)
 
@@ -108,7 +108,7 @@ Set `VITE_MIDNIGHT_NETWORK=preprod` (see `.env.example`) or use Settings → Con
 | Faucet | https://faucet.preprod.midnight.network/ |
 | Proof server | Local `http://127.0.0.1:6300` |
 
-The Connection panel shows the Preprod contract address when PREPROD is selected. Live prove needs **Lace or 1AM** + the local proof server.
+The Connection panel shows the Preprod contract address when PREPROD is selected. Live prove and Wave 1 gameplay actions need **Lace or 1AM** (+ local proof server for prove). Browser lobby simulation is blocked on Preprod unless the wallet is connected.
 
 ### Preview / local (secondary)
 

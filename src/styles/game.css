@@ -1109,3 +1109,66 @@ body.reduced-motion .box-3d.hinged-box .front .reveal-carrot{animation:none!impo
   .round-label b.hud-room-id{font-size:14px!important}
   .room-shell .box-3d.hinged-box{width:100px;height:84px}
 }
+
+
+/* Live-network wallet gate */
+.wallet-gate-banner{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  max-width:1350px;
+  margin:12px auto 0;
+  padding:14px 18px;
+  border:1px solid #8a4a3a;
+  border-radius:12px;
+  background:linear-gradient(110deg,#2a1420,#1a0f22 55%,#241428);
+  color:#f4e6d8;
+}
+.wallet-gate-banner strong{
+  display:block;
+  letter-spacing:1.2px;
+  font-size:12px;
+  color:#ff9a5c;
+  margin-bottom:4px;
+}
+.wallet-gate-banner p{
+  margin:0;
+  font-size:13px;
+  line-height:1.4;
+  color:#d9c6cf;
+  max-width:52rem;
+}
+.wallet-gate-hints{
+  margin-top:6px!important;
+  font-size:12px!important;
+  opacity:.9;
+}
+.wallet-gate-banner .primary{
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+.room-wallet-gate{
+  margin:8px 16px 0;
+  max-width:none;
+}
+.offline-sim-chip{
+  margin:8px 16px 0;
+  padding:8px 12px;
+  border-radius:8px;
+  border:1px dashed #5a4068;
+  background:#1a1224;
+  color:#c9b4d0;
+  font-size:12px;
+  letter-spacing:.4px;
+  text-align:center;
+}
+@media(max-width:640px){
+  .wallet-gate-banner{
+    margin:10px 12px 0;
+    padding:12px 14px;
+  }
+  .wallet-gate-banner .primary{width:100%}
+  .room-wallet-gate,.offline-sim-chip{margin-inline:12px}
+}

@@ -19,7 +19,10 @@ export type ConnectionSnapshot = {
   /** Deploy / call disabled unless live providers + non-demo wallet. */
   canDeploy: boolean
   canCall: boolean
-  /** Local lobby/room always playable. */
+  /**
+   * Legacy flag — offline lobby is only playable when network is Local.
+   * Kept true for older callers; UI gates via playMode.canPerformGameplay.
+   */
   localDemoPlayable: true
   disabledReasons: string[]
 }
@@ -40,7 +43,9 @@ export function buildConnectionSnapshot(input: {
     if (input.isLocalDemo || input.walletStatus === 'local-demo') {
       disabledReasons.push('Local demo identity active — on-chain deploy/call disabled until Lace/1AM connect')
     } else if (input.walletStatus === 'unavailable' || input.injectionStatus === 'not-found') {
-      disabledReasons.push('No wallet extension — install Lace or 1AM (local demo still works)')
+      disabledReasons.push(
+        'No wallet extension — install Lace or 1AM (offline demo only on LOCAL network)',
+      )
     } else if (input.walletStatus === 'disconnected') {
       disabledReasons.push('Wallet detected but not connected')
     } else if (input.walletStatus === 'connecting') {

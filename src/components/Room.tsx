@@ -133,7 +133,19 @@ function Box3D({
   )
 }
 
-export function Room({ api }: { api: LocalGameApi }) {
+export function Room({
+  api,
+  playAllowed = true,
+  playBlockedReason = null,
+  onConnectWallet,
+  offlineSimulation = false,
+}: {
+  api: LocalGameApi
+  playAllowed?: boolean
+  playBlockedReason?: string | null
+  onConnectWallet?: () => void
+  offlineSimulation?: boolean
+}) {
   const game = api.game
   const [resultOpen, setResultOpen] = useState(false)
   const [theatre, setTheatre] = useState(false)
@@ -203,6 +215,23 @@ export function Room({ api }: { api: LocalGameApi }) {
         </div>
       </div>
 
+      {!playAllowed && (
+        <div className="wallet-gate-banner room-wallet-gate" role="status">
+          <div>
+            <strong>WALLET REQUIRED</strong>
+            <p>{playBlockedReason || 'Connect Lace or 1AM to continue this match.'}</p>
+          </div>
+          <button className="primary" type="button" onClick={() => onConnectWallet?.()}>
+            CONNECT LACE / 1AM
+          </button>
+        </div>
+      )}
+      {playAllowed && offlineSimulation && (
+        <div className="offline-sim-chip" role="status">
+          Offline local demo — not an on-chain transaction
+        </div>
+      )}
+
       <div className="room-shell">
         <aside className="audience-rail" aria-label="Room tools">
           <div className="room-id">
@@ -241,7 +270,11 @@ export function Room({ api }: { api: LocalGameApi }) {
           <div className="room-invite-chip">
             <b>JOIN CODE</b>
             <span className="invite-code">{api.joinCode || shortId(game.id, 4, 4)}</span>
-            <small>Share link or code for multi-tab play</small>
+            <small>
+              {offlineSimulation
+                ? 'Offline multi-tab invite (same browser origin)'
+                : 'Share link or code with your rival'}
+            </small>
             <div className="room-invite-actions">
               {api.inviteUrl && (
                 <button
@@ -322,6 +355,7 @@ export function Room({ api }: { api: LocalGameApi }) {
               open={openA}
               hasCarrot={!!showCarrotA}
               onClick={
+                playAllowed &&
                 api.role === 'A' &&
                 game.phase !== 'CANCELLED' &&
                 game.phase !== 'SETTLED' &&
@@ -343,18 +377,28 @@ export function Room({ api }: { api: LocalGameApi }) {
                 <button
                   className="primary"
                   type="button"
+                  disabled={!playAllowed}
                   onClick={() => {
+                    if (!playAllowed) {
+                      onConnectWallet?.()
+                      return
+                    }
                     api.acceptGame()
                     flashUi('ok')
                   }}
                 >
-                  ACCEPT (AS PLAYER B)
+                  {playAllowed ? 'ACCEPT (AS PLAYER B)' : 'CONNECT TO ACCEPT'}
                 </button>
                 {canCreatorCancel(game) && (
                   <button
                     className="secondary"
                     type="button"
+                    disabled={!playAllowed}
                     onClick={() => {
+                      if (!playAllowed) {
+                        onConnectWallet?.()
+                        return
+                      }
                       api.cancelGame()
                       flashUi('warn')
                     }}
@@ -373,7 +417,12 @@ export function Room({ api }: { api: LocalGameApi }) {
                 <button
                   className="primary"
                   type="button"
+                  disabled={!playAllowed}
                   onClick={() => {
+                    if (!playAllowed) {
+                      onConnectWallet?.()
+                      return
+                    }
                     api.decide('KEEP')
                     flashUi('decide')
                   }}
@@ -383,7 +432,12 @@ export function Room({ api }: { api: LocalGameApi }) {
                 <button
                   className="secondary"
                   type="button"
+                  disabled={!playAllowed}
                   onClick={() => {
+                    if (!playAllowed) {
+                      onConnectWallet?.()
+                      return
+                    }
                     api.decide('SWAP')
                     flashUi('decide')
                   }}
@@ -397,7 +451,12 @@ export function Room({ api }: { api: LocalGameApi }) {
               <button
                 className="secondary"
                 type="button"
+                disabled={!playAllowed}
                 onClick={() => {
+                  if (!playAllowed) {
+                    onConnectWallet?.()
+                    return
+                  }
                   api.forfeit()
                   flashUi('warn')
                 }}
@@ -410,12 +469,17 @@ export function Room({ api }: { api: LocalGameApi }) {
               <button
                 className="primary"
                 type="button"
+                disabled={!playAllowed}
                 onClick={() => {
+                  if (!playAllowed) {
+                    onConnectWallet?.()
+                    return
+                  }
                   api.settle()
                   flashUi('settle')
                 }}
               >
-                SETTLE · OPEN BOXES
+                {offlineSimulation ? 'SETTLE · OPEN BOXES (DEMO)' : 'SETTLE · OPEN BOXES'}
               </button>
             )}
 
@@ -447,7 +511,7 @@ export function Room({ api }: { api: LocalGameApi }) {
         </div>
 
         <ChatPanel
-          enabled={canPostChat(game) || game.phase === 'SETTLED'}
+          enabled={playAllowed && (canPostChat(game) || game.phase === 'SETTLED')}
           roomKey={roomKey}
           senderLabel={api.role === 'A' ? 'A' : 'B'}
           onCipherPosted={api.recordChatHash}

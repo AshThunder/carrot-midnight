@@ -1,7 +1,7 @@
 # Carrot Midnight — Status
 
 **Date:** 2026-09-16 (WAT / Africa/Lagos)  
-**Pass:** **Wave 1 submission-ready** — Preprod UI · live contract · checklist
+**Pass:** **Wave 1** — Preprod UI · live contract · **live-network play gating**
 
 ## Links
 
@@ -38,6 +38,7 @@ npm run preprod:deploy              # → submission/artifacts/deploy-preprod.js
 
 ## Implemented this pass
 
+- **Live-network gating:** Preprod/Preview require Lace/1AM `connected` for create/join/peek/decide/settle/chat; Local Demo forces **LOCAL** (no silent offline sim under a Preprod pill)
 - Preprod network key in Connection panel + App pills / Welcome labels
 - Known Preprod contract wired via env / `public/deploy-preprod.json` / `knownContracts.ts`
 - Clearer Lace/1AM + proof-server :6300 + faucet requirements copy
@@ -53,13 +54,15 @@ npm run preprod:deploy              # → submission/artifacts/deploy-preprod.js
 | Lace / 1AM in headless agent | N/A | Judges use browser extension |
 | Docker on this box | Rootless limits | Judges / Mac: Desktop OK |
 
-## How to run (offline demo always)
+## How to run
 
 ```bash
 export PATH="$HOME/.local/node/node-v22.14.0-linux-x64/bin:$PATH"
 cd /workspace/midnight-carrot
 npm install && npm test && npm run lint && npm run build && npm run dev
 ```
+
+Offline demo: Settings → **LOCAL DEMO → LOCAL** (or network toggle **LOCAL**). Preprod play: Connect Lace/1AM first.
 
 ## Wave roadmap
 

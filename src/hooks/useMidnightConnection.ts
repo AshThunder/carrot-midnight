@@ -21,6 +21,7 @@ import {
   PREPROD_DEPLOY_TX_ID,
   type NetworkKey,
 } from '@/midnight/knownContracts'
+import { isLiveNetwork } from '@/domain/playMode'
 
 export type { NetworkKey }
 
@@ -156,12 +157,21 @@ export function useMidnightConnection() {
 
   const enableLocalDemo = useCallback(
     (address?: string) => {
+      // Offline demo is only valid on Local — never keep Preprod/Preview selected.
+      setNetworkKey('local')
       wallet.enableLocalDemo(address)
       setErrorNote(null)
       refreshWalletView()
     },
     [wallet, refreshWalletView],
   )
+
+  // Heal forbidden Preprod/Preview + local-demo combinations from older sessions.
+  useEffect(() => {
+    if (wallet.status === 'local-demo' && isLiveNetwork(networkKey)) {
+      setNetworkKey('local')
+    }
+  }, [wallet.status, networkKey])
 
   const deploy = useCallback(async () => {
     setErrorNote(null)
