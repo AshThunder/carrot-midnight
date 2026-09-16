@@ -1,0 +1,8 @@
+{
+  "networkId": "preprod",
+  "unshieldedAddress": "mn_addr_preprod1nzjlwr0ygwyhdy3eurxmw667x2njv562h79actmyfjyl7ptfqpssu42fxh",
+  "faucetUi": "https://faucet.preprod.midnight.network/",
+  "faucetApi": "https://faucet.preprod.midnight.network/api/drips",
+  "createdAt": "2026-09-16T06:11:32.197Z",
+  "note": "Seed kept in gitignored .preview-wallet/; address only here"
+}

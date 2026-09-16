@@ -15,16 +15,18 @@ import '@midnight-ntwrk/dapp-connector-api'
 
 type DrawerId = 'settings' | 'history' | null
 
-function networkPillLabel(networkKey: 'local' | 'preview', walletStatus: string): string {
+function networkPillLabel(networkKey: 'local' | 'preview' | 'preprod', walletStatus: string): string {
   if (walletStatus === 'local-demo') return 'Local demo'
+  if (networkKey === 'preprod') return 'Preprod'
   if (networkKey === 'preview') return 'Preview'
-  return 'Midnight'
+  return 'Local'
 }
 
-function welcomeNetworkLabel(networkKey: 'local' | 'preview', walletStatus: string): string {
+function welcomeNetworkLabel(networkKey: 'local' | 'preview' | 'preprod', walletStatus: string): string {
   if (walletStatus === 'local-demo') return 'Local demo'
+  if (networkKey === 'preprod') return 'Preprod · Midnight'
   if (networkKey === 'preview') return 'Preview · Midnight'
-  return 'Midnight'
+  return 'Local · Midnight'
 }
 
 export function App() {
@@ -109,6 +111,7 @@ export function App() {
           setWelcomeHidden(true)
           setRulesOpen(true)
         }}
+        requirementsHint="Live play: Lace or 1AM · proof server :6300 · Preprod faucet"
       />
 
       {!welcomeHidden && <div style={{ height: '100vh' }} aria-hidden />}
@@ -189,7 +192,8 @@ export function App() {
             <div className="eyebrow">PREFERENCES</div>
             <h2>GAME SETTINGS</h2>
             <p className="drawer-lead">
-              Sound, network, and Midnight connection. Local demo stays playable without a wallet.
+              Sound, network, and Midnight connection. Prefer <b>Preprod</b> for live Wave 1.
+              Install Lace or 1AM; local proof server :6300 for prove. Local demo stays playable without a wallet.
             </p>
             <label className="setting-row">
               Master sound
@@ -235,6 +239,7 @@ export function App() {
                 busyAction={midnight.busyAction}
                 onDeploy={() => void midnight.deploy()}
                 onSmokeCall={() => void midnight.callCircuit('cancelOpenGame', [])}
+                knownContractAddress={midnight.knownContractAddress}
               />
             </div>
           </section>

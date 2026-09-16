@@ -15,20 +15,21 @@ import {
 } from '@/midnight/deployService'
 import { createWalletStub, type MidnightWalletSession } from '@/midnight/walletStub'
 import type { CarrotCircuitId, CarrotProviders } from '@/midnight/types'
+import {
+  defaultNetworkKey,
+  knownContractForNetwork,
+  PREPROD_DEPLOY_TX_ID,
+  type NetworkKey,
+} from '@/midnight/knownContracts'
+
+export type { NetworkKey }
 
 export function useMidnightConnection() {
   const walletRef = useRef<MidnightWalletSession | null>(null)
   if (!walletRef.current) walletRef.current = createWalletStub()
   const wallet = walletRef.current
 
-  const [networkKey, setNetworkKey] = useState<'local' | 'preview'>(() => {
-    try {
-      const env = (import.meta as ImportMeta & { env?: Record<string, string> }).env
-      return (env?.VITE_MIDNIGHT_NETWORK as 'local' | 'preview') || 'local'
-    } catch {
-      return 'local'
-    }
-  })
+  const [networkKey, setNetworkKey] = useState<NetworkKey>(() => defaultNetworkKey())
   const network: NetworkConfig = useMemo(() => getConfig(networkKey), [networkKey])
 
   const [, bump] = useState(0)
@@ -41,6 +42,26 @@ export function useMidnightConnection() {
   const [errorNote, setErrorNote] = useState<string | null>(null)
   const [deployState, setDeployState] = useState<DeployServiceState>(() => createIdleDeployState())
   const [busyAction, setBusyAction] = useState<'deploy' | 'call' | null>(null)
+
+  // Surface known Preprod (or env) contract address when switching networks
+  useEffect(() => {
+    const known = knownContractForNetwork(networkKey)
+    setDeployState((s) => {
+      if (known) {
+        return {
+          status: 'deployed',
+          contractAddress: known,
+          lastTxId: networkKey === 'preprod' ? (s.lastTxId ?? PREPROD_DEPLOY_TX_ID) : s.lastTxId,
+          lastError: undefined,
+          handle: s.handle,
+          providersLive: s.providersLive,
+        }
+      }
+      // Leaving a known-network: keep session deploy if we have a handle
+      if (s.status === 'deployed' && s.handle) return s
+      return createIdleDeployState()
+    })
+  }, [networkKey])
 
   const probe = useCallback(async () => {
     setProbing(true)
@@ -117,9 +138,21 @@ export function useMidnightConnection() {
   const disconnect = useCallback(() => {
     wallet.disconnect()
     setErrorNote(null)
-    setDeployState(createIdleDeployState())
+    setDeployState(() => {
+      const known = knownContractForNetwork(networkKey)
+      if (known) {
+        return {
+          status: 'deployed',
+          contractAddress: known,
+          lastTxId: networkKey === 'preprod' ? PREPROD_DEPLOY_TX_ID : undefined,
+          handle: null,
+          providersLive: false,
+        }
+      }
+      return createIdleDeployState()
+    })
     refreshWalletView()
-  }, [wallet, refreshWalletView])
+  }, [wallet, refreshWalletView, networkKey])
 
   const enableLocalDemo = useCallback(
     (address?: string) => {
@@ -213,6 +246,8 @@ export function useMidnightConnection() {
     [snapshot, deployState.contractAddress, providers, providersLive, wallet],
   )
 
+  const knownContractAddress = knownContractForNetwork(networkKey)
+
   return {
     wallet,
     network,
@@ -233,5 +268,6 @@ export function useMidnightConnection() {
     busyAction,
     deploy,
     callCircuit,
+    knownContractAddress,
   }
 }

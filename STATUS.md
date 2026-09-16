@@ -1,7 +1,7 @@
 # Carrot Midnight — Status
 
 **Date:** 2026-09-16 (WAT / Africa/Lagos)  
-**Pass:** W1-prep — UI polish · **local Undeployed deploy scripts** · submission pack
+**Pass:** **Wave 1 submission-ready** — Preprod UI · live contract · checklist
 
 ## Links
 
@@ -9,55 +9,56 @@
 |--|--|
 | GitHub | https://github.com/AshThunder/carrot-midnight |
 | Live UI | https://carrot-midnight.vercel.app |
-| Topic | `midnightntwrk` (add in GitHub settings if missing) |
-| Local stack | `compose.yml` / [midnight-local-dev](https://github.com/midnightntwrk/midnight-local-dev) |
+| Topic | `midnightntwrk` ✅ |
+| Preprod contract | `0fb9c735e81dcc226d34c543d1cbeac27cd3ec0722e59bb2b31cb4badc2a2c15` |
+| Deploy tx | `0098c5f505555a4b99bb074c1806b6e7b9c240471a1327063e13f1bd722aec2f0a` |
+| Artifact | `submission/artifacts/deploy-preprod.json` (+ `public/deploy-preprod.json`) |
 
 ## Compile / test / build
 
-✅ **`compactc` 0.34.0** — 9 circuits (`npm run compile`)  
-✅ **`npm test`** — 51 tests (domain + chat + invite + midnight gates)  
-✅ **`npm run lint`** / **`npm run build`** / **`npm run check`**
+✅ **`compactc` 0.31.1** (ledger-v8 / Preprod protocol) — 9 circuits (`npm run compile`)  
+✅ **`npm test`** / **`npm run lint`** / **`npm run build`**
 
-## WaveHack deploy story (correct)
+## Wave 1 live story (correct)
 
-**Primary:** Local **Undeployed** via Docker — genesis wallet pre-funded, **no faucet**.
+**Primary:** **Preprod** public testnet — faucet → DUST → deploy evidence.
 
 ```bash
-# Mac + Docker Desktop
-npm run env:up
-npm run deploy:local          # genesis seed …0001 → submission/artifacts/deploy-local.json
-npm run test:local            # vitest + deploy smoke when stack up
+# Proof server for live prove
+docker compose up -d proof-server   # :6300
+# UI: Settings → PREPROD (or VITE_MIDNIGHT_NETWORK=preprod)
+# Contract address shown in Connection panel
+npm run preprod:wallet && npm run preprod:faucet -- --wait=600
+npm run preprod:deploy              # → submission/artifacts/deploy-preprod.json
 ```
 
-**This box:** Docker daemon blocked (rootless overlay/iptables) → `deploy:local` / `test:local` probe fail with Mac instructions. Scripts ready for host with Docker.
+**Secondary:** Local Undeployed via Docker genesis (`npm run env:up` → `deploy:local`).
 
-**Secondary:** Preview scripts (`preview:wallet|faucet|deploy`) kept for optional public testnet — captcha blocks faucet API here.
+**UI:** Network toggle **LOCAL | PREVIEW | PREPROD**. On Preprod, Wave 1 contract address is visible without redeploying.
 
 ## Implemented this pass
 
-- UI: ConnectionPanel + MatchHistoryPanel game.css skin; sound mutes `<audio>` + beeps; demo stash; Room join-code HUD; dead chrome removed
-- Flow docs: Welcome → Lobby → Room
-- `scripts/deploy-local.mjs` + `npm run deploy:local` / `test:local`
-- `docs/LIVE_STACK.md` (local first) · expanded `docs/DOCKER.md` · `submission/LIVE_DEMO.md`
+- Preprod network key in Connection panel + App pills / Welcome labels
+- Known Preprod contract wired via env / `public/deploy-preprod.json` / `knownContracts.ts`
+- Clearer Lace/1AM + proof-server :6300 + faucet requirements copy
+- Submission docs + progress + pitch/demo runbooks updated for Preprod-primary
 
-## Blockers on this box
+## Blockers / human steps remaining
 
 | Item | State | Impact |
 |------|-------|--------|
-| **Docker daemon** | Rootless: overlay invalid + iptables missing | Cannot `env:up` here — use Mac Docker Desktop |
-| **Lace / 1AM** | Not in headless agent | UI Connect → local demo |
-| Preview faucet | Captcha on `/api/drips` | Optional path only |
-
-## Contract address (local)
-
-_Pending `npm run env:up` on a Docker host, then `npm run deploy:local` → fill from `submission/artifacts/deploy-local.json`._
+| **Demo video file** | Not in repo | User records (script ready: `docs/DEMO_SCRIPT.md`) |
+| **Pitch PDF export** | `docs/PITCH.md` + `submission/PITCH_DECK.md` | Optional PDF for Akindo upload |
+| **Akindo portal submit** | Human | After video / PDF |
+| Lace / 1AM in headless agent | N/A | Judges use browser extension |
+| Docker on this box | Rootless limits | Judges / Mac: Desktop OK |
 
 ## How to run (offline demo always)
 
 ```bash
-source "$HOME/.local/bin/env"
+export PATH="$HOME/.local/node/node-v22.14.0-linux-x64/bin:$PATH"
 cd /workspace/midnight-carrot
-npm install && npm run check && npm run dev
+npm install && npm test && npm run lint && npm run build && npm run dev
 ```
 
 ## Wave roadmap
@@ -65,6 +66,5 @@ npm install && npm run check && npm run dev
 | Wave | Status | Scope |
 |------|--------|-------|
 | **W0–W0.5** | Done | Compact 9 circuits, domain, UI, invites, submission pack |
-| **W1-prep** | **This pass** | UI polish, **local deploy scripts**, docs |
-| **W1** | Ready on Mac Docker | `env:up` → `deploy:local` smoke |
+| **W1** | **Submission-ready** | Preprod UI + live deploy evidence + docs |
 | **W2+** | Planned | Escrow, lobby index, on-ledger chat |

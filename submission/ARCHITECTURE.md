@@ -8,7 +8,7 @@
 | **Domain** (`src/domain/`) | Pure TS mirror of phases, deadlines, winner math, lobby floor, match history, invite codes, multi-tab session sync. |
 | **UI** (`src/components/`) | Welcome → Lobby → Room (game.css skin), ConnectionPanel + MatchHistoryPanel drawers, Box3d + ResultModal, encrypted ChatPanel. |
 | **Midnight JS** (`src/midnight/`) | Network config (local / preview / preprod), DApp Connector, stack health probes, provider plan, deploy/call service **gated** until Ready. |
-| **Preview scripts** (`scripts/preview-*.mjs`) | Docker-free wallet seed, faucet drip attempt, deploy/smoke against public endpoints + ProofStation. |
+| **Preprod / Preview scripts** (`scripts/preview-*.mjs`, `npm run preprod:*`) | Wallet seed (gitignored), faucet, deploy/smoke against public Preprod (primary) or Preview. |
 
 ## Local multi-tab invite
 
@@ -24,4 +24,6 @@ Same-origin only; no network transport claimed.
 
 ## Toolchain
 
-Node ≥ 22 · Compact 0.34 · midnight-js 4.1.1 · Vite + `vite-plugin-wasm` · Apache-2.0 · GitHub topic `midnightntwrk` when published.
+Node ≥ 22 · Compact **0.31.1** (Preprod ledger-v8) · midnight-js 4.1.1 · Vite + `vite-plugin-wasm` · Apache-2.0 · topic `midnightntwrk`.
+
+Preprod contract: `0fb9c735e81dcc226d34c543d1cbeac27cd3ec0722e59bb2b31cb4badc2a2c15`.

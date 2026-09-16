@@ -79,9 +79,11 @@ Local demo is **fully playable** without a wallet extension or Docker. Use **Dem
 
 ### Wallet (DApp Connector)
 
-- Detects Lace / 1AM (and any CAIP-372 injector) via `window.midnight`
-- Connect / disconnect in the header and Connection panel
-- Falls back cleanly when no extension is present
+- Install **Lace** or **1AM** (Midnight DApp Connector) for live networks
+- Detects injectors via `window.midnight`; Connect in Settings → Connection
+- Set wallet network to match UI (**Preprod** for Wave 1)
+- Local proof server `http://127.0.0.1:6300` required for live prove
+- Falls back cleanly when no extension is present (use **Local demo**)
 
 ### Local Midnight stack (optional — Docker required)
 
@@ -94,9 +96,24 @@ npm run env:up           # proof-server :6300, indexer :8088, node :9944
 npm run env:down
 ```
 
-### Preview network
+### Preprod network (Wave 1 primary)
 
-Set `VITE_MIDNIGHT_NETWORK=preview` (see `.env.example`) or use the Connection panel toggle. Endpoints are configured; deploy/prove still needs W1 wallet + proof path.
+Set `VITE_MIDNIGHT_NETWORK=preprod` (see `.env.example`) or use Settings → Connection → **PREPROD**.
+
+| | |
+|--|--|
+| Contract | `0fb9c735e81dcc226d34c543d1cbeac27cd3ec0722e59bb2b31cb4badc2a2c15` |
+| Deploy tx | `0098c5f505555a4b99bb074c1806b6e7b9c240471a1327063e13f1bd722aec2f0a` |
+| Artifact | `submission/artifacts/deploy-preprod.json` (also `public/deploy-preprod.json`) |
+| Faucet | https://faucet.preprod.midnight.network/ |
+| Proof server | Local `http://127.0.0.1:6300` |
+
+The Connection panel shows the Preprod contract address when PREPROD is selected. Live prove needs **Lace or 1AM** + the local proof server.
+
+### Preview / local (secondary)
+
+- **Preview:** `VITE_MIDNIGHT_NETWORK=preview` or Connection toggle.
+- **Local Undeployed:** Docker compose + genesis deploy (`npm run env:up` → `deploy:local`).
 
 ## Compile
 
@@ -115,10 +132,9 @@ Expected: **9 circuits** (create/accept/cancel/decide/chat/settle/forfeit).
 | **W0.2** | Done | DApp Connector patterns, Connection panel, provider plan + stack probes |
 | **W0.3** | Done | midnight-js 4.1.1, real providers, deploy/call service + UI gates |
 | **W0.5** | Done | Invites, submission pack, `check` |
-| **W1-prep** | **Current** | UI polish, Preview wallet/faucet/deploy scripts, live-stack docs |
-| **W1** | Next | Docker stack live + Lace/1AM deploy/call smoke |
+| **W1** | **Current / submission-ready** | Preprod UI + live contract + docs/pitch/demo |
 | **W2** | Planned | Escrow/token pot, multi-game lobby index |
-| **W3** | Planned | Chat persistence on-ledger, spectating, demo video |
+| **W3** | Planned | Chat persistence on-ledger, spectating |
 
 ## Scripts
 
@@ -133,17 +149,20 @@ Expected: **9 circuits** (create/accept/cancel/decide/chat/settle/forfeit).
 | `npm run env:up` / `env:down` | Docker Undeployed stack (WaveHack primary) |
 | `npm run deploy:local` | Genesis-wallet deploy + smoke on Undeployed |
 | `npm run test:local` | Vitest + deploy:local when stack is up |
+| `npm run preprod:*` | Preprod wallet / faucet / deploy (Wave 1 primary) |
 | `npm run preview:*` | Optional Preview testnet helpers (secondary) |
 
 ## Docs
 
-- `docs/PITCH.md` — product pitch (matches current offline-first product)
-- `docs/DEMO_SCRIPT.md` — live demo flow (~3–4 min)
-- `docs/DOCKER.md` — Docker/rootless status on this box
-- `docs/LIVE_STACK.md` — Preview (no local node Docker) + local compose paths
+- `docs/PITCH.md` — product pitch
+- `docs/DEMO_SCRIPT.md` — demo / video script (~3–4 min)
+- `docs/DOCKER.md` — Docker/rootless notes
+- `docs/LIVE_STACK.md` — **Preprod primary** + local Undeployed secondary
 - `submission/LIVE_DEMO.md` — judge/self runbook
-- `STATUS.md` — blockers and what’s stubbed
-- `CONTRIBUTING.md` — PR checks + GitHub topic **`midnightntwrk`** when published
+- `submission/PROGRESS_WAVE1.md` — Wave 1 progress description
+- `submission/PITCH_DECK.md` / `submission/pitch-deck.html` — slide export
+- `STATUS.md` — current status + remaining human steps
+- `CONTRIBUTING.md` — PR checks + topic **`midnightntwrk`**
 
 ## Screenshots (capture for README / pitch)
 
@@ -165,6 +184,16 @@ Until images exist, the table above is the shot list for demos and README embeds
 ![Lobby](docs/screenshots/01-lobby.png)
 ```
 
+
+## How judges test (Wave 1)
+
+1. **Offline product (required):** open Live UI or `npm run dev` → Welcome → Lobby → Room (Local demo). No wallet/Docker needed.
+2. **Quality:** `npm test && npm run lint && npm run build` (optional `npm run compile`).
+3. **Preprod evidence:** Settings → **PREPROD** → confirm contract `0fb9c735…2c15` matches `submission/artifacts/deploy-preprod.json`.
+4. **Optional live connect:** install Lace or 1AM, proof server on `:6300`, fund via https://faucet.preprod.midnight.network/
+5. **Pitch / demo:** `docs/PITCH.md`, `submission/pitch-deck.html`, `docs/DEMO_SCRIPT.md` (video recorded by submitter if not attached).
+
+See `submission/AKINDO_CHECKLIST.md` · `submission/PROGRESS_WAVE1.md` · `docs/LIVE_STACK.md`.
 
 ## Security notes
 

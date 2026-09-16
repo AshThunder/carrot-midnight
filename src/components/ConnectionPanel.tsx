@@ -1,9 +1,16 @@
 import type { ConnectionSnapshot } from '@/midnight/connection'
 import type { DetectedWallet } from '@/midnight/dappConnector'
 import type { DeployServiceState } from '@/midnight/deployService'
+import type { NetworkKey } from '@/midnight/knownContracts'
+import { PREPROD_CONTRACT_ADDRESS, PREPROD_DEPLOY_TX_ID } from '@/midnight/knownContracts'
 
 function StatusDot({ ok }: { ok: boolean }) {
   return <i className={`conn-dot${ok ? ' ok' : ''}`} aria-hidden />
+}
+
+function shortHex(h: string, n = 10): string {
+  if (h.length <= n * 2 + 1) return h
+  return `${h.slice(0, n)}…${h.slice(-n)}`
 }
 
 interface ConnectionPanelProps {
@@ -11,8 +18,8 @@ interface ConnectionPanelProps {
   probing: boolean
   errorNote: string | null
   detectedWallets: DetectedWallet[]
-  networkKey: 'local' | 'preview'
-  onNetworkChange: (k: 'local' | 'preview') => void
+  networkKey: NetworkKey
+  onNetworkChange: (k: NetworkKey) => void
   onConnect: (walletKey?: string) => void
   onDisconnect: () => void
   onLocalDemo: () => void
@@ -22,6 +29,7 @@ interface ConnectionPanelProps {
   busyAction: 'deploy' | 'call' | null
   onDeploy: () => void
   onSmokeCall: () => void
+  knownContractAddress?: string
 }
 
 export function ConnectionPanel({
@@ -40,10 +48,17 @@ export function ConnectionPanel({
   busyAction,
   onDeploy,
   onSmokeCall,
+  knownContractAddress,
 }: ConnectionPanelProps) {
   const health = snapshot.plan?.health
   const walletConnected =
     snapshot.walletStatus === 'connected' || snapshot.walletStatus === 'local-demo'
+  const faucetUi = snapshot.network.faucetUi
+  const displayedContract =
+    deployState.contractAddress || knownContractAddress ||
+    (networkKey === 'preprod' ? PREPROD_CONTRACT_ADDRESS : undefined)
+  const displayedTx =
+    deployState.lastTxId || (networkKey === 'preprod' ? PREPROD_DEPLOY_TX_ID : undefined)
 
   return (
     <div className="connection-skin">
@@ -54,6 +69,29 @@ export function ConnectionPanel({
         <button className="text-button" type="button" onClick={onRefreshInjection}>
           RESCAN WALLETS
         </button>
+      </div>
+
+      <div className="wallet-box">
+        <span>REQUIREMENTS (LIVE)</span>
+        <ul className="conn-reasons" style={{ marginTop: 8 }}>
+          <li>
+            Install <b>Lace</b> or <b>1AM</b> (Midnight DApp Connector) and set network to{' '}
+            <b>{snapshot.network.networkId}</b>.
+          </li>
+          <li>
+            Local proof server on <span className="mono">http://127.0.0.1:6300</span> for live prove
+            (Docker <span className="mono">proof-server</span>).
+          </li>
+          {faucetUi && (
+            <li>
+              Fund via faucet:{' '}
+              <a href={faucetUi} target="_blank" rel="noreferrer">
+                {faucetUi}
+              </a>
+            </li>
+          )}
+          <li>Local demo stays playable without a wallet or proof server.</li>
+        </ul>
       </div>
 
       <div className="conn-grid">
@@ -73,6 +111,13 @@ export function ConnectionPanel({
               onClick={() => onNetworkChange('preview')}
             >
               PREVIEW
+            </button>
+            <button
+              type="button"
+              className={networkKey === 'preprod' ? 'active' : undefined}
+              onClick={() => onNetworkChange('preprod')}
+            >
+              PREPROD
             </button>
           </div>
           <b>{snapshot.network.label}</b>
@@ -95,7 +140,7 @@ export function ConnectionPanel({
             Injection: {snapshot.injectionStatus}
             {detectedWallets.length > 0
               ? ` · ${detectedWallets.map((w) => w.displayName).join(', ')}`
-              : ''}
+              : ' · install Lace or 1AM'}
           </small>
           <div className="conn-actions">
             {!walletConnected && (
@@ -164,6 +209,19 @@ export function ConnectionPanel({
         <b className={snapshot.canDeploy ? 'ready' : 'blocked'}>
           {snapshot.canDeploy ? 'Ready (wallet + stack + packages)' : 'Disabled'}
         </b>
+        {networkKey === 'preprod' && displayedContract && (
+          <div className="conn-known-contract" style={{ marginTop: 10 }}>
+            <small>Wave 1 Preprod contract (live)</small>
+            <small className="mono accent" title={displayedContract}>
+              {displayedContract}
+            </small>
+            {displayedTx && (
+              <small className="mono" title={displayedTx}>
+                Deploy tx: {shortHex(displayedTx)}
+              </small>
+            )}
+          </div>
+        )}
         <div className="conn-actions">
           <button
             className="primary"
@@ -178,7 +236,7 @@ export function ConnectionPanel({
           >
             {busyAction === 'deploy'
               ? 'DEPLOYING…'
-              : deployState.status === 'deployed'
+              : deployState.status === 'deployed' && deployState.handle
                 ? 'RE-DEPLOY'
                 : 'DEPLOY CONTRACT'}
           </button>
@@ -198,12 +256,12 @@ export function ConnectionPanel({
             {busyAction === 'call' ? 'CALLING…' : 'SMOKE CALL'}
           </button>
         </div>
-        {deployState.contractAddress && (
+        {deployState.contractAddress && networkKey !== 'preprod' && (
           <small className="mono accent" title={deployState.contractAddress}>
             Contract: {deployState.contractAddress}
           </small>
         )}
-        {deployState.lastTxId && (
+        {deployState.lastTxId && networkKey !== 'preprod' && (
           <small className="mono" title={deployState.lastTxId}>
             Last tx: {deployState.lastTxId}
           </small>

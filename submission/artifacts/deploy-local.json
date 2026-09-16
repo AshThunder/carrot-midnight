@@ -1,28 +1,21 @@
 {
   "ok": false,
-  "stage": "stack",
-  "error": "Local stack not ready. On Mac: Docker Desktop → npm run env:up (see docs/LIVE_STACK.md).",
+  "stage": "deploy",
+  "error": "{ string | filter }\n└─ From side refinement failure\n   └─ Expected string, actual {\"tag\":\"schnorr\",\"value\":\"f412c3da3696e5a92d3b1a7335b2968a86030465175384f26e71884a26fd9a0d\"}",
   "health": {
     "proof-server": {
-      "ok": false,
-      "detail": "fetch failed"
+      "ok": true,
+      "detail": "{\"status\":\"ok\",\"timestamp\":\"2026-09-16 06:08:20.834738181 +00:00:00\"}"
     },
     "node": {
-      "ok": false,
-      "detail": "fetch failed"
+      "ok": true,
+      "detail": "{\"peers\":0,\"isSyncing\":false,\"shouldHavePeers\":false}"
     },
     "indexer": {
-      "ok": false,
-      "detail": "fetch failed"
+      "ok": true,
+      "detail": "height 43"
     },
-    "ready": false
+    "ready": true
   },
-  "macCommands": [
-    "docker compose version",
-    "cd /path/to/carrot-midnight && npm run env:up",
-    "curl -s http://127.0.0.1:6300/health",
-    "curl -s http://127.0.0.1:9944/health",
-    "npm run deploy:local"
-  ],
-  "at": "2026-09-16T05:55:26.581Z"
+  "at": "2026-09-16T06:08:53.796Z"
 }

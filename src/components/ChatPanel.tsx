@@ -40,7 +40,7 @@ export function ChatPanel({
     keyPromise
       .then(() => {
         if (!cancelled) {
-          setStatus('AES-GCM ready · shared room key')
+          setStatus('Encrypted · shared room key ready')
           setMessages([
             {
               id: 'sys',
@@ -106,14 +106,14 @@ export function ChatPanel({
       >
         <div>
           <b>ENCRYPTED PLAYER CHAT</b>
-          <small>{enabled ? status : 'LOCKED UNTIL ACCEPT'}</small>
+          <small className="chat-status">{enabled ? status : 'LOCKED UNTIL ACCEPT'}</small>
         </div>
         <Icon id="lock" />
       </div>
       <div className="messages" id="messages">
         {messages.map((m) =>
           m.from === 'system' ? (
-            <div key={m.id} className="system-message">
+            <div key={m.id} className="system-message chat-system">
               {m.plaintext}
             </div>
           ) : (

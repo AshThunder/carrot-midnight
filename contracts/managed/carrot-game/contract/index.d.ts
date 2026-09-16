@@ -18,38 +18,38 @@ export type Witnesses<PS> = {
 
 export type ImpureCircuits<PS> = {
   createOpenGame(context: __compactRuntime.CircuitContext<PS>,
-                 wagerAmount_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                 wagerAmount_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   createDirectChallenge(context: __compactRuntime.CircuitContext<PS>,
                         challenged_0: Uint8Array,
-                        wagerAmount_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                        wagerAmount_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   acceptOpenGame(context: __compactRuntime.CircuitContext<PS>,
-                 deadline_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                 deadline_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   acceptDirectChallenge(context: __compactRuntime.CircuitContext<PS>,
-                        deadline_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  cancelOpenGame(context: __compactRuntime.CircuitContext<PS>): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  submitDecision(context: __compactRuntime.CircuitContext<PS>, doSwap_0: boolean): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                        deadline_0: bigint): __compactRuntime.CircuitResults<PS, []>;
+  cancelOpenGame(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, []>;
+  submitDecision(context: __compactRuntime.CircuitContext<PS>, doSwap_0: boolean): __compactRuntime.CircuitResults<PS, []>;
   postChatCiphertext(context: __compactRuntime.CircuitContext<PS>,
-                     ctHash_0: Uint8Array): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  settle(context: __compactRuntime.CircuitContext<PS>): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  forfeitExpired(context: __compactRuntime.CircuitContext<PS>): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                     ctHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  settle(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, []>;
+  forfeitExpired(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type ProvableCircuits<PS> = {
   createOpenGame(context: __compactRuntime.CircuitContext<PS>,
-                 wagerAmount_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                 wagerAmount_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   createDirectChallenge(context: __compactRuntime.CircuitContext<PS>,
                         challenged_0: Uint8Array,
-                        wagerAmount_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                        wagerAmount_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   acceptOpenGame(context: __compactRuntime.CircuitContext<PS>,
-                 deadline_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                 deadline_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   acceptDirectChallenge(context: __compactRuntime.CircuitContext<PS>,
-                        deadline_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  cancelOpenGame(context: __compactRuntime.CircuitContext<PS>): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  submitDecision(context: __compactRuntime.CircuitContext<PS>, doSwap_0: boolean): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                        deadline_0: bigint): __compactRuntime.CircuitResults<PS, []>;
+  cancelOpenGame(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, []>;
+  submitDecision(context: __compactRuntime.CircuitContext<PS>, doSwap_0: boolean): __compactRuntime.CircuitResults<PS, []>;
   postChatCiphertext(context: __compactRuntime.CircuitContext<PS>,
-                     ctHash_0: Uint8Array): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  settle(context: __compactRuntime.CircuitContext<PS>): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  forfeitExpired(context: __compactRuntime.CircuitContext<PS>): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                     ctHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  settle(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, []>;
+  forfeitExpired(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type PureCircuits = {
@@ -61,28 +61,28 @@ export type PureCircuits = {
 export type Circuits<PS> = {
   publicKey(context: __compactRuntime.CircuitContext<PS>,
             sk_0: Uint8Array,
-            seq_0: Uint8Array): Promise<__compactRuntime.CircuitResults<PS, Uint8Array>>;
+            seq_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
   locationCommitment(context: __compactRuntime.CircuitContext<PS>,
                      loc_0: bigint,
-                     salt_0: Uint8Array): Promise<__compactRuntime.CircuitResults<PS, Uint8Array>>;
+                     salt_0: Uint8Array): __compactRuntime.CircuitResults<PS, Uint8Array>;
   winnerIsCreator(context: __compactRuntime.CircuitContext<PS>,
                   loc_0: bigint,
-                  didSwap_0: boolean): Promise<__compactRuntime.CircuitResults<PS, boolean>>;
+                  didSwap_0: boolean): __compactRuntime.CircuitResults<PS, boolean>;
   createOpenGame(context: __compactRuntime.CircuitContext<PS>,
-                 wagerAmount_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                 wagerAmount_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   createDirectChallenge(context: __compactRuntime.CircuitContext<PS>,
                         challenged_0: Uint8Array,
-                        wagerAmount_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                        wagerAmount_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   acceptOpenGame(context: __compactRuntime.CircuitContext<PS>,
-                 deadline_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                 deadline_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   acceptDirectChallenge(context: __compactRuntime.CircuitContext<PS>,
-                        deadline_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  cancelOpenGame(context: __compactRuntime.CircuitContext<PS>): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  submitDecision(context: __compactRuntime.CircuitContext<PS>, doSwap_0: boolean): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                        deadline_0: bigint): __compactRuntime.CircuitResults<PS, []>;
+  cancelOpenGame(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, []>;
+  submitDecision(context: __compactRuntime.CircuitContext<PS>, doSwap_0: boolean): __compactRuntime.CircuitResults<PS, []>;
   postChatCiphertext(context: __compactRuntime.CircuitContext<PS>,
-                     ctHash_0: Uint8Array): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  settle(context: __compactRuntime.CircuitContext<PS>): Promise<__compactRuntime.CircuitResults<PS, []>>;
-  forfeitExpired(context: __compactRuntime.CircuitContext<PS>): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                     ctHash_0: Uint8Array): __compactRuntime.CircuitResults<PS, []>;
+  settle(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, []>;
+  forfeitExpired(context: __compactRuntime.CircuitContext<PS>): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type Ledger = {
@@ -112,9 +112,8 @@ export declare class Contract<PS = any, W extends Witnesses<PS> = Witnesses<PS>>
   impureCircuits: ImpureCircuits<PS>;
   provableCircuits: ProvableCircuits<PS>;
   constructor(witnesses: W);
-  initialState(context: __compactRuntime.ConstructorContext<PS>): Promise<__compactRuntime.ConstructorResult<PS>>;
+  initialState(context: __compactRuntime.ConstructorContext<PS>): __compactRuntime.ConstructorResult<PS>;
 }
 
 export declare function ledger(state: __compactRuntime.StateValue | __compactRuntime.ChargedState): Ledger;
 export declare const pureCircuits: PureCircuits;
-export declare const expectedVk: Record<string, string>;

@@ -13,3 +13,8 @@ coverage/
 .preview-wallet/
 submission/artifacts/*.seed
 submission/artifacts/*.json.bak
+
+midnight-level-db/
+contracts/managed/*.bak*/
+contracts/managed/*bak*/
+contracts/managed/carrot-game.bak-*/

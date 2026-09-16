@@ -1,0 +1,13 @@
+{
+  "networkId": "preprod",
+  "address": "mn_addr_preprod1nzjlwr0ygwyhdy3eurxmw667x2njv562h79actmyfjyl7ptfqpssu42fxh",
+  "faucetStatus": "browser-success",
+  "amount": "5000",
+  "txId": "007741013495a0f55e9f9849121e0b54078d17117a2678e3cd6144eb33470da75d",
+  "faucetUi": "https://faucet.preprod.midnight.network/",
+  "faucetApi": "https://faucet.preprod.midnight.network/api/drips",
+  "nightBalanceObserved": "5000000000",
+  "dustRegistrationTxId": "00f7d853482529ef09259418a0d970de4c514f3d35beae4e5a187de0b818bbbc9c",
+  "at": "2026-09-16T06:26:00.000Z",
+  "note": "Browser faucet 5000 tNight confirmed in wallet sync; DUST registration submitted during deploy"
+}

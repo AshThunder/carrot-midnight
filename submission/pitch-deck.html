@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Carrot Midnight — Pitch</title>
+  <style>
+    :root { color-scheme: dark; --bg:#1a0f24; --fg:#f6ecff; --accent:#ff8a3d; --muted:#b9a5c1; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: ui-sans-serif, system-ui, sans-serif; background:#0d0814; color:var(--fg); }
+    .deck { max-width: 960px; margin: 0 auto; padding: 24px; }
+    section.slide {
+      min-height: 70vh; margin: 24px 0; padding: 48px 40px; border-radius: 18px;
+      background: linear-gradient(160deg, #241433, #150c23); border: 1px solid #4a2e57;
+      display:flex; flex-direction:column; justify-content:center; gap: 14px;
+      page-break-after: always;
+    }
+    h1 { font-size: 2.6rem; margin:0; letter-spacing: .02em; }
+    h2 { font-size: 1.8rem; margin:0; color: var(--accent); }
+    p, li { font-size: 1.15rem; line-height: 1.5; color: var(--muted); }
+    code { color: var(--accent); font-size: .95em; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .14em; font-size: .75rem; color: var(--accent); }
+    a { color: var(--accent); }
+    @media print { section.slide { min-height: 100vh; border:0; } }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <section class="slide">
+      <div class="eyebrow">Akindo Wave 1 · Midnight</div>
+      <h1>Carrot Midnight</h1>
+      <p>Private two-player bluffing — public stakes, sealed carrot, ZK settle.</p>
+      <p>Chris Gold / AshThunder · Apache-2.0 · topic <code>midnightntwrk</code></p>
+    </section>
+    <section class="slide">
+      <h2>Why Midnight</h2>
+      <ul>
+        <li>Public phase, wager, commitment, decision</li>
+        <li>Private location + salt as witnesses</li>
+        <li>Selective <code>disclose()</code> only at settle</li>
+      </ul>
+    </section>
+    <section class="slide">
+      <h2>What’s shipping</h2>
+      <ul>
+        <li>9 Compact circuits compiling</li>
+        <li>Premium UI: Welcome → Lobby → Room</li>
+        <li>Preprod live contract + Connection panel toggle</li>
+        <li>Offline local demo (no wallet required)</li>
+      </ul>
+    </section>
+    <section class="slide">
+      <h2>Wave 1 Preprod evidence</h2>
+      <p>Contract<br/><code>0fb9c735e81dcc226d34c543d1cbeac27cd3ec0722e59bb2b31cb4badc2a2c15</code></p>
+      <p>Deploy tx<br/><code>0098c5f505555a4b99bb074c1806b6e7b9c240471a1327063e13f1bd722aec2f0a</code></p>
+    </section>
+    <section class="slide">
+      <h2>How judges test</h2>
+      <ol>
+        <li>Open live UI or <code>npm run dev</code></li>
+        <li>Local demo floor play (~3 min)</li>
+        <li>Settings → PREPROD → see contract address</li>
+        <li>Optional: Lace/1AM + proof :6300 + faucet</li>
+      </ol>
+      <p><a href="https://github.com/AshThunder/carrot-midnight">GitHub</a> · <a href="https://carrot-midnight.vercel.app">Live</a></p>
+    </section>
+  </div>
+</body>
+</html>

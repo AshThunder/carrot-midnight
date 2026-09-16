@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Icon } from '@/components/game/SvgDefs'
+import { HingedBox } from '@/components/game/Box3d'
 import type { LobbyTab } from '@/components/game/Topbar'
 import { CreateChallengeModal } from '@/components/game/CreateChallengeModal'
 import { RulesModal } from '@/components/game/RulesModal'
@@ -120,18 +121,18 @@ export function Lobby({
               <br />
               <em>MAKE THE CALL.</em>
             </h1>
-            <p>One carrot. Two boxes. Zero trust. Dual-ledger privacy.</p>
+            <p>One carrot. Two boxes. Zero trust. Private until you disclose.</p>
           </div>
           <div className="hero-boxes" aria-hidden="true">
             <div className="stage-rays" />
-            <div className="game-box left">
-              <span>?</span>
+            <div className="game-box left hero-hinged">
+              <HingedBox open={false} idle />
             </div>
             <div className="hero-carrot">
               <Icon id="carrot" />
             </div>
-            <div className="game-box right">
-              <span>?</span>
+            <div className="game-box right hero-hinged">
+              <HingedBox open={false} idle />
             </div>
           </div>
         </div>

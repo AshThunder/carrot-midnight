@@ -1,21 +1,26 @@
 # Wave progress — Carrot Midnight
 
 **Updated:** 2026-09-16 (WAT / Africa/Lagos)  
-**Current pass:** **W1-prep** — UI polish + **local Undeployed deploy scripts** (Docker blocked on agent box; ready on Mac)
+**Current pass:** **Wave 1 submission-ready**
+
+**Preprod deploy:** `0fb9c735e81dcc226d34c543d1cbeac27cd3ec0722e59bb2b31cb4badc2a2c15`  
+**Deploy tx:** `0098c5f505555a4b99bb074c1806b6e7b9c240471a1327063e13f1bd722aec2f0a`
 
 | Wave | Status | Delivered |
 |------|--------|-----------|
 | W0–W0.3 | Done | Compact 9 circuits, domain, React UI, DApp connector, midnight-js 4.1.1 gates |
 | W0.4–W0.5 | Done | Room UX, invites/multi-tab, submission pack, `npm run check` |
-| **W1-prep** | **This pass** | Welcome→Lobby→Room polish; Connection/History skins; sound mute; join-code HUD; `deploy:local` / `test:local` (genesis); LIVE_STACK local-first; Preview scripts kept secondary |
-| W1 | Ready when Docker up | `npm run env:up` → `deploy:local` smoke on Undeployed |
-| W2+ | Planned | Escrow, lobby index, on-ledger chat |
+| W1-prep | Done | Preprod scripts, faucet/DUST, deploy artifact |
+| **W1** | **Submission-ready** | Preprod UI toggle + contract visible + docs/pitch/demo/progress |
 
 ## WaveHack alignment
 
-- Hard gate: **compiling Compact** + public GitHub + `midnightntwrk` + Apache-2.0 + README/demo — **satisfied offline**.
-- Live txs: **local Undeployed** (genesis, no faucet), not mandatory Preview.
+- Hard gate: compiling Compact + public GitHub + `midnightntwrk` + Apache-2.0 + README/demo — **satisfied**.
+- Live evidence: **Preprod** contract + tx in `submission/artifacts/deploy-preprod.json`.
+- Remaining human: record demo video, optional pitch PDF, submit on Akindo.
 
-## Blockers (honest)
+## UI / judge notes
 
-- Agent box: Docker rootless fails (overlay/iptables) — Mac Docker Desktop runs `env:up` + `deploy:local`.
+- Default live network via `VITE_MIDNIGHT_NETWORK=preprod` (see `.env.example`).
+- Settings → **PREPROD** shows Wave 1 contract address.
+- Requirements copy: Lace or 1AM · proof server `:6300` · Preprod faucet.

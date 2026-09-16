@@ -1,27 +1,39 @@
-# Local Midnight stack stub (requires Docker).
-# Images pinned to hello-world local-devnet matrix — adjust per support matrix.
+# Local Midnight Undeployed stack.
+# Uses host networking so the stack works without iptables/bridge
+# (common on constrained VMs). Services bind 6300 / 8088 / 9944 on localhost.
 services:
   proof-server:
     image: 'midnightntwrk/proof-server:8.0.3'
     command: ['midnight-proof-server', '-v']
-    ports:
-      - '127.0.0.1:6300:6300'
+    network_mode: host
     environment:
       RUST_BACKTRACE: 'full'
     healthcheck:
-      test: ['CMD-SHELL', 'echo > /dev/tcp/127.0.0.1/6300']
+      test: ['CMD-SHELL', 'bash -c "echo > /dev/tcp/127.0.0.1/6300"']
       interval: 10s
       timeout: 5s
-      retries: 20
+      retries: 30
+      start_period: 15s
+
+  node:
+    image: 'midnightntwrk/midnight-node:0.22.3'
+    network_mode: host
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://127.0.0.1:9944/health']
+      interval: 3s
+      timeout: 5s
+      retries: 40
       start_period: 10s
+    environment:
+      CFG_PRESET: 'dev'
+      SIDECHAIN_BLOCK_BENEFICIARY: '04bcf7ad3be7a5c790460be82a713af570f22e0f801f6659ab8e84a52be6969e'
 
   indexer:
     image: 'midnightntwrk/indexer-standalone:4.0.0'
-    ports:
-      - '127.0.0.1:8088:8088'
+    network_mode: host
     environment:
       RUST_LOG: 'indexer=info,chain_indexer=info,indexer_api=info,wallet_indexer=info,indexer_common=info,fastrace_opentelemetry=off,info'
-      APP__INFRA__NODE__URL: 'ws://node:9944'
+      APP__INFRA__NODE__URL: 'ws://127.0.0.1:9944'
       APP__APPLICATION__NETWORK_ID: 'undeployed'
       APP__INFRA__STORAGE__PASSWORD: 'indexer'
       APP__INFRA__PUB_SUB__PASSWORD: 'indexer'
@@ -31,22 +43,8 @@ services:
       test: ['CMD-SHELL', 'cat /var/run/indexer-standalone/running']
       interval: 10s
       timeout: 5s
-      retries: 20
-      start_period: 10s
+      retries: 40
+      start_period: 20s
     depends_on:
       node:
         condition: service_healthy
-
-  node:
-    image: 'midnightntwrk/midnight-node:0.22.3'
-    ports:
-      - '127.0.0.1:9944:9944'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:9944/health']
-      interval: 2s
-      timeout: 5s
-      retries: 20
-      start_period: 5s
-    environment:
-      CFG_PRESET: 'dev'
-      SIDECHAIN_BLOCK_BENEFICIARY: '04bcf7ad3be7a5c790460be82a713af570f22e0f801f6659ab8e84a52be6969e'

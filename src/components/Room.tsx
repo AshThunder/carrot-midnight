@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ChatPanel } from '@/components/ChatPanel'
 import { ResultModal } from '@/components/ResultModal'
 import { Icon } from '@/components/game/SvgDefs'
-import { Box3d } from '@/components/game/Box3d'
+import { HingedBox } from '@/components/game/Box3d'
 import type { useLocalGame } from '@/hooks/useLocalGame'
 import { canCreatorCancel, canPostChat, canSettleReveal, shortId } from '@/domain/game'
 import { potFromWager } from '@/domain/matchHistory'
@@ -120,7 +120,7 @@ function Box3D({
   return (
     <div className={`box-wrap${yours ? ' yours' : ''}`}>
       <span>{label}</span>
-      <Box3d
+      <HingedBox
         open={open}
         locked={locked && !open}
         hasCarrot={open && !!hasCarrot}

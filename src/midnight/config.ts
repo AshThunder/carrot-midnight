@@ -39,7 +39,7 @@ export const PREVIEW_CONFIG: NetworkConfig = {
   nodeWS: 'wss://rpc.preview.midnight.network',
   proofServer: 'http://127.0.0.1:6300',
   faucet: 'https://faucet.preview.midnight.network/api/drips',
-  faucetUi: 'https://midnight-tmnight-preview.nethermind.dev/',
+  faucetUi: 'https://faucet.preview.midnight.network/',
 }
 
 export const PREPROD_CONFIG: NetworkConfig = {
@@ -51,7 +51,7 @@ export const PREPROD_CONFIG: NetworkConfig = {
   nodeWS: 'wss://rpc.preprod.midnight.network',
   proofServer: 'http://127.0.0.1:6300',
   faucet: 'https://faucet.preprod.midnight.network/api/drips',
-  faucetUi: 'https://midnight-tmnight-preprod.nethermind.dev/',
+  faucetUi: 'https://faucet.preprod.midnight.network/',
 }
 
 export const NETWORKS: Record<'local' | 'preview' | 'preprod', NetworkConfig> = {

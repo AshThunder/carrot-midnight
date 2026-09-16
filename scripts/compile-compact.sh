@@ -2,7 +2,7 @@
 set -euo pipefail
 source "${HOME}/.local/bin/env" 2>/dev/null || true
 # Prefer versioned toolchain so compactc.bin resolves correctly
-COMPACT_VER_DIR="${COMPACT_DIRECTORY:-$HOME/.compact}/versions/0.34.0"
+COMPACT_VER_DIR="${COMPACT_DIRECTORY:-$HOME/.compact}/versions/0.31.1"
 if [[ -d "$COMPACT_VER_DIR" ]]; then
   ARCH_DIR=$(ls -d "$COMPACT_VER_DIR"/*-linux* 2>/dev/null | head -1)
   if [[ -n "${ARCH_DIR:-}" ]]; then

@@ -30,7 +30,7 @@ export function Topbar({
   onWallet,
 }: TopbarProps) {
   return (
-    <header className="topbar">
+    <header className="topbar topbar-polish">
       <button className="brand" type="button" aria-label="Go to lobby" onClick={onBrandClick}>
         <span className="brand-mark">
           <Icon id="carrot" />
@@ -44,7 +44,7 @@ export function Topbar({
       <div className="season-pill">
         <i /> SEASON ZERO <span>{networkPill}</span>
       </div>
-      <nav className="desktop-nav">
+      <nav className="desktop-nav" aria-label="Primary">
         <button
           type="button"
           className={activeTab === 'floor' ? 'active' : undefined}
@@ -74,7 +74,7 @@ export function Topbar({
           LEADERBOARD
         </button>
       </nav>
-      <div className="account-area">
+      <div className="account-area account-area-roomy">
         <div className="sound-control-group compact-group">
           <button
             className="sound-toggle compact"
@@ -87,7 +87,7 @@ export function Topbar({
           </button>
         </div>
         {stash != null && (
-          <div className="balance" title="Demo stash (localStorage)">
+          <div className="balance balance-roomy" title="Demo stash (localStorage)">
             <Icon id="carrot" />
             <span>
               <small>YOUR STASH</small>
@@ -95,8 +95,8 @@ export function Topbar({
             </span>
           </div>
         )}
-        <button className="wallet" type="button" onClick={onWallet}>
-          {walletLabel} <span />
+        <button className="wallet wallet-roomy" type="button" onClick={onWallet}>
+          <span className="wallet-label">{walletLabel}</span> <span className="wallet-dot" />
         </button>
       </div>
     </header>

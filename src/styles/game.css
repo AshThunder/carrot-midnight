@@ -1,4 +1,4 @@
-:root{--ink:#160c27;--panel:#211335;--panel2:#2b1841;--cream:#fff4df;--orange:#ff7a1a;--orange2:#ffb02e;--green:#65d653;--pink:#ff4fa0;--muted:#a697b8;--line:#432b57}*{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;min-height:100vh;background-image:radial-gradient(circle at 65% 0,#46205b 0,transparent 29%),linear-gradient(180deg,#180c28,#10091b);overflow-x:hidden}.noise{position:fixed;inset:0;opacity:.055;pointer-events:none;z-index:20;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}.svg-defs{position:absolute;width:0;height:0}.topbar{height:78px;padding:0 4vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #382148;background:#150b24dd;backdrop-filter:blur(12px);position:relative;z-index:10}.brand{border:0;background:none;color:var(--cream);display:flex;align-items:center;text-align:left;font-family:'Bowlby One SC';line-height:.8;letter-spacing:.4px;font-size:15px;cursor:pointer}.brand b{color:var(--orange);font-weight:400}.brand-mark{width:43px;height:43px;display:grid;place-items:center;background:var(--orange);clip-path:polygon(50% 0,90% 20%,100% 65%,72% 100%,25% 92%,0 55%,12% 13%);margin-right:10px;transform:rotate(-5deg)}.brand-mark svg{width:24px;height:34px}.season-pill{font-weight:700;font-size:13px;letter-spacing:1.4px;color:#b9aac7;display:flex;align-items:center;gap:8px}.season-pill i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}.season-pill span{padding-left:9px;border-left:1px solid #4b3458;color:#756782}.account-area{display:flex;align-items:center;gap:12px}.balance{height:46px;display:flex;align-items:center;gap:8px;background:#2c183d;border:1px solid #4a2e5d;border-radius:10px;padding:5px 7px 5px 10px}.balance svg{width:21px;height:30px}.balance span{display:flex;flex-direction:column;line-height:1.05;min-width:55px}.balance small{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px}.balance b{font-family:'Bowlby One SC';font-weight:400}.mini-plus{border:0;background:var(--orange);border-radius:6px;width:26px;height:26px;color:white;font-size:20px;cursor:pointer}.wallet{height:44px;border:1px solid #4a2e5d;border-radius:9px;background:transparent;color:#e5d9eb;font-weight:700;padding:0 13px}.wallet span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:7px}.screen{display:none}.screen.active{display:block}.lobby-hero{min-height:325px;display:flex;align-items:center;justify-content:space-between;padding:35px 8vw 15px;max-width:1500px;margin:auto}.eyebrow,.step-label{font-size:13px;font-weight:800;letter-spacing:2.1px;color:var(--orange2)}.eyebrow span{color:var(--pink)}h1{font-family:'Bowlby One SC';font-size:clamp(43px,5vw,76px);font-weight:400;line-height:.9;margin:18px 0 14px;letter-spacing:-2px;text-shadow:5px 6px 0 #090511}h1 em{font-style:normal;color:var(--orange)}.lobby-hero p{color:#c9bad3;font-size:17px}.hero-boxes{width:46%;height:270px;position:relative;display:flex;align-items:flex-end;justify-content:center;gap:60px;perspective:800px}.stage-rays{position:absolute;inset:-20% -30% -20%;background:repeating-conic-gradient(from 250deg at 50% 100%,#ffb12912 0 8deg,transparent 8deg 17deg);mask-image:linear-gradient(to top,#000,transparent 85%)}.game-box{width:145px;height:110px;background:linear-gradient(150deg,#8f4b29,#572419);border:5px solid #a66037;border-radius:7px;position:relative;box-shadow:inset -15px -17px 0 #36151c,0 18px 28px #09040db8;transform:rotateY(10deg) rotateZ(-3deg);display:grid;place-items:center}.game-box.right{transform:rotateY(-10deg) rotateZ(3deg)}.game-box:before{content:"";position:absolute;left:-10px;top:-25px;width:155px;height:33px;background:#a45a32;border:4px solid #d28752;border-radius:6px;transform:rotate(-5deg)}.game-box.right:before{transform:rotate(5deg)}.game-box span{font-family:'Bowlby One SC';font-size:45px;color:#d7945b;text-shadow:3px 4px 0 #3f1720}.hero-carrot{position:absolute;width:65px;height:110px;left:50%;bottom:72px;transform:translateX(-50%) rotate(10deg);filter:drop-shadow(0 10px 11px #000);animation:float 3s ease-in-out infinite}@keyframes float{50%{transform:translateX(-50%) rotate(4deg) translateY(-9px)}}.action-strip{max-width:1350px;margin:auto;padding:17px 3vw;display:flex;gap:13px;align-items:stretch;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}button{font-family:inherit}.primary,.secondary{border:0;border-radius:9px;padding:13px 21px;font-size:12px;font-weight:900;letter-spacing:.7px;cursor:pointer;transition:.18s transform,.18s filter}.primary{background:linear-gradient(180deg,#ff932b,var(--orange));color:#271024;box-shadow:inset 0 1px #ffc478,0 5px 0 #a43c11}.primary:hover,.secondary:hover{transform:translateY(-2px);filter:brightness(1.08)}.secondary{background:#39204c;border:1px solid #674276;color:var(--cream);box-shadow:0 5px 0 #12081e}.big{height:68px;min-width:250px;display:flex;align-items:center;text-align:left;gap:13px}.big span:not(.button-icon){display:flex;flex-direction:column}.big small{font-size:12px;letter-spacing:0;color:#6a2940;margin-top:4px}.secondary small{color:#ac9ab8}.button-icon{font-size:24px;width:27px}.button-icon svg{width:25px;height:25px}.floor-stats{margin-left:auto;display:flex;align-items:center;gap:22px}.floor-stats span{display:flex;flex-direction:column}.floor-stats b{font-family:'Bowlby One SC';font-size:19px;font-weight:400}.floor-stats small{font-size:11px;letter-spacing:1px;color:var(--muted)}.floor-stats i{height:28px;width:1px;background:var(--line)}.lobby-layout{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(280px,.75fr);gap:18px;max-width:1350px;margin:auto;padding:24px 3vw 50px}.panel{background:#1d102e;border:1px solid #3d254d;border-radius:13px;overflow:hidden;box-shadow:0 16px 40px #09051066}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid #3a2348}.panel-head h2{font-family:'Bowlby One SC';font-size:17px;font-weight:400;margin:0}.panel-head p{font-size:12px;color:var(--muted);margin:3px 0 0}.filters{background:#130b20;border:1px solid #392249;border-radius:7px;padding:3px;display:flex}.filters button{border:0;background:transparent;color:#766984;font-size:11px;font-weight:800;padding:8px 10px;cursor:pointer}.filters .active{color:#29122b;background:var(--orange);border-radius:5px}.game-row{display:grid;grid-template-columns:1.2fr .8fr .75fr auto;align-items:center;padding:16px 21px;border-bottom:1px solid #32203f;transition:.2s;background:linear-gradient(90deg,transparent,#2b163800)}.game-row:hover{background:linear-gradient(90deg,#2b1638,#2b163800)}.challenger{display:flex;align-items:center;gap:10px}.avatar{width:39px;height:39px;border-radius:10px;display:grid;place-items:center;font-weight:900;font-size:13px;color:#2a1127;box-shadow:inset 0 0 0 2px #ffffff2b}.avatar.orange{background:var(--orange)}.avatar.pink{background:var(--pink)}.avatar.green{background:var(--green)}.avatar.blue{background:#59bbf5}.challenger div{display:flex;flex-direction:column}.challenger strong{font-size:13px}.challenger small{font-size:11px;color:var(--muted);margin-top:3px}.streak{color:var(--orange2)!important}.wager{display:flex;align-items:center;gap:7px}.wager svg,.fee-line svg,.pot svg{width:18px;height:26px;vertical-align:middle}.wager b{font-family:'Bowlby One SC';font-weight:400;font-size:15px}.wager small,.created{font-size:11px;color:var(--muted)}.created{display:flex;flex-direction:column}.created b{color:#d4c7dd;font-size:12px;margin-bottom:3px}.accept{border:1px solid #71476c;background:#3a2147;color:white;border-radius:7px;font-size:12px;font-weight:900;padding:10px 16px;cursor:pointer}.accept:hover{background:var(--orange);color:#241023}.side-column{display:flex;flex-direction:column;gap:17px}.text-button{border:0;background:none;color:var(--orange);font-size:11px;font-weight:900;cursor:pointer}.leader-row{display:grid;grid-template-columns:20px 39px 1fr auto;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid #32203f}.leader-row>b{font-family:'Bowlby One SC';font-size:12px;color:#6f6279}.leader-row.gold>b{color:var(--orange2)}.leader-row div{display:flex;flex-direction:column}.leader-row strong{font-size:13px}.leader-row small{font-size:11px;color:var(--muted);margin-top:3px}.leader-row em{font-style:normal;font-family:'Bowlby One SC';font-size:13px;color:var(--orange2)}.how-card{background:var(--orange);color:#291126;border-radius:13px;padding:19px;display:flex;align-items:center;gap:17px;box-shadow:0 9px 0 #8c3113}.how-number{font-family:'Bowlby One SC';font-size:58px;line-height:1}.how-card h3{font-family:'Bowlby One SC';font-weight:400;font-size:14px;margin:0}.how-card p{font-size:12px;margin:5px 0 10px}.how-card button{border:0;background:none;font-weight:900;font-size:12px;color:#291126;padding:0;cursor:pointer}.game-screen{min-height:calc(100vh - 78px);background:radial-gradient(circle at 50% 50%,#4b215b 0,#180b29 56%,#0d0716 100%)}.game-hud{height:72px;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;padding:0 4vw;border-bottom:1px solid #4a2b58}.back{justify-self:start;border:0;background:none;color:#9f8eaa;font-size:12px;font-weight:900;cursor:pointer}.round-label{text-align:center;display:flex;flex-direction:column}.round-label small,.pot small{font-size:11px;color:var(--muted);letter-spacing:1.5px}.round-label b{font-family:'Bowlby One SC';font-weight:400;font-size:18px}.pot{justify-self:end;display:flex;flex-direction:column;align-items:flex-end}.pot b{font-family:'Bowlby One SC';font-size:17px;color:var(--orange2);font-weight:400}.arena{min-height:calc(100vh - 150px);position:relative;text-align:center;padding:32px 20px 20px;overflow:hidden;background:repeating-conic-gradient(from 260deg at 50% 85%,#ffb12909 0 7deg,transparent 7deg 15deg)}.player-card{position:absolute;top:26px;display:flex;align-items:center;gap:10px;background:#1b0f2b;border:1px solid #462853;border-radius:11px;padding:9px 12px;text-align:left}.player-card.you{left:4vw}.player-card.rival{right:4vw;text-align:right}.player-card div{display:flex;flex-direction:column}.player-card b{font-size:13px}.player-card small{font-size:11px;color:var(--orange2)}.player-card em{font-family:'Bowlby One SC';font-style:normal;font-size:21px;color:#665671}.arena-copy{position:relative;z-index:2}.phase-tag{font-size:12px;font-weight:900;letter-spacing:2px;color:var(--orange);margin-top:8px}.arena-copy h2{font-family:'Bowlby One SC';font-weight:400;font-size:clamp(26px,3vw,42px);margin:7px 0 2px}.arena-copy p{font-size:12px;color:#b3a1bd}.table{height:330px;display:flex;align-items:center;justify-content:center;gap:100px;perspective:900px;position:relative}.table:after{content:"";position:absolute;width:800px;height:110px;bottom:5px;background:radial-gradient(ellipse,#0b0410 0,transparent 65%);z-index:-1}.box-wrap{display:flex;flex-direction:column;align-items:center;gap:17px}.box-wrap>span{font-size:12px;font-weight:800;color:#ac98b5;letter-spacing:1.5px}.box-3d{position:relative;width:190px;height:140px;background:#6f3424;border:6px solid #a95a36;border-radius:8px;box-shadow:inset -25px -22px 0 #3c1720,0 25px 25px #08030db3;transform:rotateY(8deg);cursor:pointer;color:#e7a066}.box-3d .lid{position:absolute;left:-16px;right:-7px;top:-30px;height:39px;background:linear-gradient(#b96d42,#814126);border:5px solid #d58851;border-radius:8px;transform:rotate(-3deg);transform-origin:left;transition:.5s}.box-wrap:not(.yours) .box-3d{transform:rotateY(-8deg)}.front{height:100%;display:grid;place-items:center}.front b{font-family:'Bowlby One SC';font-size:52px;font-weight:400;text-shadow:4px 5px #32131b}.front svg{width:36px;height:36px}.versus{font-family:'Bowlby One SC';color:var(--pink);font-size:21px;transform:rotate(-8deg)}.box-3d.open .lid{transform:rotate(-3deg) translateY(-65px) rotateX(55deg)}.box-3d.open .front b{font-size:0}.box-3d.open .front b:after{content:'🥕';font-size:72px;filter:drop-shadow(0 8px 7px #1d0710)}.game-actions{display:flex;flex-direction:column;align-items:center;gap:14px}.game-actions .primary{min-width:190px}.game-actions small{font-size:11px;color:#7c6a88;display:flex;align-items:center;gap:5px}.game-actions small svg{width:11px;height:11px}.timer{width:330px;max-width:80%;height:4px;background:#4a2b58;margin:22px auto;border-radius:4px;overflow:hidden}.timer span{display:block;height:100%;width:100%;background:var(--orange);transition:width 1s linear}.decision-buttons{display:flex;gap:13px}.decision-buttons button{min-width:150px}.modal-backdrop{position:fixed;inset:0;background:#08040ed9;backdrop-filter:blur(8px);z-index:30;display:none}.modal-backdrop.show{display:block}.modal{position:fixed;z-index:31;top:50%;left:50%;transform:translate(-50%,-47%) scale(.96);width:min(440px,92vw);padding:31px;background:#211332;border:1px solid #5d3769;border-radius:17px;box-shadow:0 30px 90px #000;opacity:0;pointer-events:none;transition:.2s;text-align:center}.modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}.close-modal{position:absolute;right:15px;top:11px;border:0;background:none;color:#917e9c;font-size:25px;cursor:pointer}.modal-icon{width:54px;height:54px;border-radius:14px;background:#3a1e44;margin:0 auto 12px;display:grid;place-items:center;transform:rotate(-5deg)}.modal-icon svg{width:29px;height:42px}.modal h2{font-family:'Bowlby One SC';font-weight:400;font-size:25px;margin:7px 0}.modal-lead{font-size:13px;color:var(--muted);margin:0 0 21px}.field-label{text-align:left;display:block;font-size:11px;font-weight:900;letter-spacing:1px;color:#a28faf;margin-bottom:6px}.wager-input{height:62px;border:1px solid #68416f;background:#150c23;border-radius:9px;display:flex;align-items:center;padding:0 15px}.wager-input svg{width:26px;height:38px}.wager-input input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:white;font-family:'Bowlby One SC';font-size:25px;padding:0 10px}.wager-input span{font-size:11px;font-weight:900;color:#806e8c}.quick-wagers{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0 17px}.quick-wagers button{border:1px solid #4a2e57;background:#2c193d;color:#a795b1;border-radius:6px;padding:7px;font-size:12px;font-weight:800;cursor:pointer}.quick-wagers button.active{background:#6b3b29;color:var(--orange2);border-color:var(--orange)}.match-type{display:grid;grid-template-columns:1fr 1fr;gap:8px}.match-type button{border:1px solid #4d3059;background:#1a0e29;color:#a997b4;border-radius:9px;padding:12px;display:grid;grid-template-columns:28px 1fr;text-align:left;cursor:pointer}.match-type button.active{border-color:var(--orange);background:#3a1e35}.match-type button>span{grid-row:1/3;font-size:19px}.match-type svg{width:19px;height:19px}.match-type b{font-size:12px;color:white}.match-type small{font-size:11px;margin-top:3px}.fee-line{display:flex;justify-content:space-between;padding:16px 2px 10px;font-size:12px;color:var(--muted)}.fee-line b{font-family:'Bowlby One SC';font-weight:400;font-size:14px;color:var(--orange2)}.full{width:100%;margin-top:7px}.fineprint{font-size:11px;color:#71617c;display:block;margin-top:13px}.rules-modal{text-align:left}.rules-modal h2{text-align:center;margin-bottom:22px}.rules-modal>.step-label{text-align:center}.rule{display:grid;grid-template-columns:44px 1fr;gap:9px;margin:14px 0}.rule>b{font-family:'Bowlby One SC';font-size:22px;color:var(--orange)}.rule strong{font-size:12px}.rule p{font-size:12px;color:var(--muted);margin:3px 0}.toast{position:fixed;z-index:50;bottom:40px;left:50%;transform:translate(-50%,20px);background:var(--cream);color:#241026;border-radius:9px;padding:12px 20px;font-size:13px;font-weight:800;opacity:0;transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:850px){.season-pill{display:none}.lobby-hero{padding-top:30px;min-height:290px}.hero-boxes{position:absolute;right:-110px;opacity:.35;z-index:-1}.action-strip{flex-wrap:wrap}.big{flex:1;min-width:230px}.floor-stats{width:100%;justify-content:center;margin:6px 0 0}.lobby-layout{grid-template-columns:1fr}.side-column{display:grid;grid-template-columns:1fr 1fr}.game-row{grid-template-columns:1.3fr .7fr auto}.created{display:none}.table{gap:35px}.box-3d{width:145px;height:115px}.player-card{top:15px}.arena-copy{margin-top:55px}}@media(max-width:560px){.topbar{padding:0 14px}.brand{font-size:13px}.brand-mark{width:36px;height:36px}.wallet{display:none}.lobby-hero{padding:34px 20px 15px}h1{font-size:43px}.action-strip{padding:16px}.big{min-width:100%}.floor-stats{gap:10px}.lobby-layout{padding:17px 12px 40px}.panel-head{align-items:flex-start;gap:10px}.filters button{padding:7px 5px}.game-row{padding:13px;grid-template-columns:1fr auto auto;gap:8px}.wager small{display:none}.accept{padding:9px}.side-column{grid-template-columns:1fr}.floor-stats span:last-child,.floor-stats i:last-of-type{display:none}.game-hud{padding:0 12px}.table{gap:13px;height:290px}.box-3d{width:125px;height:100px}.versus{font-size:14px}.player-card{transform:scale(.85)}.player-card.you{left:0}.player-card.rival{right:0}.arena-copy h2{font-size:25px}.decision-buttons button{min-width:120px;padding:12px}.account-area{gap:4px}}
+:root{--ink:#160c27;--panel:#211335;--panel2:#2b1841;--cream:#fff4df;--orange:#ff7a1a;--orange2:#ffb02e;--green:#65d653;--pink:#ff4fa0;--muted:#a697b8;--line:#432b57}*{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;min-height:100vh;background-image:radial-gradient(circle at 65% 0,#46205b 0,transparent 29%),linear-gradient(180deg,#180c28,#10091b);overflow-x:hidden}.noise{position:fixed;inset:0;opacity:.055;pointer-events:none;z-index:20;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}.svg-defs{position:absolute;width:0;height:0}.topbar{height:78px;padding:0 4vw;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #382148;background:#150b24dd;backdrop-filter:blur(12px);position:relative;z-index:10}.brand{border:0;background:none;color:var(--cream);display:flex;align-items:center;text-align:left;font-family:'Bowlby One SC';line-height:.8;letter-spacing:.4px;font-size:15px;cursor:pointer}.brand b{color:var(--orange);font-weight:400}.brand-mark{width:43px;height:43px;display:grid;place-items:center;background:var(--orange);clip-path:polygon(50% 0,90% 20%,100% 65%,72% 100%,25% 92%,0 55%,12% 13%);margin-right:10px;transform:rotate(-5deg)}.brand-mark svg{width:24px;height:34px}.season-pill{font-weight:700;font-size:13px;letter-spacing:1.4px;color:#b9aac7;display:flex;align-items:center;gap:8px}.season-pill i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}.season-pill span{padding-left:9px;border-left:1px solid #4b3458;color:#756782}.account-area{display:flex;align-items:center;gap:12px}.balance{height:46px;display:flex;align-items:center;gap:8px;background:#2c183d;border:1px solid #4a2e5d;border-radius:10px;padding:5px 7px 5px 10px}.balance svg{width:21px;height:30px}.balance span{display:flex;flex-direction:column;line-height:1.05;min-width:55px}.balance small{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px}.balance b{font-family:'Bowlby One SC';font-weight:400}.mini-plus{border:0;background:var(--orange);border-radius:6px;width:26px;height:26px;color:white;font-size:20px;cursor:pointer}.wallet{height:44px;border:1px solid #4a2e5d;border-radius:9px;background:transparent;color:#e5d9eb;font-weight:700;padding:0 13px}.wallet span.wallet-dot,.wallet>span:not(.wallet-label){display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-left:7px}.screen{display:none}.screen.active{display:block}.lobby-hero{min-height:325px;display:flex;align-items:center;justify-content:space-between;padding:35px 8vw 15px;max-width:1500px;margin:auto}.eyebrow,.step-label{font-size:13px;font-weight:800;letter-spacing:2.1px;color:var(--orange2)}.eyebrow span{color:var(--pink)}h1{font-family:'Bowlby One SC';font-size:clamp(43px,5vw,76px);font-weight:400;line-height:.9;margin:18px 0 14px;letter-spacing:-2px;text-shadow:5px 6px 0 #090511}h1 em{font-style:normal;color:var(--orange)}.lobby-hero p{color:#c9bad3;font-size:17px}.hero-boxes{width:46%;height:270px;position:relative;display:flex;align-items:flex-end;justify-content:center;gap:60px;perspective:800px}.stage-rays{position:absolute;inset:-20% -30% -20%;background:repeating-conic-gradient(from 250deg at 50% 100%,#ffb12912 0 8deg,transparent 8deg 17deg);mask-image:linear-gradient(to top,#000,transparent 85%)}.game-box{width:145px;height:110px;background:linear-gradient(150deg,#8f4b29,#572419);border:5px solid #a66037;border-radius:7px;position:relative;box-shadow:inset -15px -17px 0 #36151c,0 18px 28px #09040db8;transform:rotateY(10deg) rotateZ(-3deg);display:grid;place-items:center}.game-box.right{transform:rotateY(-10deg) rotateZ(3deg)}.game-box:before{content:"";position:absolute;left:-10px;top:-25px;width:155px;height:33px;background:#a45a32;border:4px solid #d28752;border-radius:6px;transform:rotate(-5deg)}.game-box.right:before{transform:rotate(5deg)}.game-box span{font-family:'Bowlby One SC';font-size:45px;color:#d7945b;text-shadow:3px 4px 0 #3f1720}.hero-carrot{position:absolute;width:65px;height:110px;left:50%;bottom:72px;transform:translateX(-50%) rotate(10deg);filter:drop-shadow(0 10px 11px #000);animation:float 3s ease-in-out infinite}@keyframes float{50%{transform:translateX(-50%) rotate(4deg) translateY(-9px)}}.action-strip{max-width:1350px;margin:auto;padding:17px 3vw;display:flex;gap:13px;align-items:stretch;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}button{font-family:inherit}.primary,.secondary{border:0;border-radius:9px;padding:13px 21px;font-size:12px;font-weight:900;letter-spacing:.7px;cursor:pointer;transition:.18s transform,.18s filter}.primary{background:linear-gradient(180deg,#ff932b,var(--orange));color:#271024;box-shadow:inset 0 1px #ffc478,0 5px 0 #a43c11}.primary:hover,.secondary:hover{transform:translateY(-2px);filter:brightness(1.08)}.secondary{background:#39204c;border:1px solid #674276;color:var(--cream);box-shadow:0 5px 0 #12081e}.big{height:68px;min-width:250px;display:flex;align-items:center;text-align:left;gap:13px}.big span:not(.button-icon){display:flex;flex-direction:column}.big small{font-size:12px;letter-spacing:0;color:#6a2940;margin-top:4px}.secondary small{color:#ac9ab8}.button-icon{font-size:24px;width:27px}.button-icon svg{width:25px;height:25px}.floor-stats{margin-left:auto;display:flex;align-items:center;gap:22px}.floor-stats span{display:flex;flex-direction:column}.floor-stats b{font-family:'Bowlby One SC';font-size:19px;font-weight:400}.floor-stats small{font-size:11px;letter-spacing:1px;color:var(--muted)}.floor-stats i{height:28px;width:1px;background:var(--line)}.lobby-layout{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(280px,.75fr);gap:18px;max-width:1350px;margin:auto;padding:24px 3vw 50px}.panel{background:#1d102e;border:1px solid #3d254d;border-radius:13px;overflow:hidden;box-shadow:0 16px 40px #09051066}.panel-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid #3a2348}.panel-head h2{font-family:'Bowlby One SC';font-size:17px;font-weight:400;margin:0}.panel-head p{font-size:12px;color:var(--muted);margin:3px 0 0}.filters{background:#130b20;border:1px solid #392249;border-radius:7px;padding:3px;display:flex}.filters button{border:0;background:transparent;color:#766984;font-size:11px;font-weight:800;padding:8px 10px;cursor:pointer}.filters .active{color:#29122b;background:var(--orange);border-radius:5px}.game-row{display:grid;grid-template-columns:1.2fr .8fr .75fr auto;align-items:center;padding:16px 21px;border-bottom:1px solid #32203f;transition:.2s;background:linear-gradient(90deg,transparent,#2b163800)}.game-row:hover{background:linear-gradient(90deg,#2b1638,#2b163800)}.challenger{display:flex;align-items:center;gap:10px}.avatar{width:39px;height:39px;border-radius:10px;display:grid;place-items:center;font-weight:900;font-size:13px;color:#2a1127;box-shadow:inset 0 0 0 2px #ffffff2b}.avatar.orange{background:var(--orange)}.avatar.pink{background:var(--pink)}.avatar.green{background:var(--green)}.avatar.blue{background:#59bbf5}.challenger div{display:flex;flex-direction:column}.challenger strong{font-size:13px}.challenger small{font-size:11px;color:var(--muted);margin-top:3px}.streak{color:var(--orange2)!important}.wager{display:flex;align-items:center;gap:7px}.wager svg,.fee-line svg,.pot svg{width:18px;height:26px;vertical-align:middle}.wager b{font-family:'Bowlby One SC';font-weight:400;font-size:15px}.wager small,.created{font-size:11px;color:var(--muted)}.created{display:flex;flex-direction:column}.created b{color:#d4c7dd;font-size:12px;margin-bottom:3px}.accept{border:1px solid #71476c;background:#3a2147;color:white;border-radius:7px;font-size:12px;font-weight:900;padding:10px 16px;cursor:pointer}.accept:hover{background:var(--orange);color:#241023}.side-column{display:flex;flex-direction:column;gap:17px}.text-button{border:0;background:none;color:var(--orange);font-size:11px;font-weight:900;cursor:pointer}.leader-row{display:grid;grid-template-columns:20px 39px 1fr auto;align-items:center;gap:9px;padding:13px 18px;border-bottom:1px solid #32203f}.leader-row>b{font-family:'Bowlby One SC';font-size:12px;color:#6f6279}.leader-row.gold>b{color:var(--orange2)}.leader-row div{display:flex;flex-direction:column}.leader-row strong{font-size:13px}.leader-row small{font-size:11px;color:var(--muted);margin-top:3px}.leader-row em{font-style:normal;font-family:'Bowlby One SC';font-size:13px;color:var(--orange2)}.how-card{background:var(--orange);color:#291126;border-radius:13px;padding:19px;display:flex;align-items:center;gap:17px;box-shadow:0 9px 0 #8c3113}.how-number{font-family:'Bowlby One SC';font-size:58px;line-height:1}.how-card h3{font-family:'Bowlby One SC';font-weight:400;font-size:14px;margin:0}.how-card p{font-size:12px;margin:5px 0 10px}.how-card button{border:0;background:none;font-weight:900;font-size:12px;color:#291126;padding:0;cursor:pointer}.game-screen{min-height:calc(100vh - 78px);background:radial-gradient(circle at 50% 50%,#4b215b 0,#180b29 56%,#0d0716 100%)}.game-hud{height:72px;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;padding:0 4vw;border-bottom:1px solid #4a2b58}.back{justify-self:start;border:0;background:none;color:#9f8eaa;font-size:12px;font-weight:900;cursor:pointer}.round-label{text-align:center;display:flex;flex-direction:column}.round-label small,.pot small{font-size:11px;color:var(--muted);letter-spacing:1.5px}.round-label b{font-family:'Bowlby One SC';font-weight:400;font-size:18px}.pot{justify-self:end;display:flex;flex-direction:column;align-items:flex-end}.pot b{font-family:'Bowlby One SC';font-size:17px;color:var(--orange2);font-weight:400}.arena{min-height:calc(100vh - 150px);position:relative;text-align:center;padding:32px 20px 20px;overflow:hidden;background:repeating-conic-gradient(from 260deg at 50% 85%,#ffb12909 0 7deg,transparent 7deg 15deg)}.player-card{position:absolute;top:26px;display:flex;align-items:center;gap:10px;background:#1b0f2b;border:1px solid #462853;border-radius:11px;padding:9px 12px;text-align:left}.player-card.you{left:4vw}.player-card.rival{right:4vw;text-align:right}.player-card div{display:flex;flex-direction:column}.player-card b{font-size:13px}.player-card small{font-size:11px;color:var(--orange2)}.player-card em{font-family:'Bowlby One SC';font-style:normal;font-size:21px;color:#665671}.arena-copy{position:relative;z-index:2}.phase-tag{font-size:12px;font-weight:900;letter-spacing:2px;color:var(--orange);margin-top:8px}.arena-copy h2{font-family:'Bowlby One SC';font-weight:400;font-size:clamp(26px,3vw,42px);margin:7px 0 2px}.arena-copy p{font-size:12px;color:#b3a1bd}.table{height:330px;display:flex;align-items:center;justify-content:center;gap:100px;perspective:900px;position:relative}.table:after{content:"";position:absolute;width:800px;height:110px;bottom:5px;background:radial-gradient(ellipse,#0b0410 0,transparent 65%);z-index:-1}.box-wrap{display:flex;flex-direction:column;align-items:center;gap:17px}.box-wrap>span{font-size:12px;font-weight:800;color:#ac98b5;letter-spacing:1.5px}.box-3d{position:relative;width:190px;height:140px;background:#6f3424;border:6px solid #a95a36;border-radius:8px;box-shadow:inset -25px -22px 0 #3c1720,0 25px 25px #08030db3;transform:rotateY(8deg);cursor:pointer;color:#e7a066}.box-3d .lid{position:absolute;left:-16px;right:-7px;top:-30px;height:39px;background:linear-gradient(#b96d42,#814126);border:5px solid #d58851;border-radius:8px;transform:rotate(-3deg);transform-origin:left;transition:.5s}.box-wrap:not(.yours) .box-3d{transform:rotateY(-8deg)}.front{height:100%;display:grid;place-items:center}.front b{font-family:'Bowlby One SC';font-size:52px;font-weight:400;text-shadow:4px 5px #32131b}.front svg{width:36px;height:36px}.versus{font-family:'Bowlby One SC';color:var(--pink);font-size:21px;transform:rotate(-8deg)}.box-3d.open .lid{transform:rotate(-3deg) translateY(-65px) rotateX(55deg)}.box-3d.open .front b{font-size:0}.box-3d.open .front b:after{content:'🥕';font-size:72px;filter:drop-shadow(0 8px 7px #1d0710)}.game-actions{display:flex;flex-direction:column;align-items:center;gap:14px}.game-actions .primary{min-width:190px}.game-actions small{font-size:11px;color:#7c6a88;display:flex;align-items:center;gap:5px}.game-actions small svg{width:11px;height:11px}.timer{width:330px;max-width:80%;height:4px;background:#4a2b58;margin:22px auto;border-radius:4px;overflow:hidden}.timer span{display:block;height:100%;width:100%;background:var(--orange);transition:width 1s linear}.decision-buttons{display:flex;gap:13px}.decision-buttons button{min-width:150px}.modal-backdrop{position:fixed;inset:0;background:#08040ed9;backdrop-filter:blur(8px);z-index:30;display:none}.modal-backdrop.show{display:block}.modal{position:fixed;z-index:31;top:50%;left:50%;transform:translate(-50%,-47%) scale(.96);width:min(440px,92vw);padding:31px;background:#211332;border:1px solid #5d3769;border-radius:17px;box-shadow:0 30px 90px #000;opacity:0;pointer-events:none;transition:.2s;text-align:center}.modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}.close-modal{position:absolute;right:15px;top:11px;border:0;background:none;color:#917e9c;font-size:25px;cursor:pointer}.modal-icon{width:54px;height:54px;border-radius:14px;background:#3a1e44;margin:0 auto 12px;display:grid;place-items:center;transform:rotate(-5deg)}.modal-icon svg{width:29px;height:42px}.modal h2{font-family:'Bowlby One SC';font-weight:400;font-size:25px;margin:7px 0}.modal-lead{font-size:13px;color:var(--muted);margin:0 0 21px}.field-label{text-align:left;display:block;font-size:11px;font-weight:900;letter-spacing:1px;color:#a28faf;margin-bottom:6px}.wager-input{height:62px;border:1px solid #68416f;background:#150c23;border-radius:9px;display:flex;align-items:center;padding:0 15px}.wager-input svg{width:26px;height:38px}.wager-input input{min-width:0;flex:1;background:transparent;border:0;outline:0;color:white;font-family:'Bowlby One SC';font-size:25px;padding:0 10px}.wager-input span{font-size:11px;font-weight:900;color:#806e8c}.quick-wagers{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0 17px}.quick-wagers button{border:1px solid #4a2e57;background:#2c193d;color:#a795b1;border-radius:6px;padding:7px;font-size:12px;font-weight:800;cursor:pointer}.quick-wagers button.active{background:#6b3b29;color:var(--orange2);border-color:var(--orange)}.match-type{display:grid;grid-template-columns:1fr 1fr;gap:8px}.match-type button{border:1px solid #4d3059;background:#1a0e29;color:#a997b4;border-radius:9px;padding:12px;display:grid;grid-template-columns:28px 1fr;text-align:left;cursor:pointer}.match-type button.active{border-color:var(--orange);background:#3a1e35}.match-type button>span{grid-row:1/3;font-size:19px}.match-type svg{width:19px;height:19px}.match-type b{font-size:12px;color:white}.match-type small{font-size:11px;margin-top:3px}.fee-line{display:flex;justify-content:space-between;padding:16px 2px 10px;font-size:12px;color:var(--muted)}.fee-line b{font-family:'Bowlby One SC';font-weight:400;font-size:14px;color:var(--orange2)}.full{width:100%;margin-top:7px}.fineprint{font-size:11px;color:#71617c;display:block;margin-top:13px}.rules-modal{text-align:left}.rules-modal h2{text-align:center;margin-bottom:22px}.rules-modal>.step-label{text-align:center}.rule{display:grid;grid-template-columns:44px 1fr;gap:9px;margin:14px 0}.rule>b{font-family:'Bowlby One SC';font-size:22px;color:var(--orange)}.rule strong{font-size:12px}.rule p{font-size:12px;color:var(--muted);margin:3px 0}.toast{position:fixed;z-index:50;bottom:40px;left:50%;transform:translate(-50%,20px);background:var(--cream);color:#241026;border-radius:9px;padding:12px 20px;font-size:13px;font-weight:800;opacity:0;transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}@media(max-width:850px){.season-pill{display:none}.lobby-hero{padding-top:30px;min-height:290px}.hero-boxes{position:absolute;right:-110px;opacity:.35;z-index:-1}.action-strip{flex-wrap:wrap}.big{flex:1;min-width:230px}.floor-stats{width:100%;justify-content:center;margin:6px 0 0}.lobby-layout{grid-template-columns:1fr}.side-column{display:grid;grid-template-columns:1fr 1fr}.game-row{grid-template-columns:1.3fr .7fr auto}.created{display:none}.table{gap:35px}.box-3d{width:145px;height:115px}.player-card{top:15px}.arena-copy{margin-top:55px}}@media(max-width:560px){.topbar{padding:0 14px}.brand{font-size:13px}.brand-mark{width:36px;height:36px}.wallet{display:none}.lobby-hero{padding:34px 20px 15px}h1{font-size:43px}.action-strip{padding:16px}.big{min-width:100%}.floor-stats{gap:10px}.lobby-layout{padding:17px 12px 40px}.panel-head{align-items:flex-start;gap:10px}.filters button{padding:7px 5px}.game-row{padding:13px;grid-template-columns:1fr auto auto;gap:8px}.wager small{display:none}.accept{padding:9px}.side-column{grid-template-columns:1fr}.floor-stats span:last-child,.floor-stats i:last-of-type{display:none}.game-hud{padding:0 12px}.table{gap:13px;height:290px}.box-3d{width:125px;height:100px}.versus{font-size:14px}.player-card{transform:scale(.85)}.player-card.you{left:0}.player-card.rival{right:0}.arena-copy h2{font-size:25px}.decision-buttons button{min-width:120px;padding:12px}.account-area{gap:4px}}
 
 /* ROOM EXPERIENCE V2 */
 .room-shell{display:grid;grid-template-columns:112px minmax(560px,1fr) 290px;min-height:calc(100vh - 150px);background:#100819}.room-shell .arena{min-height:calc(100vh - 150px);padding-left:120px;padding-right:120px;border-left:1px solid #3b2248;border-right:1px solid #3b2248}.audience-rail{background:linear-gradient(180deg,#1b0e2a,#12091e);padding:15px 9px;display:flex;flex-direction:column;position:relative;z-index:4}.room-id{display:flex;align-items:center;gap:7px;padding:6px 3px 15px;border-bottom:1px solid #352040}.room-id div{display:flex;flex-direction:column}.room-id b{font-size:11px}.room-id small{font-size:11px;color:#9b8aa7;margin-top:2px}.live-dot{width:7px;height:7px;background:#ff4f79;border-radius:50%;box-shadow:0 0 9px #ff4f79;animation:pulse 1.5s infinite}@keyframes pulse{50%{opacity:.35}}.audience-seats{display:flex;flex-direction:column;gap:5px;padding-top:12px}.spectator{border:1px solid transparent;background:transparent;color:#94839f;border-radius:9px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;position:relative;font-size:11px;font-weight:800;cursor:pointer}.spectator:hover{border-color:#5a3566;background:#2b1739;color:#fff}.spectator svg,.mini-face{width:48px;height:48px;background:#342040;border-radius:12px;display:grid;place-items:center}.spectator i{position:absolute;right:5px;top:3px;font-style:normal;background:#fff;border-radius:9px;padding:2px;font-size:12px}.spectator span:last-child{margin-top:3px}.mini-face{font-size:12px;color:#fff;background:#ee7650}.mini-face.green{background:#42694e}.invite-room{margin-top:auto;border:1px solid #54305f;background:#261334;color:#b6a4c0;border-radius:7px;font-size:11px;font-weight:900;padding:9px 3px;cursor:pointer}.room-chat{display:flex;flex-direction:column;min-width:0;background:#180d25;position:relative;z-index:4}.chat-head{height:60px;padding:13px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #392247}.chat-head div{display:flex;flex-direction:column}.chat-head b{font-family:'Bowlby One SC';font-size:13px;font-weight:400}.chat-head small{font-size:11px;color:#897694;margin-top:3px}.chat-head button{border:0;background:none;color:#8f7b9a}.chat-tabs{height:39px;display:flex;align-items:center;gap:12px;padding:0 13px;border-bottom:1px solid #352040}.chat-tabs button{border:0;background:none;color:#6f607a;font-size:11px;font-weight:900;padding:11px 0;cursor:pointer}.chat-tabs button.active{color:var(--orange);border-bottom:2px solid var(--orange)}.chat-tabs span{margin-left:auto;font-size:11px;color:#5fd353}.messages{padding:13px;display:flex;flex-direction:column;gap:14px;overflow:auto;flex:1;max-height:calc(100vh - 338px);min-height:190px}.system-message{text-align:center;background:#23132f;color:#796a82;border-radius:6px;padding:7px;font-size:11px}.message{display:grid;grid-template-columns:32px 1fr;gap:8px;text-align:left;animation:messageIn .25s ease-out}@keyframes messageIn{from{opacity:0;transform:translateY(6px)}}.chat-avatar{width:32px;height:32px;border-radius:8px;background:#5e9e55;overflow:hidden;align-self:start}.chat-avatar.root{background:#d86529}.chat-avatar.beet{background:#ae3e75}.chat-avatar svg{width:100%;height:40px}.message b{font-size:11px}.message b small{font-size:11px;color:#ec9d2f;margin-left:3px}.message p{margin:3px 0 0;font-size:11px;line-height:1.35;color:#c1afcb}.quick-reactions{display:flex;justify-content:space-between;padding:7px 12px;border-top:1px solid #382145}.quick-reactions button{width:35px;height:29px;border:1px solid #3b2447;background:#241431;border-radius:7px;cursor:pointer;transition:.15s}.quick-reactions button:hover{transform:scale(1.14);background:#43234b}.chat-form{display:flex;gap:6px;padding:9px 10px 13px}.chat-form input{min-width:0;flex:1;background:#100919;border:1px solid #452850;border-radius:8px;color:#fff;padding:10px;font-size:11px;outline:0}.chat-form input:focus{border-color:var(--orange)}.chat-form button{width:34px;border:0;border-radius:8px;background:var(--orange);color:#2a1023;cursor:pointer}.player-character{position:absolute;bottom:80px;z-index:1;width:130px;display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 16px 12px #08030a)}.player-you{left:18px}.player-rival{right:18px}.player-character>svg{width:115px;height:144px;transition:.25s}.player-character:hover>svg{transform:translateY(-4px) rotate(-2deg)}.player-rival:hover>svg{transform:translateY(-4px) rotate(2deg)}.nameplate{margin-top:-22px;min-width:120px;background:#180c27;border:2px solid #563060;border-radius:9px;padding:7px 29px 7px 9px;text-align:left;position:relative;box-shadow:0 6px 15px #0008}.nameplate b{font-size:11px;display:block}.nameplate small{font-size:11px;color:var(--orange2)}.nameplate em{position:absolute;right:9px;top:8px;font-family:'Bowlby One SC';font-style:normal;color:#786481}.speech{position:absolute;top:-43px;background:#fff4df;color:#26102a;border-radius:10px 10px 2px 10px;padding:8px 10px;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 5px 10px #0006;opacity:.82}.rival-speech{border-radius:10px 10px 10px 2px}.reaction-burst{position:absolute;left:50%;top:48%;font-size:38px;z-index:10;pointer-events:none}.reaction-burst.pop{animation:reactionPop .8s ease-out}@keyframes reactionPop{0%{opacity:0;transform:translate(-50%,20px) scale(.3)}35%{opacity:1;transform:translate(-50%,-5px) scale(1.25)}100%{opacity:0;transform:translate(-50%,-75px) scale(.9)}}.room-shell .table{gap:60px}.room-shell .box-3d{width:160px;height:125px}.room-shell .arena-copy h2{font-size:30px}
@@ -535,5 +535,321 @@ small{line-height:1.4}.game-row,.direct-challenge,.my-game-card,.leader-row,.mes
 }
 
 /* CONNECTION + HISTORY DRAWERS — GAME SKIN */
-.connection-skin{display:flex;flex-direction:column;gap:14px}.conn-toolbar{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:4px}.conn-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.connection-skin .wallet-box{margin:0}.connection-skin .wallet-box.dashed{border-style:dashed}.conn-net-toggle{display:flex;gap:6px;margin:10px 0 8px;background:#150c23;border:1px solid #4a2e57;border-radius:7px;padding:3px}.conn-net-toggle button{flex:1;border:0;background:transparent;color:#a795b1;border-radius:5px;padding:8px;font-size:11px;font-weight:900;letter-spacing:.6px;cursor:pointer}.conn-net-toggle button.active{background:var(--orange);color:#291126}.conn-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.conn-actions .primary,.conn-actions .secondary{min-height:40px;padding:10px 14px;font-size:11px}.conn-health{list-style:none;margin:10px 0;padding:0;display:flex;flex-direction:column;gap:8px}.conn-health li{display:grid;grid-template-columns:12px auto 1fr;gap:8px;align-items:center;font-size:12px}.conn-dot{width:8px;height:8px;border-radius:50%;background:#ff4f70;box-shadow:0 0 8px #ff4f7044}.conn-dot.ok{background:var(--green);box-shadow:0 0 8px #65d65366}.connection-skin .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;word-break:break-all}.connection-skin .accent{color:var(--orange2)!important}.connection-skin b.ready{color:#72e2a9}.connection-skin b.blocked{color:#ffd58a}.conn-reasons{margin:10px 0 0;padding-left:18px;color:#b9a5c1;font-size:12px;line-height:1.45}.conn-error{margin:12px 0 0;padding:10px 12px;border:1px solid #ff4f7044;background:#4b1830;border-radius:8px;color:#ffd9e1;font-size:12px}.history-skin .history-toolbar{display:flex;justify-content:flex-end;margin-bottom:8px}.history-leaders-title{font-family:'Bowlby One SC';font-weight:400;font-size:18px;margin:6px 0 4px}.history-skin .leader-row{border:1px solid #442850;border-radius:9px;margin-bottom:8px;background:#2a163a}.room-invite-chip{display:flex;flex-direction:column;gap:6px;margin-top:10px;padding:10px 8px;border:1px solid #54305f;background:#261334;border-radius:8px}.room-invite-chip b{font-size:12px;letter-spacing:.4px}.room-invite-chip small{font-size:11px;color:#9b8aa7}.room-invite-chip .invite-code{font-family:'Bowlby One SC';font-size:16px;color:var(--orange2);letter-spacing:1px}.room-invite-actions{display:flex;flex-direction:column;gap:6px}.room-invite-actions button{width:100%;border:1px solid #654076;background:#3a2147;color:#fff;border-radius:7px;font-size:11px;font-weight:900;padding:8px 6px;cursor:pointer}.room-invite-actions button:hover{background:var(--orange);color:#241023}.balance[hidden],.balance.is-hidden{display:none!important}
+.connection-skin{display:flex;flex-direction:column;gap:14px}.conn-toolbar{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:4px}.conn-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.connection-skin .wallet-box{margin:0}.connection-skin .wallet-box.dashed{border-style:dashed}.conn-net-toggle{display:flex;gap:6px;margin:10px 0 8px;background:#150c23;border:1px solid #4a2e57;border-radius:7px;padding:3px}.conn-net-toggle button{flex:1;border:0;background:transparent;color:#a795b1;border-radius:5px;padding:8px 4px;font-size:10px;font-weight:900;letter-spacing:.4px;cursor:pointer}.conn-net-toggle button.active{background:var(--orange);color:#291126}.conn-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.conn-actions .primary,.conn-actions .secondary{min-height:40px;padding:10px 14px;font-size:11px}.conn-health{list-style:none;margin:10px 0;padding:0;display:flex;flex-direction:column;gap:8px}.conn-health li{display:grid;grid-template-columns:12px auto 1fr;gap:8px;align-items:center;font-size:12px}.conn-dot{width:8px;height:8px;border-radius:50%;background:#ff4f70;box-shadow:0 0 8px #ff4f7044}.conn-dot.ok{background:var(--green);box-shadow:0 0 8px #65d65366}.connection-skin .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;word-break:break-all}.connection-skin .accent{color:var(--orange2)!important}.conn-known-contract{display:flex;flex-direction:column;gap:4px}.conn-known-contract a{color:var(--orange2)}.connection-skin b.ready{color:#72e2a9}.connection-skin b.blocked{color:#ffd58a}.conn-reasons{margin:10px 0 0;padding-left:18px;color:#b9a5c1;font-size:12px;line-height:1.45}.conn-error{margin:12px 0 0;padding:10px 12px;border:1px solid #ff4f7044;background:#4b1830;border-radius:8px;color:#ffd9e1;font-size:12px}.history-skin .history-toolbar{display:flex;justify-content:flex-end;margin-bottom:8px}.history-leaders-title{font-family:'Bowlby One SC';font-weight:400;font-size:18px;margin:6px 0 4px}.history-skin .leader-row{border:1px solid #442850;border-radius:9px;margin-bottom:8px;background:#2a163a}.room-invite-chip{display:flex;flex-direction:column;gap:6px;margin-top:10px;padding:10px 8px;border:1px solid #54305f;background:#261334;border-radius:8px}.room-invite-chip b{font-size:12px;letter-spacing:.4px}.room-invite-chip small{font-size:11px;color:#9b8aa7}.room-invite-chip .invite-code{font-family:'Bowlby One SC';font-size:16px;color:var(--orange2);letter-spacing:1px}.room-invite-actions{display:flex;flex-direction:column;gap:6px}.room-invite-actions button{width:100%;border:1px solid #654076;background:#3a2147;color:#fff;border-radius:7px;font-size:11px;font-weight:900;padding:8px 6px;cursor:pointer}.room-invite-actions button:hover{background:var(--orange);color:#241023}.balance[hidden],.balance.is-hidden{display:none!important}
 @media(max-width:700px){.conn-grid{grid-template-columns:1fr}}
+
+/* =========================================================
+   UI POLISH 2026-09-16 — hinged boxes + hierarchy + contrast
+   Midnight-branded cream/orange/purple; no legacy-chain chrome
+   ========================================================= */
+
+:root{
+  --muted:#cbb9d4;
+  --cream:#fff4df;
+  --orange:#ff7a1a;
+  --orange2:#ffb02e;
+  --ink:#160c27;
+}
+
+/* —— Header / wallet breathing room —— */
+.topbar.topbar-polish{
+  height:84px;
+  padding:0 3.2vw;
+  gap:14px;
+}
+.topbar-polish .desktop-nav{
+  gap:6px;
+  margin-right:14px;
+}
+.topbar-polish .desktop-nav button{
+  padding:11px 14px;
+  font-size:12px;
+  letter-spacing:.55px;
+}
+.account-area-roomy{
+  gap:14px!important;
+  flex-shrink:0;
+}
+.balance-roomy{
+  height:50px!important;
+  padding:6px 10px 6px 12px!important;
+  gap:10px!important;
+  min-width:118px;
+}
+.balance-roomy small{
+  font-size:11px!important;
+  color:#d4c2db!important;
+  letter-spacing:1.1px;
+}
+.balance-roomy b{
+  font-size:17px!important;
+  color:var(--cream);
+}
+.wallet-roomy{
+  height:50px!important;
+  padding:0 16px!important;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  border-color:#5c3a6a!important;
+  color:#f2e6f6!important;
+  font-size:13px;
+  max-width:220px;
+}
+.wallet-roomy .wallet-label{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  max-width:160px;
+}
+.wallet-roomy .wallet-dot,
+.wallet-roomy span.wallet-dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
+  margin:0;
+  flex:0 0 auto;
+}
+.season-pill{
+  color:#d2c2dc!important;
+}
+.season-pill span{
+  color:#b9a6c4!important;
+}
+
+/* —— Microcopy / chat contrast —— */
+.chat-head small.chat-status,
+.room-chat .chat-head small{
+  color:#d8c7e0!important;
+  font-size:12px!important;
+  font-weight:700;
+  letter-spacing:.3px;
+}
+.system-message.chat-system,
+.room-chat .system-message{
+  color:#e8dcf0!important;
+  background:#2c173b!important;
+  border:1px solid #5a3868;
+  font-size:13px!important;
+  font-weight:700;
+  line-height:1.45;
+}
+.arena-copy p{
+  color:#d8c6e0!important;
+  font-size:14px!important;
+  line-height:1.5;
+}
+.phase-tag{
+  color:var(--orange2)!important;
+}
+.activity-ticker{
+  color:#ebe0f0!important;
+  font-size:13px!important;
+  font-weight:700;
+}
+.room-invite-chip small{
+  color:#cbb8d4!important;
+  font-size:12px!important;
+  line-height:1.4;
+}
+.room-invite-chip b{
+  color:#f0e4f5;
+}
+.drawer-lead,
+.panel-head p,
+.lobby-hero p{
+  color:#d4c2db!important;
+}
+.game-actions small{
+  color:#c4b0cd!important;
+  font-size:13px!important;
+}
+
+/* —— Settings drawer less cramped —— */
+.drawer-panel{
+  padding:40px 30px!important;
+}
+.drawer-panel h2{
+  margin:10px 0 8px;
+}
+.setting-row{
+  padding:18px 0!important;
+  font-size:14px!important;
+  color:#e8dcf0;
+}
+.connection-skin .wallet-box span,
+.connection-skin .wallet-box small{
+  color:#cbb8d4!important;
+  font-size:12px!important;
+}
+
+/* —— Hinged wooden box (GSAP lid) —— */
+.box-3d.hinged-box{
+  position:relative;
+  width:190px;
+  height:140px;
+  background:
+    linear-gradient(145deg,#9a5530 0%,#6f3424 42%,#4a2118 100%);
+  border:6px solid #c47a48;
+  border-radius:10px;
+  box-shadow:
+    inset -22px -20px 0 #3a161c,
+    inset 0 1px 0 #e8a57455,
+    0 22px 28px #08030db8;
+  transform:rotateY(8deg);
+  cursor:pointer;
+  color:#f0b57a;
+  overflow:visible;
+  perspective:900px;
+  transform-style:preserve-3d;
+  isolation:isolate;
+}
+.box-wrap:not(.yours) .box-3d.hinged-box{transform:rotateY(-8deg)}
+.room-shell .box-3d.hinged-box{width:168px;height:128px}
+.box-3d.hinged-box .box-body{
+  position:absolute;inset:0;border-radius:4px;pointer-events:none;z-index:0;
+}
+.box-3d.hinged-box .box-grain{
+  position:absolute;inset:0;border-radius:4px;opacity:.35;
+  background:
+    repeating-linear-gradient(92deg,#0000 0 3px,#00000018 3px 4px),
+    repeating-linear-gradient(0deg,#ffffff0a 0 10px,#0000 10px 18px);
+}
+.box-3d.hinged-box .hinge{
+  position:absolute;top:-7px;width:12px;height:14px;border-radius:3px;
+  background:linear-gradient(180deg,#e0b07a,#8a5a34);
+  border:1px solid #5a301c;
+  box-shadow:inset 0 1px #fff6,0 2px 3px #0006;
+  z-index:5;
+}
+.box-3d.hinged-box .hinge-left{left:18%}
+.box-3d.hinged-box .hinge-right{right:18%}
+.box-3d.hinged-box .lid{
+  position:absolute;
+  left:-14px;right:-8px;top:-28px;
+  height:36px;
+  background:transparent;
+  border:0;
+  border-radius:8px;
+  transform:rotateX(0deg);
+  transform-origin:50% 0%;
+  transform-style:preserve-3d;
+  transition:none!important; /* GSAP owns motion */
+  z-index:3;
+  will-change:transform;
+}
+.box-3d.hinged-box .lid-face{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,#d08a52,#a45a32 55%,#7a3d22);
+  border:5px solid #e0a06a;
+  border-radius:8px;
+  box-shadow:inset 0 1px #ffd9b066,0 4px 8px #0005;
+}
+.box-3d.hinged-box .lid-edge{
+  position:absolute;left:8%;right:8%;bottom:-6px;height:8px;
+  background:linear-gradient(180deg,#6a321c,#3f1a12);
+  border-radius:0 0 4px 4px;
+  opacity:.85;
+  transform:translateZ(-2px);
+}
+.box-3d.hinged-box .lid-hinge-bar{
+  position:absolute;left:10%;right:10%;top:-3px;height:6px;
+  background:linear-gradient(90deg,#b88755,#f0c48a 40%,#8a5a34);
+  border-radius:3px;
+  box-shadow:0 1px 2px #0007;
+}
+.box-3d.hinged-box .front{
+  position:relative;z-index:2;height:100%;display:grid;place-items:center;
+}
+.box-3d.hinged-box .front b{
+  font-family:'Bowlby One SC',sans-serif;
+  font-size:52px;font-weight:400;
+  text-shadow:4px 5px #32131b;
+  color:#e8a66a;
+}
+.box-3d.hinged-box .front .reveal-carrot{
+  font-size:64px;line-height:1;
+  filter:drop-shadow(0 8px 7px #1d0710);
+  text-shadow:none;
+  animation:carrotPop .45s cubic-bezier(.2,1.4,.4,1) both;
+}
+.box-3d.hinged-box .front .reveal-empty{
+  font-family:'DM Sans',sans-serif!important;
+  font-size:15px!important;
+  font-weight:900;
+  letter-spacing:2px;
+  color:#e2cfe6;
+  text-shadow:none;
+}
+@keyframes carrotPop{
+  from{opacity:0;transform:translateY(12px) scale(.6)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+/* Kill legacy CSS lid jump — GSAP drives rotateX */
+.box-3d.open .lid,
+.box-3d.hinged-box.open .lid{
+  /* intentional no-op transform; GSAP sets rotateX inline */
+}
+.box-3d.open .front b:after,
+.box-3d.hinged-box.open .front b:after,
+.box-3d.open.has-carrot .front b:after,
+.box-3d.open.empty .front b:after{
+  content:none!important;
+}
+.box-3d.hinged-box.open{
+  box-shadow:
+    inset -22px -20px 0 #3a161c,
+    inset 0 18px 28px #1a0a1088,
+    0 22px 28px #08030db8;
+}
+
+/* Welcome / lobby hero hosts for hinged boxes */
+.welcome-box.welcome-hinged,
+.game-box.hero-hinged{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  display:flex!important;
+  align-items:flex-end;
+  justify-content:center;
+  width:auto!important;
+  height:auto!important;
+  padding:0;
+}
+.welcome-box.welcome-hinged:before,
+.game-box.hero-hinged:before{display:none!important}
+.welcome-box.welcome-hinged .box-3d.hinged-box{
+  width:165px;height:125px;
+  transform:none;
+}
+.game-box.hero-hinged .box-3d.hinged-box{
+  width:145px;height:110px;
+  transform:none;
+}
+.welcome-box.box-one.welcome-hinged{transform:rotate(-4deg)}
+.welcome-box.box-two.welcome-hinged{transform:rotate(4deg)}
+.game-box.left.hero-hinged{transform:rotateY(10deg) rotateZ(-3deg)}
+.game-box.right.hero-hinged{transform:rotateY(-10deg) rotateZ(3deg)}
+
+/* Reduced motion: snap lids, kill idle bob */
+@media (prefers-reduced-motion: reduce){
+  .box-3d.hinged-box .lid{transition:none!important}
+  .box-3d.hinged-box .front .reveal-carrot{animation:none!important}
+}
+body.reduced-motion .box-3d.hinged-box .front .reveal-carrot{animation:none!important}
+
+@media(max-width:850px){
+  .topbar.topbar-polish{height:auto;min-height:76px;padding:10px 16px}
+  .room-shell .box-3d.hinged-box{width:140px;height:110px}
+}
+@media(max-width:640px){
+  .account-area-roomy{gap:8px!important}
+  .balance-roomy{min-width:0;padding-inline:8px!important}
+  .wallet-roomy{display:none}
+  .room-shell .box-3d.hinged-box{width:112px;height:92px}
+  .box-3d.hinged-box .front b{font-size:36px}
+  .box-3d.hinged-box .hinge{width:9px;height:11px}
+}

@@ -23,6 +23,35 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.resolve(__dirname, '..')
 const ARTIFACTS = path.join(root, 'submission/artifacts')
 
+/** Coerce keys to primitive hex (String objects / {tag:schnorr,value}). */
+function keyToHex(key, kind) {
+  if (key == null) throw new Error(`missing ${kind}`)
+  if (typeof key === 'string' || key instanceof String) return String(key)
+  if (typeof key === 'object') {
+    if (typeof key.value === 'string') return String(key.value)
+    if (key instanceof Uint8Array) return Buffer.from(key).toString('hex')
+    if (typeof key.toString === 'function') {
+      const s = key.toString()
+      if (s && s !== '[object Object]') return s
+    }
+  }
+  throw new Error(`Cannot coerce ${kind} to hex: ${JSON.stringify(key)}`)
+}
+
+function wrapWalletKeys(wp) {
+  const origCoin = wp.getCoinPublicKey.bind(wp)
+  const origEnc = wp.getEncryptionPublicKey.bind(wp)
+  return new Proxy(wp, {
+    get(target, prop, receiver) {
+      if (prop === 'getCoinPublicKey') return () => keyToHex(origCoin(), 'coinPublicKey')
+      if (prop === 'getEncryptionPublicKey') return () => keyToHex(origEnc(), 'encryptionPublicKey')
+      const v = Reflect.get(target, prop, receiver)
+      return typeof v === 'function' ? v.bind(target) : v
+    },
+  })
+}
+
+
 async function writeArtifact(data) {
   await mkdir(ARTIFACTS, { recursive: true })
   const p = path.join(ARTIFACTS, 'deploy-local.json')
@@ -76,15 +105,23 @@ async function main() {
   try {
     walletProvider = await testkit.MidnightWalletProvider.build(logger, envConfig, GENESIS_SEED)
     await walletProvider.start()
-    if (testkit.syncWallet) {
-      console.log('[deploy:local] syncWallet (up to 10 min)…')
-      await testkit.syncWallet(logger, walletProvider.wallet, 600_000)
+    // start() already waits for funds; optional re-sync uses (wallet, throttle, timeout)
+    if (testkit.syncWallet && walletProvider.wallet) {
+      console.log('[deploy:local] syncWallet…')
+      try {
+        await testkit.syncWallet(walletProvider.wallet, 2_000, 120_000)
+      } catch (syncErr) {
+        console.warn('[deploy:local] syncWallet skipped:', syncErr.message)
+      }
     }
   } catch (e) {
     console.error('[deploy:local] Wallet failed:', e.message)
     await writeArtifact({ ok: false, stage: 'wallet', error: e.message, health })
     process.exit(1)
   }
+
+  walletProvider = wrapWalletKeys(walletProvider)
+  console.log(`[deploy:local] Keys wrapped coin=${walletProvider.getCoinPublicKey().slice(0, 16)}…`)
 
   const { getCompiledCarrotContract } = await import(
     pathToFileURL(path.join(root, 'src/midnight/compiledContract.ts')).href
@@ -135,11 +172,14 @@ async function main() {
   let contractAddress
   let deployTxId
   try {
+    const { sampleSigningKey } = await import('@midnight-ntwrk/midnight-js-protocol/compact-runtime')
+    const signingKey = sampleSigningKey()
     const deployed = await deployContract(providers, {
       compiledContract,
       privateStateId: 'carrot-midnight:private:v1',
       initialPrivateState: createInitialPrivateState(),
       args: [],
+      signingKey,
     })
     contractAddress = deployed.deployTxData.public.contractAddress
     deployTxId = deployed.deployTxData.public.txId ?? deployed.deployTxData.public.txHash ?? null

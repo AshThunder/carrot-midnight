@@ -1,4 +1,5 @@
 import { Icon } from '@/components/game/SvgDefs'
+import { HingedBox } from '@/components/game/Box3d'
 
 type WelcomeScreenProps = {
   hidden: boolean
@@ -7,6 +8,7 @@ type WelcomeScreenProps = {
   onToggleSound: () => void
   onEnter: () => void
   onHowTo: () => void
+  requirementsHint?: string
 }
 
 export function WelcomeScreen({
@@ -16,6 +18,7 @@ export function WelcomeScreen({
   onToggleSound,
   onEnter,
   onHowTo,
+  requirementsHint,
 }: WelcomeScreenProps) {
   return (
     <section className={`welcome-screen${hidden ? ' hidden' : ''}`} id="welcome">
@@ -89,14 +92,14 @@ export function WelcomeScreen({
             </div>
             <Icon id="char-root" />
           </div>
-          <div className="welcome-box box-one">
-            <span>?</span>
+          <div className="welcome-box box-one welcome-hinged">
+            <HingedBox open={false} idle={!hidden} />
           </div>
           <div className="welcome-carrot">
             <Icon id="carrot" />
           </div>
-          <div className="welcome-box box-two">
-            <span>?</span>
+          <div className="welcome-box box-two welcome-hinged">
+            <HingedBox open={false} idle={!hidden} />
           </div>
           <div className="welcome-player leek-player">
             <div className="welcome-bubble">
@@ -118,6 +121,11 @@ export function WelcomeScreen({
         <i>→</i>
         <b>WIN THE CARROT</b>
       </div>
+      {requirementsHint && (
+        <p className="welcome-req-hint" style={{ textAlign: 'center', margin: '8px 16px 20px', fontSize: 12, opacity: 0.85 }}>
+          {requirementsHint}
+        </p>
+      )}
     </section>
   )
 }

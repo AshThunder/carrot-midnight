@@ -1,75 +1,58 @@
-# Live stack — Carrot Midnight
+# Live Midnight stack
 
-## Primary path (WaveHack): Local Undeployed
+## Primary path: Preprod (public testnet)
 
-Akindo Wave 1 emphasizes **local Undeployed/devnet** via Docker compose or [midnight-local-dev](https://github.com/midnightntwrk/midnight-local-dev): node + indexer + proof server. The **genesis wallet is pre-funded** — **no faucet**.
+Carrot Midnight targets **Preprod** for live deploy and demo evidence.
 
-Hard gate for the wave: compiling Compact + public GitHub + `midnightntwrk` topic + Apache-2.0 + README/demo. Live Preview deploy is **optional**, not required.
+| Service | Value |
+|---------|--------|
+| Network ID | `preprod` |
+| Node | `https://rpc.preprod.midnight.network` |
+| Indexer | `https://indexer.preprod.midnight.network/api/v4/graphql` |
+| Proof server | Local Docker `:6300` (private proving; always local) |
+| Faucet | https://faucet.preprod.midnight.network/ |
 
-### Mac / Docker Desktop (exact commands)
+Akindo Wave 1 hard gate remains: compiling Compact + public GitHub with `midnightntwrk` + Apache-2.0 + README + slides + demo. Live Preprod deploy is our chosen evidence path (not a Wave 1 mandate).
+
+### Exact commands
 
 ```bash
-# 1. Start Docker Desktop and wait until the engine is running
-docker version
-
-# 2. From this repo
-cd /path/to/carrot-midnight
-source "$HOME/.local/bin/env"   # if using the box Node 22 helper; else ensure Node ≥ 22
-npm install
-npm run env:up                 # proof-server :6300, indexer :8088, node :9944
-
-# 3. Health
+# Proof server only (or full compose — only :6300 is required for Preprod proving)
+docker compose up -d proof-server
 curl -s http://127.0.0.1:6300/health
-curl -s http://127.0.0.1:9944/health
-curl -s -X POST http://127.0.0.1:8088/api/v4/graphql \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"{ block { height } }"}'
 
-# 4. Deploy + smoke (genesis seed …0001)
-npm run deploy:local
-# → submission/artifacts/deploy-local.json
-
-# 5. Combined gate
-npm run test:local             # vitest + deploy:local when stack is up
-
-npm run env:down
+npm run preprod:wallet    # mn_addr_preprod… under .preview-wallet/ (gitignored seed)
+# Fund via browser faucet (captcha): paste unshielded address
+npm run preprod:faucet -- --wait=600
+npm run preprod:deploy    # writes submission/artifacts/deploy-preprod.json
 ```
 
-### midnight-local-dev alternative
+Deploy script (`scripts/preview-deploy.mjs`, run via `tsx`):
+- hello-world providers: `levelPrivateStateProvider` + password, `httpClientProofProvider(url, zkConfigProvider)`, `NodeZkConfigProvider` on `contracts/managed/carrot-game`
+- wraps `getCoinPublicKey` / `getEncryptionPublicKey` to primitive hex (String / `{tag:schnorr,value}` safe)
+- wallet sync timeout default **45 min** (`WALLET_SYNC_TIMEOUT_MS`)
+- after tNIGHT, registers NIGHT UTXOs for **tDUST** fee generation
 
-```bash
-git clone https://github.com/midnightntwrk/midnight-local-dev.git
-cd midnight-local-dev && npm install && npm start
-# funding menu available; genesis already holds NIGHT
-# then from carrot-midnight: npm run deploy:local
-```
+After faucet: wait for tNIGHT, then DUST registration runs automatically in `preprod:deploy` (or Lace “Generate tDUST”) before fees work.
 
-### UI against local stack
+### Lace (browser demo)
 
-1. `npm run dev` (or https://carrot-midnight.vercel.app for offline demo only)
-2. Settings → Network **Local** → Connect Lace on **Undeployed** (or Local demo for product play)
-3. When stack dots green + wallet Ready → Deploy / Smoke call
+1. Lace → Network **Preprod**
+2. Proof server → Local `http://localhost:6300`
+3. Open https://carrot-midnight.vercel.app → connect
 
-| Service | URL |
-|---------|-----|
-| Network ID | `undeployed` |
-| Node | `http://127.0.0.1:9944` |
-| Indexer | `http://127.0.0.1:8088/api/v4/graphql` |
-| Proof server | `http://127.0.0.1:6300` |
-| Funding | Genesis seed `…0001` (hello-world Alice) — no faucet |
+## Secondary: local Undeployed
 
-## This agent box (2026-09-16 WAT)
+Docker node+indexer+proof for offline genesis testing (`npm run env:up` → `deploy:local`). Useful for fast iteration; not our submission live network.
 
-Docker rootless fails here (`overlay` + missing `iptables`) — see `docs/DOCKER.md`. Scripts are ready for the moment a daemon is up: `npm run env:up` → `npm run deploy:local`.
+## Optional: Preview
 
-## Secondary path: Preview / Preprod
+Same script family with `--network=preview`. Prefer Preprod for Wave evidence.
 
-Public node/indexer when you want a shared testnet. Requires faucet (often captcha) + proving (local `:6300` or ProofStation). Keep for later; not the WaveHack primary story.
+## Toolchain note (preprod protocol 1_000_000)
 
-```bash
-npm run preview:wallet
-# browser faucet if API captcha-blocks
-PROOF_SERVER=station npm run preview:deploy
-```
+Preprod/preview currently report `protocolVersion: 1000000` (ledger-v8 era; v9 fork at `2000000`).
+Compile with **compactc 0.31.1** → `compact-runtime@0.16.0` → `contract-state[v6]` (ledger-v8).
+Do **not** use compactc 0.34 / runtime 0.19 (`contract-state[v8]`) until the network crosses the v9 fork.
 
-Endpoints: `docs.midnight.network` environment reference · `src/midnight/config.ts`.
+Dust sync on preprod replays ~1.5M ledger events (~30–40 min with `scripts/patch-dust-sync-speed.mjs`).

@@ -25,7 +25,7 @@ export const NETWORKS = {
     proofServerLocal: 'http://127.0.0.1:6300',
     proofStation: 'https://api-preprod.1am.xyz',
     faucetApi: 'https://faucet.preprod.midnight.network/api/drips',
-    faucetUi: 'https://midnight-tmnight-preprod.nethermind.dev/',
+    faucetUi: 'https://faucet.preprod.midnight.network/',
     faucetHealth: 'https://faucet.preprod.midnight.network/api/health',
   },
 }
