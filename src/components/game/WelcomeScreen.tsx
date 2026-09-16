@@ -1,9 +1,12 @@
 import { Icon } from '@/components/game/SvgDefs'
 import { HingedBox } from '@/components/game/Box3d'
+import type { NetworkKey } from '@/midnight/knownContracts'
 
 type WelcomeScreenProps = {
   hidden: boolean
   networkLabel: string
+  networkKey?: NetworkKey
+  onNetworkChange?: (k: NetworkKey) => void
   soundOn: boolean
   onToggleSound: () => void
   onEnter: () => void
@@ -11,9 +14,17 @@ type WelcomeScreenProps = {
   requirementsHint?: string
 }
 
+const NETWORKS: { key: NetworkKey; label: string }[] = [
+  { key: 'local', label: 'LOCAL' },
+  { key: 'preview', label: 'PREVIEW' },
+  { key: 'preprod', label: 'PREPROD' },
+]
+
 export function WelcomeScreen({
   hidden,
   networkLabel,
+  networkKey,
+  onNetworkChange,
   soundOn,
   onToggleSound,
   onEnter,
@@ -46,9 +57,25 @@ export function WelcomeScreen({
               ♪ <span>SOUND {soundOn ? 'ON' : 'OFF'}</span>
             </button>
           </div>
-          <div className="welcome-network">
-            <i /> {networkLabel.toUpperCase()}
-          </div>
+          {networkKey && onNetworkChange ? (
+            <div className="conn-net-toggle welcome-net-toggle" role="group" aria-label="Midnight network">
+              {NETWORKS.map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={networkKey === key ? 'active' : undefined}
+                  aria-pressed={networkKey === key}
+                  onClick={() => onNetworkChange(key)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="welcome-network">
+              <i /> {networkLabel.toUpperCase()}
+            </div>
+          )}
         </div>
       </nav>
       <div className="welcome-content">

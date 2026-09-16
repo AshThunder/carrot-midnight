@@ -21,7 +21,14 @@ describe('knownContracts + preprod config', () => {
   it('parses network keys including preprod', () => {
     expect(parseNetworkKey('preprod')).toBe('preprod')
     expect(parseNetworkKey('nope', 'local')).toBe('local')
+    expect(parseNetworkKey('nope')).toBe('preprod')
     expect(typeof defaultNetworkKey()).toBe('string')
+  })
+
+  it('defaults to preprod when env unset / invalid', () => {
+    // Without VITE_MIDNIGHT_NETWORK in test env, fallback is preprod
+    expect(defaultNetworkKey()).toBe('preprod')
+    expect(getConfig().networkId).toBe('preprod')
   })
 
   it('preprod faucetUi points at faucet.preprod.midnight.network', () => {

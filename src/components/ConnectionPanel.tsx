@@ -90,7 +90,7 @@ export function ConnectionPanel({
               </a>
             </li>
           )}
-          <li>Local demo stays playable without a wallet or proof server.</li>
+          <li>Local demo (offline) stays playable without a wallet or proof server — network toggle still selects live target.</li>
         </ul>
       </div>
 
@@ -148,8 +148,8 @@ export function ConnectionPanel({
                 <button className="primary" type="button" onClick={() => onConnect()}>
                   CONNECT WALLET
                 </button>
-                <button className="secondary" type="button" onClick={onLocalDemo}>
-                  LOCAL DEMO
+                <button className="secondary" type="button" onClick={onLocalDemo} title="Offline play — does not change live network">
+                  LOCAL DEMO (OFFLINE)
                 </button>
               </>
             )}

@@ -192,8 +192,8 @@ export function Room({ api }: { api: LocalGameApi }) {
           </button>
         </div>
         <div className="round-label">
-          <small>TWO-PLAYER TABLE · {game.access}</small>
-          <b className="hud-room-id">ROOM {game.id.slice(0, 10)}</b>
+          <small className="hud-room-access">TWO-PLAYER ROOM · {game.access}</small>
+          <b className="hud-room-id">LOBBY {game.id.slice(0, 10)}</b>
         </div>
         <div className="pot">
           <small>PRIZE POT</small>

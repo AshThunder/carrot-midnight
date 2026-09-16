@@ -16,6 +16,7 @@ import '@midnight-ntwrk/dapp-connector-api'
 type DrawerId = 'settings' | 'history' | null
 
 function networkPillLabel(networkKey: 'local' | 'preview' | 'preprod', walletStatus: string): string {
+  // Demo wallet is offline play — label clearly; networkKey still drives live target.
   if (walletStatus === 'local-demo') return 'Local demo'
   if (networkKey === 'preprod') return 'Preprod'
   if (networkKey === 'preview') return 'Preview'
@@ -23,7 +24,7 @@ function networkPillLabel(networkKey: 'local' | 'preview' | 'preprod', walletSta
 }
 
 function welcomeNetworkLabel(networkKey: 'local' | 'preview' | 'preprod', walletStatus: string): string {
-  if (walletStatus === 'local-demo') return 'Local demo'
+  if (walletStatus === 'local-demo') return 'Local demo (offline)'
   if (networkKey === 'preprod') return 'Preprod · Midnight'
   if (networkKey === 'preview') return 'Preview · Midnight'
   return 'Local · Midnight'
@@ -92,6 +93,13 @@ export function App() {
     if (api.game) setWelcomeHidden(true)
   }, [api.game])
 
+  /** Keep Settings + Topbar network in sync; leaving demo when picking a live net. */
+  const handleNetworkChange = (k: typeof midnight.networkKey) => {
+    midnight.setNetworkKey(k)
+    if (midnight.snapshot.walletStatus === 'local-demo' && k !== 'local') {
+      midnight.disconnect()
+    }
+  }
 
   return (
     <>
@@ -101,6 +109,8 @@ export function App() {
       <WelcomeScreen
         hidden={welcomeHidden}
         networkLabel={welcomeNet}
+        networkKey={midnight.networkKey}
+        onNetworkChange={handleNetworkChange}
         soundOn={soundOn}
         onToggleSound={toggleSound}
         onEnter={() => {
@@ -120,6 +130,9 @@ export function App() {
         <>
           <Topbar
             networkPill={pill}
+            networkKey={midnight.networkKey}
+            onNetworkChange={handleNetworkChange}
+            demoMode={midnight.snapshot.walletStatus === 'local-demo'}
             activeTab={lobbyTab}
             myCount={myCount}
             directCount={directCount}
@@ -204,7 +217,7 @@ export function App() {
               />
             </label>
             <label className="setting-row">
-              Demo wallet
+              Local demo (offline)
               <button
                 className="text-button"
                 type="button"
@@ -224,7 +237,7 @@ export function App() {
                 errorNote={midnight.errorNote}
                 detectedWallets={midnight.wallet.detectedWallets}
                 networkKey={midnight.networkKey}
-                onNetworkChange={(k) => midnight.setNetworkKey(k)}
+                onNetworkChange={handleNetworkChange}
                 onConnect={(key) => void midnight.connect(key)}
                 onDisconnect={() => midnight.disconnect()}
                 onLocalDemo={() => {

@@ -65,7 +65,7 @@ export const PREVIEW_PROOFSTATION = 'https://api-preview.1am.xyz'
 
 export function getConfig(override?: string): NetworkConfig {
   const env = (import.meta as ImportMeta & { env?: Record<string, string> }).env
-  const network = (override ?? env?.VITE_MIDNIGHT_NETWORK ?? 'local') as keyof typeof NETWORKS
+  const network = (override ?? env?.VITE_MIDNIGHT_NETWORK ?? 'preprod') as keyof typeof NETWORKS
   const cfg = NETWORKS[network]
   if (!cfg) {
     throw new Error(`Unknown network: ${network}. Use local, preview, or preprod.`)

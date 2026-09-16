@@ -25,12 +25,12 @@ export function knownContractForNetwork(networkKey: NetworkKey): string | undefi
   return envKey || undefined
 }
 
-export function parseNetworkKey(raw: string | undefined | null, fallback: NetworkKey = 'local'): NetworkKey {
+export function parseNetworkKey(raw: string | undefined | null, fallback: NetworkKey = 'preprod'): NetworkKey {
   if (raw === 'local' || raw === 'preview' || raw === 'preprod') return raw
   return fallback
 }
 
-/** Default UI network: honor VITE_MIDNIGHT_NETWORK (prefer preprod when set). */
+/** Default UI network: honor VITE_MIDNIGHT_NETWORK; fall back to Preprod for live demos. */
 export function defaultNetworkKey(): NetworkKey {
-  return parseNetworkKey(env?.VITE_MIDNIGHT_NETWORK, 'local')
+  return parseNetworkKey(env?.VITE_MIDNIGHT_NETWORK, 'preprod')
 }

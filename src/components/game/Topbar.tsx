@@ -1,9 +1,13 @@
 import { Icon } from '@/components/game/SvgDefs'
+import type { NetworkKey } from '@/midnight/knownContracts'
 
 export type LobbyTab = 'floor' | 'my' | 'direct' | 'leaders'
 
 type TopbarProps = {
   networkPill: string
+  networkKey: NetworkKey
+  onNetworkChange: (k: NetworkKey) => void
+  demoMode?: boolean
   activeTab: LobbyTab
   myCount: number
   directCount: number
@@ -16,8 +20,17 @@ type TopbarProps = {
   onWallet: () => void
 }
 
+const NETWORKS: { key: NetworkKey; label: string }[] = [
+  { key: 'local', label: 'LOCAL' },
+  { key: 'preview', label: 'PREVIEW' },
+  { key: 'preprod', label: 'PREPROD' },
+]
+
 export function Topbar({
   networkPill,
+  networkKey,
+  onNetworkChange,
+  demoMode,
   activeTab,
   myCount,
   directCount,
@@ -41,8 +54,23 @@ export function Topbar({
           <b>MIDNIGHT</b>
         </span>
       </button>
-      <div className="season-pill">
-        <i /> SEASON ZERO <span>{networkPill}</span>
+      <div className="topbar-net-cluster">
+        <div className="season-pill" title={demoMode ? 'Local demo (offline) — network below is for live play' : undefined}>
+          <i /> SEASON ZERO <span>{networkPill}</span>
+        </div>
+        <div className="conn-net-toggle topbar-net-toggle" role="group" aria-label="Midnight network">
+          {NETWORKS.map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              className={networkKey === key ? 'active' : undefined}
+              aria-pressed={networkKey === key}
+              onClick={() => onNetworkChange(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
       <nav className="desktop-nav" aria-label="Primary">
         <button

@@ -853,3 +853,259 @@ body.reduced-motion .box-3d.hinged-box .front .reveal-carrot{animation:none!impo
   .box-3d.hinged-box .front b{font-size:36px}
   .box-3d.hinged-box .hinge{width:9px;height:11px}
 }
+
+
+/* =========================================================
+   PREPROD DEFAULT + VISIBLE NETWORK + MOBILE 2026-09-16
+   ========================================================= */
+
+.topbar-net-cluster{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:6px;
+  min-width:0;
+  flex:0 1 auto;
+}
+.topbar-net-toggle{
+  margin:0!important;
+  flex-shrink:0;
+}
+.topbar-net-toggle button{
+  padding:6px 8px!important;
+  font-size:9px!important;
+  letter-spacing:.35px;
+  white-space:nowrap;
+}
+.welcome-net-toggle{
+  margin:0!important;
+  flex-shrink:0;
+}
+.welcome-net-toggle button{
+  padding:7px 9px!important;
+  font-size:10px!important;
+}
+
+/* Room HUD — do not clip title on narrow screens */
+.round-label{
+  min-width:0;
+  padding:0 8px;
+}
+.round-label small.hud-room-access,
+.round-label small{
+  display:block;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  line-height:1.35;
+  max-width:100%;
+}
+.round-label b.hud-room-id{
+  display:block;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  line-height:1.15;
+  font-size:clamp(14px,4.2vw,21px)!important;
+}
+
+/* Modals: fit viewport, scroll, safe padding */
+.modal,
+.win-popup,
+.result-popup,
+.error-popup,
+.matchmaking-popup,
+.chooser-overlay,
+.detailed-rules-modal{
+  max-height:min(92vh,920px);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  box-sizing:border-box;
+}
+
+@media(max-width:640px){
+  .topbar.topbar-polish{
+    height:auto!important;
+    min-height:0;
+    padding:10px 12px!important;
+    flex-wrap:wrap;
+    align-items:flex-start;
+    row-gap:10px;
+    column-gap:10px;
+  }
+  .topbar-polish .brand{
+    order:1;
+    flex:0 0 auto;
+  }
+  .topbar-net-cluster{
+    order:3;
+    flex:1 1 100%;
+    width:100%;
+    flex-direction:row;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .season-pill{
+    display:flex!important;
+    font-size:11px!important;
+    letter-spacing:1px;
+    min-width:0;
+  }
+  .season-pill span{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    max-width:42vw;
+  }
+  .topbar-net-toggle{
+    width:100%;
+    max-width:100%;
+  }
+  .topbar-net-toggle button{
+    flex:1;
+    min-width:0;
+    padding:8px 4px!important;
+    font-size:10px!important;
+  }
+  .topbar-polish .desktop-nav{display:none}
+  .account-area-roomy{
+    order:2;
+    margin-left:auto;
+    gap:6px!important;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    max-width:58%;
+  }
+  .balance-roomy{
+    height:42px!important;
+    min-width:0!important;
+    padding:4px 8px!important;
+  }
+  .balance-roomy small{font-size:9px!important}
+  .balance-roomy b{font-size:14px!important}
+  /* Keep wallet visible on mobile (was hidden at 560px) */
+  .wallet-roomy,
+  .wallet{
+    display:inline-flex!important;
+    height:42px!important;
+    max-width:min(140px,42vw);
+    padding:0 10px!important;
+    font-size:11px!important;
+  }
+  .wallet-roomy .wallet-label{max-width:96px}
+  .sound-toggle.compact{display:inline-flex!important}
+
+  .game-hud{
+    height:auto;
+    min-height:64px;
+    padding:10px 12px!important;
+    grid-template-columns:1fr;
+    gap:8px;
+    text-align:center;
+  }
+  .game-hud .hud-left,
+  .game-hud .pot{
+    justify-self:center;
+  }
+  .game-hud .round-label{order:-1}
+  .hud-left{flex-wrap:wrap;justify-content:center}
+
+  .room-shell{display:block}
+  .audience-rail{
+    height:auto!important;
+    min-height:0;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:10px 12px!important;
+  }
+  .room-invite-chip{
+    width:100%;
+    margin-top:0;
+    order:5;
+  }
+  .room-invite-actions{
+    flex-direction:row;
+    flex-wrap:wrap;
+  }
+  .room-invite-actions button{
+    flex:1 1 auto;
+    min-width:120px;
+  }
+  .room-shell .arena{
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+  .room-shell .table{
+    gap:8px!important;
+    height:auto;
+    min-height:220px;
+    flex-wrap:wrap;
+  }
+  .room-shell .game-actions{
+    width:100%;
+    padding:0 4px;
+  }
+  .room-shell .game-actions .primary,
+  .room-shell .game-actions .secondary,
+  .decision-buttons{
+    width:100%;
+    max-width:360px;
+  }
+  .decision-buttons{flex-wrap:wrap;justify-content:center}
+  .decision-buttons button{flex:1 1 140px;min-width:0}
+
+  .modal,
+  .win-popup,
+  .result-popup{
+    width:calc(100vw - 24px)!important;
+    max-width:calc(100vw - 24px);
+    padding:22px 16px!important;
+    top:50%;
+    left:50%;
+  }
+  .quick-wagers{grid-template-columns:repeat(3,1fr)}
+  .match-type{grid-template-columns:1fr}
+
+  .welcome-nav{
+    height:auto;
+    min-height:70px;
+    padding:10px 14px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .welcome-nav-actions{
+    width:100%;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:8px;
+  }
+  .welcome-net-toggle{width:100%;max-width:320px}
+  .welcome-net-toggle button{flex:1}
+
+  .lobby-hero{padding:24px 16px 12px}
+  .action-strip{padding:12px}
+  .panel-head{flex-wrap:wrap;gap:10px}
+  .direct-inbox .panel-head>div:last-child{
+    width:100%;
+    flex-wrap:wrap;
+  }
+  .direct-inbox .panel-head input{
+    flex:1 1 120px;
+    width:auto!important;
+    min-width:0;
+  }
+
+  .drawer-panel{
+    width:100vw!important;
+    max-width:100vw;
+    padding:24px 16px!important;
+  }
+}
+
+@media(max-width:390px){
+  .topbar-net-toggle button{font-size:9px!important;padding:7px 2px!important}
+  .brand{font-size:12px}
+  .round-label b.hud-room-id{font-size:14px!important}
+  .room-shell .box-3d.hinged-box{width:100px;height:84px}
+}
