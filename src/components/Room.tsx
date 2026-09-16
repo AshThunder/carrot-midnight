@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ChatPanel } from '@/components/ChatPanel'
 import { ResultModal } from '@/components/ResultModal'
 import { Icon } from '@/components/game/SvgDefs'
+import { Box3d } from '@/components/game/Box3d'
 import type { useLocalGame } from '@/hooks/useLocalGame'
 import { canCreatorCancel, canPostChat, canSettleReveal, shortId } from '@/domain/game'
 import { potFromWager } from '@/domain/matchHistory'
@@ -100,6 +101,7 @@ function phaseCopy(api: LocalGameApi): {
   }
 }
 
+
 function Box3D({
   yours,
   open,
@@ -115,32 +117,18 @@ function Box3D({
   onClick?: () => void
   label: string
 }) {
-  const classes = [
-    'box-3d',
-    open ? 'open' : '',
-    locked && !open ? 'locked' : '',
-    open ? (hasCarrot ? 'has-carrot' : 'empty') : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
-
-  const inner = (
-    <>
-      <div className="lid" />
-      <div className="front">{locked && !open ? <Icon id="lock" /> : <b>?</b>}</div>
-    </>
-  )
-
   return (
     <div className={`box-wrap${yours ? ' yours' : ''}`}>
       <span>{label}</span>
-      {onClick ? (
-        <button className={classes} type="button" onClick={onClick}>
-          {inner}
-        </button>
-      ) : (
-        <div className={classes}>{inner}</div>
-      )}
+      <Box3d
+        open={open}
+        locked={locked && !open}
+        hasCarrot={open && !!hasCarrot}
+        empty={open && !hasCarrot}
+        asButton={!!onClick}
+        onClick={onClick}
+        id={yours ? 'peekBox' : 'rivalBox'}
+      />
     </div>
   )
 }
