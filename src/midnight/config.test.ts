@@ -23,9 +23,11 @@ import type { InitialAPI } from '@midnight-ntwrk/dapp-connector-api'
 import { validatePassword } from '@midnight-ntwrk/midnight-js-utils'
 
 describe('midnight config + stubs', () => {
-  it('resolves local and preview configs', () => {
+  it('resolves local, preview, and preprod configs', () => {
     expect(getConfig('local').networkId).toBe('undeployed')
     expect(getConfig('preview').indexer).toContain('preview.midnight.network')
+    expect(getConfig('preview').faucet).toContain('/api/drips')
+    expect(getConfig('preprod').networkId).toBe('preprod')
     expect(networkIdForSdk(NETWORKS.preview)).toBe('preview')
     expect(() => getConfig('mainnet' as 'local')).toThrow()
   })

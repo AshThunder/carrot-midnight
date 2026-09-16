@@ -7,7 +7,7 @@ type TopbarProps = {
   activeTab: LobbyTab
   myCount: number
   directCount: number
-  stash: number
+  stash: number | null
   walletLabel: string
   soundOn: boolean
   onToggleSound: () => void
@@ -86,13 +86,15 @@ export function Topbar({
             ♪
           </button>
         </div>
-        <div className="balance">
-          <Icon id="carrot" />
-          <span>
-            <small>YOUR STASH</small>
-            <b>{stash}</b>
-          </span>
-        </div>
+        {stash != null && (
+          <div className="balance" title="Demo stash (localStorage)">
+            <Icon id="carrot" />
+            <span>
+              <small>YOUR STASH</small>
+              <b>{stash}</b>
+            </span>
+          </div>
+        )}
         <button className="wallet" type="button" onClick={onWallet}>
           {walletLabel} <span />
         </button>

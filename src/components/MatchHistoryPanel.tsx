@@ -1,7 +1,4 @@
 import { useMemo, useState } from 'react'
-import { Button } from '@/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/card'
-import { Badge } from '@/ui/badge'
 import { shortId } from '@/domain/game'
 import {
   buildLeaderboard,
@@ -10,10 +7,11 @@ import {
   type MatchHistoryEntry,
 } from '@/domain/matchHistory'
 
-function phaseTone(phase: MatchHistoryEntry['phase']): string {
-  if (phase === 'SETTLED') return 'border-carrot/40 bg-carrot/10 text-carrot'
-  if (phase === 'FORFEITED') return 'border-red-400/40 bg-red-400/10 text-red-300'
-  return 'border-slate-500/40 bg-slate-500/10 text-slate-300'
+function statusClass(phase: MatchHistoryEntry['phase']): string {
+  if (phase === 'SETTLED') return 'won'
+  if (phase === 'FORFEITED') return 'lost'
+  if (phase === 'CANCELLED') return 'cancelled'
+  return 'active'
 }
 
 export function MatchHistoryPanel({ refreshKey = 0 }: { refreshKey?: number }) {
@@ -30,83 +28,86 @@ export function MatchHistoryPanel({ refreshKey = 0 }: { refreshKey?: number }) {
   }, [refreshKey, cleared])
 
   return (
-    <section className="mx-auto grid max-w-5xl gap-6 px-4 pb-8 lg:grid-cols-2">
-      <Card>
-        <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0">
-          <div>
-            <CardTitle>Match history</CardTitle>
-            <CardDescription>Settled · cancelled · forfeited (this browser).</CardDescription>
-          </div>
-          <Button
-            size="sm"
-            variant="ghost"
-            disabled={entries.length === 0}
-            onClick={() => {
-              clearMatchHistory()
-              setCleared((n) => n + 1)
-            }}
-          >
-            Clear
-          </Button>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {entries.length === 0 && (
-            <p className="rounded-xl border border-dashed border-midnight-border p-4 text-sm text-slate-500">
-              Finish a local match to populate history.
-            </p>
-          )}
-          {entries.map((e) => (
-            <div
-              key={`${e.id}-${e.finishedAt}`}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-midnight-border bg-midnight/40 px-3 py-2 text-sm"
-            >
-              <div className="min-w-0">
-                <p className="font-semibold text-slate-200">
-                  {e.pot} 🥕 pot · {e.access}
-                </p>
-                <p className="truncate text-xs text-slate-500">
-                  {shortId(e.creatorId)}
-                  {e.opponentId ? ` vs ${shortId(e.opponentId)}` : ''}
-                  {e.winnerId ? ` · won by ${shortId(e.winnerId)}` : ''}
-                </p>
-              </div>
-              <Badge className={`font-normal ${phaseTone(e.phase)}`}>{e.phase}</Badge>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+    <div className="history-skin">
+      <div className="history-toolbar">
+        <button
+          className="text-button"
+          type="button"
+          disabled={entries.length === 0}
+          onClick={() => {
+            clearMatchHistory()
+            setCleared((n) => n + 1)
+          }}
+        >
+          CLEAR HISTORY
+        </button>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Local leaderboard</CardTitle>
-          <CardDescription>From your match history — wins, pots, forfeits.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {board.length === 0 && (
-            <p className="rounded-xl border border-dashed border-midnight-border p-4 text-sm text-slate-500">
-              No ranked players yet.
-            </p>
-          )}
-          {board.map((row, i) => (
-            <div
-              key={row.playerId}
-              className="flex items-center justify-between gap-3 rounded-xl border border-midnight-border bg-midnight/40 px-3 py-2 text-sm"
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="w-6 text-center font-mono text-slate-500">#{i + 1}</span>
-                <div className="min-w-0">
-                  <p className="truncate font-semibold text-slate-100">{shortId(row.playerId, 8, 4)}</p>
-                  <p className="text-xs text-slate-500">
-                    {row.wins}W / {row.losses}L · {row.settled} settled · {row.forfeitsWon} forfeit
-                    wins
-                  </p>
-                </div>
-              </div>
-              <span className="shrink-0 font-semibold text-carrot">{row.carrotsWon} 🥕</span>
+      <div className="history-list" id="matchHistoryList">
+        {entries.length === 0 && (
+          <div className="account-empty">
+            <strong>No matches yet</strong>
+            <p>Finish a local table to populate history in this browser.</p>
+          </div>
+        )}
+        {entries.map((e) => (
+          <div key={`${e.id}-${e.finishedAt}`} className="account-history-row">
+            <div className="history-top">
+              <b>
+                {e.pot} 🥕 pot · {e.access}
+              </b>
+              <span className={`history-status ${statusClass(e.phase)}`}>{e.phase}</span>
             </div>
-          ))}
-        </CardContent>
-      </Card>
-    </section>
+            <small>
+              {shortId(e.creatorId)}
+              {e.opponentId ? ` vs ${shortId(e.opponentId)}` : ''}
+              {e.winnerId ? ` · won by ${shortId(e.winnerId)}` : ''}
+            </small>
+            <div className="history-values">
+              <span>
+                Finished
+                <b>{new Date(e.finishedAt).toLocaleString()}</b>
+              </span>
+              <span>
+                Pot
+                <b>{e.pot} 🥕</b>
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="eyebrow" style={{ marginTop: 28 }}>
+        THIS BROWSER
+      </div>
+      <h3 className="history-leaders-title">LOCAL LEADERBOARD</h3>
+      <p className="drawer-lead" style={{ marginTop: 0 }}>
+        Wins, pots, and forfeits from match history.
+      </p>
+      <div className="history-list">
+        {board.length === 0 && (
+          <div className="account-empty">
+            <strong>No ranked players yet</strong>
+            <p>Settle or forfeit a match to seed the board.</p>
+          </div>
+        )}
+        {board.map((row, i) => (
+          <div key={row.playerId} className="leader-row">
+            <b>#{i + 1}</b>
+            <span className={`avatar ${['orange', 'pink', 'green', 'blue'][i % 4]}`}>
+              {shortId(row.playerId, 2, 0).slice(0, 2)}
+            </span>
+            <div>
+              <strong>{shortId(row.playerId, 8, 4)}</strong>
+              <small>
+                {row.wins}W / {row.losses}L · {row.settled} settled · {row.forfeitsWon} forfeit
+                wins
+              </small>
+            </div>
+            <em>{row.carrotsWon} 🥕</em>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }

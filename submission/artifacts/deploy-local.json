@@ -1,0 +1,28 @@
+{
+  "ok": false,
+  "stage": "stack",
+  "error": "Local stack not ready. On Mac: Docker Desktop → npm run env:up (see docs/LIVE_STACK.md).",
+  "health": {
+    "proof-server": {
+      "ok": false,
+      "detail": "fetch failed"
+    },
+    "node": {
+      "ok": false,
+      "detail": "fetch failed"
+    },
+    "indexer": {
+      "ok": false,
+      "detail": "fetch failed"
+    },
+    "ready": false
+  },
+  "macCommands": [
+    "docker compose version",
+    "cd /path/to/carrot-midnight && npm run env:up",
+    "curl -s http://127.0.0.1:6300/health",
+    "curl -s http://127.0.0.1:9944/health",
+    "npm run deploy:local"
+  ],
+  "at": "2026-09-16T05:55:26.581Z"
+}

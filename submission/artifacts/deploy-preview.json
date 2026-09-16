@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "stage": "wallet-start",
+  "error": "Wallet sync timeout after 90000ms",
+  "address": "mn_addr_preview14s7gdd3tpmmajua6fnnlgzl04x34wu236zhc0d2rg3qqsdw4xyhssn20w4",
+  "proof": {
+    "url": "https://api-preview.1am.xyz",
+    "source": "proofstation"
+  },
+  "at": "2026-09-16T05:52:26.608Z"
+}

@@ -1,45 +1,39 @@
 # Akindo / Midnight buildathon checklist
 
-Use this before publishing the GitHub repo and submission form.
-
 ## Repo hygiene
 
-- [ ] Public GitHub repository
-- [ ] Topic / tag: **`midnightntwrk`**
-- [ ] License file: **Apache-2.0** (see `/LICENSE`)
-- [ ] Clear README with gameflow, privacy model, setup, Wave status
-- [ ] `STATUS.md` current (W0.5+)
-- [ ] No forbidden legacy-chain branding in copy or commits intended for review
+- [x] Public GitHub — https://github.com/AshThunder/carrot-midnight
+- [ ] Topic **`midnightntwrk`** (confirm in GitHub settings)
+- [x] License **Apache-2.0**
+- [x] README + `STATUS.md` current
+- [x] Live UI — https://carrot-midnight.vercel.app
+- [x] No forbidden legacy-chain branding
 
 ## Compact / Midnight
 
-- [ ] Compiling Compact contract (`npm run compile` → 9 circuits)
-- [ ] `pragma language_version` ≥ 0.23
-- [ ] Dual-ledger commit–reveal described (README + Fairness panel + this pack)
-- [ ] midnight-js wiring present (4.1.1); live deploy gated honestly when Docker/Lace absent
+- [x] Compiling Compact (`npm run compile` → 9 circuits)
+- [x] `pragma language_version` ≥ 0.23
+- [x] Dual-ledger commit–reveal in README + Rules modal
+- [x] midnight-js 4.1.1 wiring; deploy gated until Ready
+- [x] **Local Undeployed** scripts: `npm run env:up` → `deploy:local` / `test:local` (genesis, no faucet)
+- [ ] `submission/artifacts/deploy-local.json` with `contractAddress` (run on Mac Docker)
 
 ## Product demo
 
-- [ ] Local demo playable without wallet/Docker
-- [ ] Pitch one-pager: `docs/PITCH.md`
-- [ ] Demo script (~3–4 min): `docs/DEMO_SCRIPT.md` — include invite multi-tab + fairness panel beats
-- [ ] Screenshot / shot list noted in README (or `docs/screenshots/`)
-- [ ] Optional: short screen recording of settle modal + invite link
+- [x] Local demo without wallet/Docker (Welcome → Lobby → Room)
+- [x] `docs/PITCH.md` · `docs/DEMO_SCRIPT.md` · `submission/LIVE_DEMO.md`
+- [x] `docs/LIVE_STACK.md` — **local first**, Preview secondary
 
 ## Quality gate
 
 ```bash
-source "$HOME/.local/bin/env"   # Node 22 PATH
-cd /workspace/midnight-carrot
-npm run check   # test + lint + build + compile
+npm run check          # always
+npm run test:local     # vitest; + deploy when Docker up
 ```
 
-- [ ] `npm run check` green on clean machine
-- [ ] Document Docker blocker honestly if live stack not demonstrated
+## Narrative
 
-## Submission narrative (suggested)
-
-1. **What:** Private carrot-in-a-box bluffing on Midnight.
-2. **Why Midnight:** Public fairness + private location until intentional disclose.
-3. **Proof:** Compiling Compact + offline product depth + roadmap to live proofs.
-4. **Ask:** Review local demo + Compact; W1 live txs when host has Docker + Lace.
+1. **What:** Private carrot-in-a-box bluffing on Midnight.  
+2. **Why Midnight:** Public fairness + private location until disclose.  
+3. **Proof:** Compiling Compact + polished offline demo + local deploy scripts.  
+4. **Live txs:** Undeployed via Docker genesis wallet when daemon available.

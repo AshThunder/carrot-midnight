@@ -238,18 +238,35 @@ export function Room({ api }: { api: LocalGameApi }) {
               <span>B</span>
             </button>
           </div>
-          {api.inviteUrl && (
-            <button
-              className="invite-room"
-              type="button"
-              onClick={() => {
-                void navigator.clipboard?.writeText(api.inviteUrl!)
-                flashUi('ok')
-              }}
-            >
-              COPY INVITE
-            </button>
-          )}
+          <div className="room-invite-chip">
+            <b>JOIN CODE</b>
+            <span className="invite-code">{api.joinCode || shortId(game.id, 4, 4)}</span>
+            <small>Share link or code for multi-tab play</small>
+            <div className="room-invite-actions">
+              {api.inviteUrl && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    void navigator.clipboard?.writeText(api.inviteUrl!)
+                    flashUi('ok')
+                  }}
+                >
+                  COPY INVITE LINK
+                </button>
+              )}
+              {api.joinCode && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    void navigator.clipboard?.writeText(api.joinCode!)
+                    flashUi('ok')
+                  }}
+                >
+                  COPY JOIN CODE
+                </button>
+              )}
+            </div>
+          </div>
         </aside>
 
         <div className="arena">

@@ -6,8 +6,9 @@
 |-------|----------------|
 | **Compact** (`carrot-game.compact`) | 9 circuits: create / accept / cancel / decide / chat ciphertext hash / settle / forfeit. Public: phase, wager, commitment, decision. Private witnesses: location + salt until settle `disclose()`. |
 | **Domain** (`src/domain/`) | Pure TS mirror of phases, deadlines, winner math, lobby floor, match history, invite codes, multi-tab session sync. |
-| **UI** (`src/components/`) | Lobby, Room, InviteBar, FairnessPanel, GSAP HingedBox + ResultModal, ConnectionPanel, encrypted ChatPanel. |
-| **Midnight JS** (`src/midnight/`) | Network config, DApp Connector, stack health probes, provider plan, deploy/call service **gated** until Ready. |
+| **UI** (`src/components/`) | Welcome → Lobby → Room (game.css skin), ConnectionPanel + MatchHistoryPanel drawers, Box3d + ResultModal, encrypted ChatPanel. |
+| **Midnight JS** (`src/midnight/`) | Network config (local / preview / preprod), DApp Connector, stack health probes, provider plan, deploy/call service **gated** until Ready. |
+| **Preview scripts** (`scripts/preview-*.mjs`) | Docker-free wallet seed, faucet drip attempt, deploy/smoke against public endpoints + ProofStation. |
 
 ## Local multi-tab invite
 
@@ -19,7 +20,7 @@ Same-origin only; no network transport claimed.
 
 ## Fairness (Midnight-native)
 
-**Commit** → public hash at create · **Peek** → private state only · **Selective disclose** → witnesses verified in-circuit at settle.
+**Commit** → public hash at create · **Peek** → private state only · **Selective disclose** → witnesses verified in-circuit at settle. Explained in Rules modal + README.
 
 ## Toolchain
 

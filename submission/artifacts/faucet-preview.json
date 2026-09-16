@@ -1,0 +1,9 @@
+{
+  "networkId": "preview",
+  "address": "mn_addr_preview14s7gdd3tpmmajua6fnnlgzl04x34wu236zhc0d2rg3qqsdw4xyhssn20w4",
+  "faucetStatus": "captcha-blocked",
+  "faucetUi": "https://midnight-tmnight-preview.nethermind.dev/",
+  "faucetApi": "https://faucet.preview.midnight.network/api/drips",
+  "at": "2026-09-16T05:50:04.153Z",
+  "note": "API drip requires captcha; use browser faucet UI then continue preview:deploy"
+}

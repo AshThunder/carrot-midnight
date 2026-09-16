@@ -1,6 +1,6 @@
 import type { NetworkId } from './types'
 
-/** Network endpoints for Midnight stacks. */
+/** Network endpoints for Midnight stacks (docs.midnight.network environment reference). */
 export type NetworkConfig = {
   networkId: NetworkId
   label: string
@@ -10,6 +10,8 @@ export type NetworkConfig = {
   nodeWS: string
   proofServer: string
   faucet: string
+  /** Browser faucet UI (captcha). API drip is `${faucet}/api/drips` when hosted on faucet.*. */
+  faucetUi?: string
 }
 
 export const LOCAL_CONFIG: NetworkConfig = {
@@ -23,7 +25,11 @@ export const LOCAL_CONFIG: NetworkConfig = {
   faucet: '',
 }
 
-/** Preview public endpoints (wallet proving or self-hosted proof server). */
+/**
+ * Preview public endpoints.
+ * Proof server: prefer local :6300; headless scripts may use 1AM ProofStation
+ * (https://api-preview.1am.xyz) when Docker is unavailable.
+ */
 export const PREVIEW_CONFIG: NetworkConfig = {
   networkId: 'preview',
   label: 'Midnight preview',
@@ -31,21 +37,38 @@ export const PREVIEW_CONFIG: NetworkConfig = {
   indexerWS: 'wss://indexer.preview.midnight.network/api/v4/graphql/ws',
   node: 'https://rpc.preview.midnight.network',
   nodeWS: 'wss://rpc.preview.midnight.network',
-  proofServer: '', // use ConnectedAPI.getProvingProvider when extension is connected
-  faucet: 'https://faucet.preview.midnight.network',
+  proofServer: 'http://127.0.0.1:6300',
+  faucet: 'https://faucet.preview.midnight.network/api/drips',
+  faucetUi: 'https://midnight-tmnight-preview.nethermind.dev/',
 }
 
-export const NETWORKS: Record<'local' | 'preview', NetworkConfig> = {
+export const PREPROD_CONFIG: NetworkConfig = {
+  networkId: 'preprod',
+  label: 'Midnight preprod',
+  indexer: 'https://indexer.preprod.midnight.network/api/v4/graphql',
+  indexerWS: 'wss://indexer.preprod.midnight.network/api/v4/graphql/ws',
+  node: 'https://rpc.preprod.midnight.network',
+  nodeWS: 'wss://rpc.preprod.midnight.network',
+  proofServer: 'http://127.0.0.1:6300',
+  faucet: 'https://faucet.preprod.midnight.network/api/drips',
+  faucetUi: 'https://midnight-tmnight-preprod.nethermind.dev/',
+}
+
+export const NETWORKS: Record<'local' | 'preview' | 'preprod', NetworkConfig> = {
   local: LOCAL_CONFIG,
   preview: PREVIEW_CONFIG,
+  preprod: PREPROD_CONFIG,
 }
+
+/** Optional ProofStation URL for Docker-free Preview proving (1AM). */
+export const PREVIEW_PROOFSTATION = 'https://api-preview.1am.xyz'
 
 export function getConfig(override?: string): NetworkConfig {
   const env = (import.meta as ImportMeta & { env?: Record<string, string> }).env
   const network = (override ?? env?.VITE_MIDNIGHT_NETWORK ?? 'local') as keyof typeof NETWORKS
   const cfg = NETWORKS[network]
   if (!cfg) {
-    throw new Error(`Unknown network: ${network}. Use local or preview.`)
+    throw new Error(`Unknown network: ${network}. Use local, preview, or preprod.`)
   }
   return cfg
 }

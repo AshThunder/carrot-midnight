@@ -1,9 +1,11 @@
 /**
  * Subtle optional UI feedback — CSS class flashes + tiny Web Audio beeps.
- * Sound is off by default; no asset files required.
+ * Sound is off by default; master toggle also mutes background <audio>.
  */
 
 const SOUND_KEY = 'carrot-midnight:sound-enabled:v1'
+const STASH_KEY = 'carrot-midnight:demo-stash:v1'
+const BG_AUDIO_ID = 'backgroundMusic'
 
 export type FeedbackKind = 'ok' | 'warn' | 'decide' | 'settle' | 'tap'
 
@@ -15,9 +17,47 @@ export function isSoundEnabled(): boolean {
   }
 }
 
+/** Mute/unmute background loop + gate UI beeps. */
+export function applyBackgroundAudio(on: boolean): void {
+  if (typeof document === 'undefined') return
+  const el = document.getElementById(BG_AUDIO_ID) as HTMLAudioElement | null
+  if (!el) return
+  el.muted = !on
+  el.volume = on ? 0.32 : 0
+  if (on) {
+    void el.play().catch(() => undefined)
+  } else {
+    el.pause()
+  }
+}
+
 export function setSoundEnabled(on: boolean): void {
   try {
     localStorage.setItem(SOUND_KEY, on ? '1' : '0')
+  } catch {
+    /* ignore */
+  }
+  applyBackgroundAudio(on)
+}
+
+/** Demo carrot stash for topbar — seeds 1000 on first read. */
+export function getDemoStash(): number {
+  try {
+    const raw = localStorage.getItem(STASH_KEY)
+    if (raw == null) {
+      localStorage.setItem(STASH_KEY, '1000')
+      return 1000
+    }
+    const n = Number(raw)
+    return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 1000
+  } catch {
+    return 1000
+  }
+}
+
+export function setDemoStash(n: number): void {
+  try {
+    localStorage.setItem(STASH_KEY, String(Math.max(0, Math.floor(n))))
   } catch {
     /* ignore */
   }
@@ -27,7 +67,9 @@ let audioCtx: AudioContext | null = null
 
 function ctx(): AudioContext | null {
   if (typeof window === 'undefined') return null
-  const AC = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+  const AC =
+    window.AudioContext ||
+    (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
   if (!AC) return null
   if (!audioCtx) audioCtx = new AC()
   return audioCtx
@@ -36,7 +78,10 @@ function ctx(): AudioContext | null {
 /** Soft oscillator blip — skipped when sound disabled or reduced-motion. */
 export function playFeedback(kind: FeedbackKind = 'tap'): void {
   if (!isSoundEnabled()) return
-  if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  ) {
     return
   }
   const ac = ctx()
@@ -72,7 +117,6 @@ export function flashUi(kind: FeedbackKind = 'tap'): void {
   if (typeof document === 'undefined') return
   const cls = `ui-flash-${kind}`
   document.body.classList.remove(cls)
-  // force reflow so re-adding retriggers animation
   void document.body.offsetWidth
   document.body.classList.add(cls)
   window.setTimeout(() => document.body.classList.remove(cls), 450)

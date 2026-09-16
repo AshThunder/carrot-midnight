@@ -1,76 +1,70 @@
 # Carrot Midnight — Status
 
 **Date:** 2026-09-16 (WAT / Africa/Lagos)  
-**Pass:** W0.5 — shareable invites · fairness panel · submission pack · result choreography · `npm run check`
+**Pass:** W1-prep — UI polish · **local Undeployed deploy scripts** · submission pack
+
+## Links
+
+| | |
+|--|--|
+| GitHub | https://github.com/AshThunder/carrot-midnight |
+| Live UI | https://carrot-midnight.vercel.app |
+| Topic | `midnightntwrk` (add in GitHub settings if missing) |
+| Local stack | `compose.yml` / [midnight-local-dev](https://github.com/midnightntwrk/midnight-local-dev) |
 
 ## Compile / test / build
 
-✅ **`compactc` 0.34.0** — 9 circuits (`npm run compile`) · managed stamp `runtime-version: 0.19.0`  
-✅ **`npm test`** — domain + chat + invite/session + match history + midnight gates  
-✅ **`npm run lint`** (`tsc --noEmit`)  
-✅ **`npm run build`** (Vite + `vite-plugin-wasm`)  
-✅ **`npm run check`** — test + lint + build + compile
+✅ **`compactc` 0.34.0** — 9 circuits (`npm run compile`)  
+✅ **`npm test`** — 51 tests (domain + chat + invite + midnight gates)  
+✅ **`npm run lint`** / **`npm run build`** / **`npm run check`**
 
-## Implemented this pass (W0.5)
+## WaveHack deploy story (correct)
 
-- **Shareable room invites** — `?game=` / `?join=` URL + short join code; Lobby “Join with code”; Room InviteBar (copy link/code)
-- **Multi-tab local demo** — `localStorage` session + **BroadcastChannel** / `storage` sync; per-tab seat in `sessionStorage`
-- **Fairness explainer panel** — commitment · private peek · selective `disclose()` at settle (Midnight-native copy only)
-- **Submission pack** — `submission/WAVE_PROGRESS.md`, `ARCHITECTURE.md`, `AKINDO_CHECKLIST.md`
-- **ResultModal + HingedBox** — backdrop fade, staggered lid open, carrot spark/glow; reduced-motion still instant
-- **`npm run check`** script
+**Primary:** Local **Undeployed** via Docker — genesis wallet pre-funded, **no faucet**.
 
-## Prior (W0.4) still in tree
+```bash
+# Mac + Docker Desktop
+npm run env:up
+npm run deploy:local          # genesis seed …0001 → submission/artifacts/deploy-local.json
+npm run test:local            # vitest + deploy smoke when stack up
+```
 
-- Richer room UX (seats, pot, deadline, forfeit, result modal)
-- Match history + local leaderboard
-- Docs: PITCH, DEMO_SCRIPT, CONTRIBUTING; topic `midnightntwrk` noted
+**This box:** Docker daemon blocked (rootless overlay/iptables) → `deploy:local` / `test:local` probe fail with Mac instructions. Scripts ready for host with Docker.
 
-## Stubbed / not live yet (needs Docker + Lace/1AM)
+**Secondary:** Preview scripts (`preview:wallet|faucet|deploy`) kept for optional public testnet — captcha blocks faucet API here.
 
-- On-chain deploy/call **execution** (code path ready; gated until `canDeploy`)
-- Chat **network transport** (`postChatCiphertext` not submitted)
-- On-chain lobby index
-- Token/escrow pot (Zswap later)
+## Implemented this pass
+
+- UI: ConnectionPanel + MatchHistoryPanel game.css skin; sound mutes `<audio>` + beeps; demo stash; Room join-code HUD; dead chrome removed
+- Flow docs: Welcome → Lobby → Room
+- `scripts/deploy-local.mjs` + `npm run deploy:local` / `test:local`
+- `docs/LIVE_STACK.md` (local first) · expanded `docs/DOCKER.md` · `submission/LIVE_DEMO.md`
 
 ## Blockers on this box
 
 | Item | State | Impact |
 |------|-------|--------|
-| **Docker daemon** | Client present; cannot reach daemon (`/var/run/docker.sock`); rootless/`newuidmap` still insufficient for `env:up` | Cannot start proof/indexer/node → providers stay stub |
-| **Lace / 1AM extension** | Not in this headless box | Connect falls back to local demo; deploy/call stay disabled |
-| **Compact circuit simulator** | Not available as a compact unit-test harness here | Domain + hash + invite tests cover reveal/chat/sync instead |
-| **Node.js** | **v22.14.0** via `$HOME/.local/bin/env` | Use before npm |
+| **Docker daemon** | Rootless: overlay invalid + iptables missing | Cannot `env:up` here — use Mac Docker Desktop |
+| **Lace / 1AM** | Not in headless agent | UI Connect → local demo |
+| Preview faucet | Captcha on `/api/drips` | Optional path only |
 
-## Exact next steps — live stack (W1 finish)
+## Contract address (local)
 
-1. Host with working Docker Engine (rootful or rootless with working `newuidmap`/`newgidmap` + subuid):
-   ```bash
-   source "$HOME/.local/bin/env"
-   cd /workspace/midnight-carrot
-   npm run env:up
-   ```
-2. Connection panel stack dots green → **Connect** Lace/1AM on Local (`undeployed`).
-3. When **Ready**: **Deploy contract** → **Smoke call** (or lobby create/join against deployed address).
-4. Optional: Preview network + faucet.
+_Pending `npm run env:up` on a Docker host, then `npm run deploy:local` → fill from `submission/artifacts/deploy-local.json`._
 
-## How to run
+## How to run (offline demo always)
 
 ```bash
 source "$HOME/.local/bin/env"
 cd /workspace/midnight-carrot
-npm install
-npm run check          # test + lint + build + compile
-npm run dev
+npm install && npm run check && npm run dev
 ```
 
 ## Wave roadmap
 
 | Wave | Status | Scope |
 |------|--------|-------|
-| **W0–W0.3** | Done | Compact, domain, React/GSAP, connector, midnight-js 4.1.1 deploy gates |
-| **W0.4** | Done | Room UX depth, history/leaderboard, docs/CONTRIBUTING |
-| **W0.5** | **This pass** | Invites/multi-tab, fairness panel, submission pack, choreography, `check` |
-| **W1** | Blocked on Docker+Lace | Live deploy/call smoke |
-| **W2** | Planned | Escrow/token pot, lobby index |
-| **W3** | Planned | On-ledger chat, spectating, demo video |
+| **W0–W0.5** | Done | Compact 9 circuits, domain, UI, invites, submission pack |
+| **W1-prep** | **This pass** | UI polish, **local deploy scripts**, docs |
+| **W1** | Ready on Mac Docker | `env:up` → `deploy:local` smoke |
+| **W2+** | Planned | Escrow, lobby index, on-ledger chat |

@@ -4,6 +4,10 @@
 
 Package: `carrot-midnight` · License: **Apache-2.0** · Theme: carrots, boxes, privacy.
 
+- **GitHub:** https://github.com/AshThunder/carrot-midnight
+- **Live:** https://carrot-midnight.vercel.app
+- **GitHub topic:** `midnightntwrk`
+
 ## Gameflow
 
 1. **Player A** creates an **open** or **direct** challenge with a wager (listed on the local lobby floor).
@@ -38,7 +42,7 @@ See `contracts/carrot-game.compact` and `src/domain/settlement.ts`.
 contracts/carrot-game.compact   # 9 circuits (phases, commit, chat hash, settle)
 contracts/managed/              # Compiler output (keys, zkir, TS)
 src/domain/                     # Pure game + winner + lobby + match history + tests
-src/components/                 # Lobby, Room, ResultModal, MatchHistory, GSAP boxes, Connection
+src/components/                 # Welcome, Lobby, Room, ResultModal, MatchHistory, Connection drawers
 src/chat/                       # AES-GCM + ciphertext hash helpers
 src/midnight/                   # Config, DApp Connector, stack health, provider plan/stubs
 compose.yml                     # Local proof-server / indexer / node (needs Docker)
@@ -110,7 +114,8 @@ Expected: **9 circuits** (create/accept/cancel/decide/chat/settle/forfeit).
 | **W0.1** | Done | Reveal phase, lobby store, encrypted chat E2E local, deeper stubs, GSAP polish |
 | **W0.2** | Done | DApp Connector patterns, Connection panel, provider plan + stack probes |
 | **W0.3** | Done | midnight-js 4.1.1, real providers, deploy/call service + UI gates |
-| **W0.4** | **Current** | Richer room UX, match history/leaderboard, docs + CONTRIBUTING polish |
+| **W0.5** | Done | Invites, submission pack, `check` |
+| **W1-prep** | **Current** | UI polish, Preview wallet/faucet/deploy scripts, live-stack docs |
 | **W1** | Next | Docker stack live + Lace/1AM deploy/call smoke |
 | **W2** | Planned | Escrow/token pot, multi-game lobby index |
 | **W3** | Planned | Chat persistence on-ledger, spectating, demo video |
@@ -125,13 +130,18 @@ Expected: **9 circuits** (create/accept/cancel/decide/chat/settle/forfeit).
 | `npm run lint` | `tsc --noEmit` |
 | `npm run build` | Production Vite build |
 | `npm run dev` | Vite React UI |
-| `npm run env:up` / `env:down` | Docker local Midnight |
+| `npm run env:up` / `env:down` | Docker Undeployed stack (WaveHack primary) |
+| `npm run deploy:local` | Genesis-wallet deploy + smoke on Undeployed |
+| `npm run test:local` | Vitest + deploy:local when stack is up |
+| `npm run preview:*` | Optional Preview testnet helpers (secondary) |
 
 ## Docs
 
 - `docs/PITCH.md` — product pitch (matches current offline-first product)
 - `docs/DEMO_SCRIPT.md` — live demo flow (~3–4 min)
 - `docs/DOCKER.md` — Docker/rootless status on this box
+- `docs/LIVE_STACK.md` — Preview (no local node Docker) + local compose paths
+- `submission/LIVE_DEMO.md` — judge/self runbook
 - `STATUS.md` — blockers and what’s stubbed
 - `CONTRIBUTING.md` — PR checks + GitHub topic **`midnightntwrk`** when published
 

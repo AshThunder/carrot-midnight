@@ -1,0 +1,8 @@
+{
+  "networkId": "preview",
+  "unshieldedAddress": "mn_addr_preview14s7gdd3tpmmajua6fnnlgzl04x34wu236zhc0d2rg3qqsdw4xyhssn20w4",
+  "faucetUi": "https://midnight-tmnight-preview.nethermind.dev/",
+  "faucetApi": "https://faucet.preview.midnight.network/api/drips",
+  "createdAt": "2026-09-16T05:50:53.512Z",
+  "seedFile": "/workspace/midnight-carrot/.preview-wallet/seed-preview.txt"
+}

@@ -9,7 +9,7 @@ import { Topbar, type LobbyTab } from '@/components/game/Topbar'
 import { RulesModal } from '@/components/game/RulesModal'
 import { useLocalGame } from '@/hooks/useLocalGame'
 import { useMidnightConnection } from '@/hooks/useMidnightConnection'
-import { isSoundEnabled, setSoundEnabled, flashUi } from '@/lib/uiFeedback'
+import { isSoundEnabled, setSoundEnabled, flashUi, applyBackgroundAudio, getDemoStash } from '@/lib/uiFeedback'
 import { shortId } from '@/domain/game'
 import '@midnight-ntwrk/dapp-connector-api'
 
@@ -68,12 +68,19 @@ export function App() {
     [api.openListings, api.localAddress],
   )
 
+  const [stash] = useState(() => getDemoStash())
+
   const toggleSound = () => {
     const next = !soundOn
     setSoundEnabled(next)
     setSoundOn(next)
+    applyBackgroundAudio(next)
     if (next) flashUi('tap')
   }
+
+  useEffect(() => {
+    applyBackgroundAudio(soundOn)
+  }, [soundOn])
 
   const closeDrawer = () => setDrawer(null)
 
@@ -113,7 +120,7 @@ export function App() {
             activeTab={lobbyTab}
             myCount={myCount}
             directCount={directCount}
-            stash={0}
+            stash={stash}
             walletLabel={walletLabel}
             soundOn={soundOn}
             onToggleSound={toggleSound}
@@ -246,7 +253,7 @@ export function App() {
         </>
       )}
 
-      <audio id="backgroundMusic" src="/audio/carrot-box-scheme.mp3" loop preload="metadata" />
+      <audio id="backgroundMusic" src="/audio/carrot-box-scheme.mp3" loop preload="metadata" muted={!soundOn} />
     </>
   )
 }
