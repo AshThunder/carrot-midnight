@@ -8,6 +8,7 @@ import type { GameAccess } from '@/domain/game'
 import { shortId } from '@/domain/game'
 import { filterOpenFloor, type LobbyListing } from '@/domain/lobbyStore'
 import { buildLeaderboard, listMatchHistory, type MatchHistoryEntry } from '@/domain/matchHistory'
+import { WalletInstallCtas } from '@/components/WalletInstallCtas'
 
 const AVATAR_COLORS = ['orange', 'pink', 'green', 'blue'] as const
 
@@ -149,14 +150,17 @@ export function Lobby({
               <strong>WALLET REQUIRED</strong>
               <p>{playBlockedReason || 'Connect Lace or 1AM to play on this network.'}</p>
               <p className="wallet-gate-hints">
-                Install Lace/1AM · set wallet to {networkLabel} · proof server{' '}
+                Desktop: install Lace or 1AM below · set wallet to {networkLabel} · proof server{' '}
                 <span className="mono">:6300</span> · Preprod faucet if needed. Or switch network to{' '}
                 <b>LOCAL</b> for offline demo.
               </p>
             </div>
-            <button className="primary" type="button" onClick={() => onConnectWallet?.()}>
-              CONNECT LACE / 1AM
-            </button>
+            <div className="wallet-gate-actions">
+              <button className="primary" type="button" onClick={() => onConnectWallet?.()}>
+                CONNECT LACE / 1AM
+              </button>
+              <WalletInstallCtas variant="gate" />
+            </div>
           </div>
         )}
 

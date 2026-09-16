@@ -79,11 +79,16 @@ npm run dev              # Vite UI on :5173
 
 ### Wallet (DApp Connector)
 
-- Install **Lace** or **1AM** (Midnight DApp Connector) for live networks
-- Detects injectors via `window.midnight`; Connect in Settings → Connection
-- Set wallet network to match UI (**Preprod** for Wave 1)
+- Install **Lace** or **1AM** (Midnight DApp Connector) for live networks — desktop CTAs open the correct store:
+  - **Lace (Chrome / Chromium):** https://chromewebstore.google.com/detail/lace/gafhhkghbfjjkeiendhlofajokpaflmk
+  - **Lace (Firefox):** https://addons.mozilla.org/firefox/addon/lace-wallet/
+  - **Lace site:** https://www.lace.io/
+  - **1AM (Chrome Web Store):** https://chromewebstore.google.com/detail/1am/bphnkdkcnfhompoegfpgnkidcjfbojjp
+  - **1AM site:** https://1am.xyz/
+- Detects injectors via `window.midnight`; Connect in Settings → Connection (or use **Install Lace / Install 1AM** when none is detected)
+- After install: refresh / **Rescan wallets**, then set wallet network to match UI (**Preprod** for Wave 1)
 - Local proof server `http://127.0.0.1:6300` required for live prove
-- When no extension is present on Preprod/Preview: gameplay actions stay disabled with a Connect CTA (use **Local demo → LOCAL** for offline play)
+- When no extension is present on Preprod/Preview: gameplay actions stay disabled with Connect + install CTAs (use **Local demo → LOCAL** for offline play)
 
 ### Local Midnight stack (optional — Docker required)
 

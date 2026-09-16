@@ -305,7 +305,11 @@ export function App() {
                 ENABLE → LOCAL
               </button>
             </label>
-            <div style={{ marginTop: 18 }}>
+            <div className="drawer-connection-block">
+              <div className="drawer-section-label">MIDNIGHT CONNECTION</div>
+              <p className="drawer-section-hint">
+                Network, Lace / 1AM wallet, stack health, and deploy tools.
+              </p>
               <ConnectionPanel
                 snapshot={midnight.snapshot}
                 probing={midnight.probing}

@@ -8,6 +8,7 @@ import { canCreatorCancel, canPostChat, canSettleReveal, shortId } from '@/domai
 import { potFromWager } from '@/domain/matchHistory'
 import { flashUi } from '@/lib/uiFeedback'
 import { useCountdown } from '@/hooks/useCountdown'
+import { WalletInstallCtas } from '@/components/WalletInstallCtas'
 
 type LocalGameApi = ReturnType<typeof useLocalGame>
 
@@ -220,10 +221,16 @@ export function Room({
           <div>
             <strong>WALLET REQUIRED</strong>
             <p>{playBlockedReason || 'Connect Lace or 1AM to continue this match.'}</p>
+            <p className="wallet-gate-hints">
+              After install, refresh the page / Rescan wallets, then set wallet network to Preprod.
+            </p>
           </div>
-          <button className="primary" type="button" onClick={() => onConnectWallet?.()}>
-            CONNECT LACE / 1AM
-          </button>
+          <div className="wallet-gate-actions">
+            <button className="primary" type="button" onClick={() => onConnectWallet?.()}>
+              CONNECT LACE / 1AM
+            </button>
+            <WalletInstallCtas variant="gate" />
+          </div>
         </div>
       )}
       {playAllowed && offlineSimulation && (

@@ -3,6 +3,7 @@ import type { DetectedWallet } from '@/midnight/dappConnector'
 import type { DeployServiceState } from '@/midnight/deployService'
 import type { NetworkKey } from '@/midnight/knownContracts'
 import { PREPROD_CONTRACT_ADDRESS, PREPROD_DEPLOY_TX_ID } from '@/midnight/knownContracts'
+import { WalletInstallCtas } from '@/components/WalletInstallCtas'
 
 function StatusDot({ ok }: { ok: boolean }) {
   return <i className={`conn-dot${ok ? ' ok' : ''}`} aria-hidden />
@@ -96,6 +97,10 @@ export function ConnectionPanel({
           </li>
         </ul>
       </div>
+
+      {detectedWallets.length === 0 && !walletConnected && (
+        <WalletInstallCtas variant="card" />
+      )}
 
       <div className="conn-grid">
         <div className="wallet-box">
