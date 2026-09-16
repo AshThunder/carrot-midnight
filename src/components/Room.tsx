@@ -449,7 +449,7 @@ export function Room({
 
             {game.phase === 'WAITING_FOR_DECISION' && (
               <button
-                className="secondary"
+                className="secondary timeout-action"
                 type="button"
                 disabled={!playAllowed}
                 onClick={() => {

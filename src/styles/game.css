@@ -461,9 +461,9 @@ small{line-height:1.4}.game-row,.direct-challenge,.my-game-card,.leader-row,.mes
   .box-wrap{padding-top:28px}
   .versus{font-size:14px}
   .room-shell .game-actions{width:100%}
-  .room-shell .game-actions>.primary,.room-shell .game-actions>.secondary{width:min(100%,330px)}
-  .decision-buttons{width:100%;gap:9px}
-  .decision-buttons button{flex:1;min-width:135px}
+  .room-shell .game-actions>.primary,.room-shell .game-actions>.secondary{width:min(100%,280px)}
+  .decision-buttons{width:100%;max-width:320px;gap:8px;margin-inline:auto}
+  .decision-buttons button{flex:1;min-width:0;max-height:44px;padding:8px 12px}
   .player-character{display:none}
   .timer{width:min(330px,88%)}
   .decision-countdown b{font-size:21px}
@@ -516,8 +516,8 @@ small{line-height:1.4}.game-row,.direct-challenge,.my-game-card,.leader-row,.mes
   .room-shell .table{gap:5px}
   .room-shell .box-3d{width:102px;height:86px}
   .box-wrap>span{font-size:11px;letter-spacing:.8px}
-  .decision-buttons{flex-direction:column}
-  .decision-buttons button{width:100%}
+  .decision-buttons{flex-direction:row;flex-wrap:wrap}
+  .decision-buttons button{flex:1 1 calc(50% - 4px);width:auto;min-width:0;max-height:42px;padding:8px 10px}
   .rules-callouts{grid-template-columns:minmax(0,1fr)}
   .detailed-rules-modal .rule{grid-template-columns:40px minmax(0,1fr);padding:13px;gap:10px}
   .detailed-rules-modal .rule>b{width:38px;height:38px;font-size:14px}
@@ -1047,13 +1047,17 @@ body.reduced-motion .box-3d.hinged-box .front .reveal-carrot{animation:none!impo
     padding:0 4px;
   }
   .room-shell .game-actions .primary,
-  .room-shell .game-actions .secondary,
+  .room-shell .game-actions .secondary{
+    width:100%;
+    max-width:280px;
+  }
   .decision-buttons{
     width:100%;
-    max-width:360px;
+    max-width:320px;
+    flex-wrap:wrap;
+    justify-content:center;
   }
-  .decision-buttons{flex-wrap:wrap;justify-content:center}
-  .decision-buttons button{flex:1 1 140px;min-width:0}
+  .decision-buttons button{flex:1 1 120px;min-width:0;max-height:44px;padding:8px 10px}
 
   .modal,
   .win-popup,
@@ -1172,3 +1176,99 @@ body.reduced-motion .box-3d.hinged-box .front .reveal-carrot{animation:none!impo
   .wallet-gate-banner .primary{width:100%}
   .room-wallet-gate,.offline-sim-chip{margin-inline:12px}
 }
+
+
+/* =========================================================
+   COMPACT MOBILE DECISION ACTIONS — ≤640px
+   Keep/Swap must not dominate the phone viewport
+   ========================================================= */
+/* COMPACT MOBILE DECISION ACTIONS */
+@media (max-width:640px){
+  .room-shell .game-actions{
+    gap:10px!important;
+    margin-bottom:6px!important;
+  }
+  .decision-buttons{
+    display:flex!important;
+    flex-direction:row!important;
+    flex-wrap:wrap!important;
+    justify-content:center;
+    align-items:stretch;
+    width:100%!important;
+    max-width:320px!important;
+    gap:8px!important;
+    margin:0 auto;
+  }
+  .decision-buttons button,
+  .decision-buttons .primary,
+  .decision-buttons .secondary{
+    flex:1 1 calc(50% - 6px)!important;
+    min-width:0!important;
+    max-width:none!important;
+    width:auto!important;
+    min-height:40px!important;
+    max-height:44px!important;
+    height:auto!important;
+    padding:8px 10px!important;
+    font-size:11px!important;
+    letter-spacing:.5px!important;
+    line-height:1.15!important;
+    box-shadow:inset 0 1px #ffc47866,0 3px 0 #a43c11!important;
+  }
+  .decision-buttons .secondary{
+    box-shadow:0 3px 0 #12081e!important;
+  }
+  .room-shell .game-actions>.primary,
+  .room-shell .game-actions>.secondary{
+    width:min(100%,280px)!important;
+    max-width:280px!important;
+    min-height:40px!important;
+    max-height:48px;
+    padding:10px 14px!important;
+    font-size:11px!important;
+  }
+  .room-shell .game-actions>.timeout-action,
+  .game-actions .timeout-action{
+    width:auto!important;
+    max-width:240px!important;
+    min-height:36px!important;
+    max-height:40px!important;
+    padding:7px 12px!important;
+    font-size:10px!important;
+    letter-spacing:.4px!important;
+    box-shadow:0 2px 0 #12081e!important;
+    opacity:.92;
+  }
+  .game-actions small{
+    font-size:11px!important;
+    max-width:280px;
+    line-height:1.35;
+  }
+  .decision-countdown{
+    margin:4px auto 8px!important;
+    gap:2px!important;
+  }
+  .decision-countdown b{font-size:18px!important}
+  .decision-countdown small{font-size:10px!important}
+  .timer{margin:12px auto!important;height:4px!important}
+}
+@media (max-width:420px){
+  .decision-buttons{
+    max-width:100%!important;
+    gap:6px!important;
+  }
+  .decision-buttons button{
+    flex:1 1 calc(50% - 4px)!important;
+    min-height:38px!important;
+    max-height:42px!important;
+    padding:7px 8px!important;
+    font-size:10px!important;
+  }
+  .room-shell .game-actions>.timeout-action{
+    max-width:100%!important;
+    width:min(100%,220px)!important;
+  }
+}
+
+.balance-demo{border-style:dashed!important;border-color:#7a5a3a!important}
+.balance-demo small{color:#ffb02e!important}

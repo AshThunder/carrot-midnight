@@ -72,7 +72,15 @@ export function App() {
     [api.openListings, api.localAddress],
   )
 
-  const [stash] = useState(() => getDemoStash())
+  /** Topbar stash: demo only on LOCAL; hide fake stash on Preprod/Preview (no balance API yet). */
+  const stashDisplay = useMemo(() => {
+    if (isLiveNetwork(midnight.networkKey)) {
+      // Real wallet balance not wired yet — hide rather than show getDemoStash() 1000.
+      return { value: null as number | null, kind: null as 'demo' | 'wallet' | null }
+    }
+    // LOCAL / local-demo
+    return { value: getDemoStash(), kind: 'demo' as const }
+  }, [midnight.networkKey])
 
   const toggleSound = () => {
     const next = !soundOn
@@ -195,7 +203,8 @@ export function App() {
             activeTab={lobbyTab}
             myCount={myCount}
             directCount={directCount}
-            stash={stash}
+            stash={stashDisplay.value}
+            stashKind={stashDisplay.kind}
             walletLabel={walletLabel}
             soundOn={soundOn}
             onToggleSound={toggleSound}

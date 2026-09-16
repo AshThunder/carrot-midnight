@@ -42,6 +42,8 @@ npm run preprod:deploy              # → submission/artifacts/deploy-preprod.js
 - Preprod network key in Connection panel + App pills / Welcome labels
 - Known Preprod contract wired via env / `public/deploy-preprod.json` / `knownContracts.ts`
 - Clearer Lace/1AM + proof-server :6300 + faucet requirements copy
+- **Stash honesty:** Demo stash (localStorage) only on LOCAL; hidden on Preprod/Preview (no fake 1000). Labeled DEMO STASH.
+- **Mobile Keep/Swap:** Cap height/padding ≤640px; SIMULATE TIMEOUT compact — buttons no longer dominate the phone viewport.
 - Submission docs + progress + pitch/demo runbooks updated for Preprod-primary
 
 ## Blockers / human steps remaining

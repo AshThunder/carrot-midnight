@@ -12,6 +12,8 @@ type TopbarProps = {
   myCount: number
   directCount: number
   stash: number | null
+  /** 'demo' = local offline stash; 'wallet' = live balance label */
+  stashKind?: 'demo' | 'wallet' | null
   walletLabel: string
   soundOn: boolean
   onToggleSound: () => void
@@ -35,6 +37,7 @@ export function Topbar({
   myCount,
   directCount,
   stash,
+  stashKind = null,
   walletLabel,
   soundOn,
   onToggleSound,
@@ -115,10 +118,19 @@ export function Topbar({
           </button>
         </div>
         {stash != null && (
-          <div className="balance balance-roomy" title="Demo stash (localStorage)">
+          <div
+            className={`balance balance-roomy${stashKind === 'demo' ? ' balance-demo' : ''}`}
+            title={
+              stashKind === 'demo'
+                ? 'Demo stash (localStorage) — only shown on LOCAL / local-demo'
+                : stashKind === 'wallet'
+                  ? 'Wallet balance'
+                  : undefined
+            }
+          >
             <Icon id="carrot" />
             <span>
-              <small>YOUR STASH</small>
+              <small>{stashKind === 'demo' ? 'DEMO STASH' : stashKind === 'wallet' ? 'BALANCE' : 'YOUR STASH'}</small>
               <b>{stash}</b>
             </span>
           </div>
