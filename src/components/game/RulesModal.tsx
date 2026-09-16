@@ -117,6 +117,19 @@ export function RulesModal({ open, onClose }: Props) {
           of your opponent.
         </p>
       </div>
+      <h3 className="rules-section-title">WATCH THE ORIGINAL GAME</h3>
+      <div className="rules-video">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/0UGuPvrsG3E?rel=0"
+          title="8 Out of 10 Cats — Carrot in a Box original game preview"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+      <p className="video-note">
+        Classic 8 Out of 10 Cats Does Countdown bit that inspired the format — not a Midnight demo.
+      </p>
       <button className="primary full close-rules" type="button" onClick={onClose}>
         GOT IT — TAKE ME TO THE FLOOR
       </button>
